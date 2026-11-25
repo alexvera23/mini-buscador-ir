@@ -2,38 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Vue.js: framework frontend</title>
+    <title>Vue.js: framework progresivo para interfaces web</title>
     <meta name="doc-id" content="D07">
     <meta name="category" content="frontend">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Vue.js: framework frontend</h1>
-        </header>
-        <section>
-            <h2>Introducción a Vue</h2>
-            <p>
-                Vue es un framework progresivo de JavaScript para construir interfaces.
-                Su diseño facilita la integración con proyectos existentes y la creación
-                de aplicaciones de una sola página (SPA).
-            </p>
-        </section>
-        <section>
-            <h2>Reactividad y directivas</h2>
-            <p>
-                Vue destaca por su sistema de reactividad y sus directivas en el HTML.
-                Permite enlazar datos del estado directamente a la vista de manera intuitiva.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D06_react.html">React y desarrollo de interfaces</a></li>
-                <li><a href="D08_angular.html">Angular y aplicaciones web</a></li>
-                <li><a href="D09_arquitectura_frontend.html">Arquitectura frontend</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Vue.js: framework progresivo para interfaces web</h1>
+
+<section>
+<h2>¿Qué es Vue.js?</h2>
+<p>
+Vue.js es un framework progresivo de JavaScript diseñado para construir interfaces de usuario y aplicaciones web de una sola página. Su naturaleza progresiva significa que puede adoptarse de manera gradual: desde mejorar pequeñas secciones estáticas de un sitio HTML existente hasta gestionar arquitecturas empresariales complejas de gran escala.
+</p>
+<p>
+Creado por Evan You, Vue destaca por su curva de aprendizaje accesible, su documentación clara y su capacidad para combinar lo mejor de los enfoques declarativos y reactivos sin exigir configuraciones excesivas desde el primer momento.
+</p>
+</section>
+
+<section>
+<h2>Componentes de un solo archivo (SFC)</h2>
+<p>
+Una de las características más distintivas de Vue es el formato de Componentes de un Solo Archivo con extensión .vue. Este formato permite encapsular en un mismo fichero la plantilla HTML dentro de la etiqueta template, la lógica JavaScript dentro de script y los estilos CSS dentro de style.
+</p>
+<p>
+Esta organización mantiene la cohesión del componente y permite utilizar atributos como scoped en los estilos para asegurar que las reglas CSS afecten únicamente al componente actual, evitando colisiones globales en proyectos extensos.
+</p>
+</section>
+
+<section>
+<h2>Sistema de reactividad y directivas</h2>
+<p>
+Vue cuenta con un sistema de reactividad basado en Proxies de JavaScript que detecta automáticamente los cambios en los datos y actualiza las partes exactas de la interfaz que dependen de ellos. Dentro de las plantillas HTML, Vue proporciona directivas especiales con el prefijo v- para manipular el comportamiento del DOM.
+</p>
+<p>
+Directivas como v-bind enlazan atributos dinámicos, v-model crea enlaces bidireccionales en formularios, v-if controla el renderizado condicional y v-for permite iterar sobre arreglos y objetos para generar listas de elementos de forma declarativa.
+</p>
+</section>
+
+<section>
+<h2>Options API vs Composition API</h2>
+<p>
+Vue ofrece dos estilos principales para estructurar la lógica de los componentes. La Options API organiza el código en bloques predefinidos como data, methods, computed y watch, resultando muy intuitiva para proyectos pequeños o desarrolladores que se inician en el framework.
+</p>
+<p>
+Por otro lado, la Composition API permite agrupar la lógica por funcionalidad mediante funciones reactivas como ref y reactive. Este enfoque mejora significativamente la reutilización de código a través de funciones composables y ofrece un soporte superior para TypeScript en aplicaciones de gran tamaño.
+</p>
+</section>
+
+<section>
+<h2>Ecosistema oficial de Vue</h2>
+<p>
+A diferencia de otras soluciones donde el ecosistema está fragmentado, el equipo central de Vue mantiene herramientas oficiales perfectamente integradas. Vue Router proporciona el sistema oficial de enrutamiento para aplicaciones SPA, mientras que Pinia actúa como la biblioteca estándar para la gestión centralizada del estado.
+</p>
+<p>
+Asimismo, Vite funciona como el empaquetador y servidor de desarrollo ultrarrápido recomendado, y Nuxt ofrece capacidades avanzadas de renderizado del lado del servidor y optimización para motores de búsqueda.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D04_javascript.html">JavaScript: programación en el navegador</a></li>
+<li><a href="D06_react.html">React</a></li>
+<li><a href="D08_angular.html">Angular</a></li>
+<li><a href="D09_arquitectura_frontend.html">Arquitectura Frontend</a></li>
+<li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

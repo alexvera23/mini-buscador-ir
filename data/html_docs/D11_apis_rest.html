@@ -2,46 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>APIs REST</title>
+    <title>APIs REST: diseño de servicios web e interoperabilidad</title>
     <meta name="doc-id" content="D11">
     <meta name="category" content="backend">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>APIs REST</h1>
-        </header>
-        <section>
-            <h2>Representational State Transfer</h2>
-            <p>
-                REST es un estilo arquitectónico para diseñar servicios web.
-                Utiliza métodos HTTP como GET, POST, PUT y DELETE para operar sobre recursos.
-            </p>
-        </section>
-        <section>
-            <h2>Intercambio de datos</h2>
-            <p>
-                Las APIs REST suelen intercambiar información en formato JSON.
-                Son fundamentales para conectar el frontend con el backend y las bases de datos.
-            </p>
-        </section>
-        <section>
-            <h2>Seguridad en APIs</h2>
-            <p>
-                La protección de los endpoints REST es vital. Requiere autenticación,
-                autorización y protección contra vulnerabilidades comunes.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D10_backend.html">Backend</a></li>
-                <li><a href="D12_bases_datos.html">Bases de datos</a></li>
-                <li><a href="D13_nodejs.html">Node.js</a></li>
-                <li><a href="D24_seguridad_web.html">Seguridad web</a></li>
-                <li><a href="D21_arquitectura_software.html">Arquitectura de software</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>APIs REST: diseño de servicios web e interoperabilidad</h1>
+
+<section>
+<h2>¿Qué es una API REST?</h2>
+<p>
+Una API REST es una interfaz de programación de aplicaciones que sigue los principios arquitectónicos de Transferencia de Estado Representacional definidos por Roy Fielding. Permite que distintos sistemas de software, como navegadores web, aplicaciones móviles y servidores externos, se comuniquen e intercambien información de manera estandarizada a través de la web.
+</p>
+<p>
+En el estilo REST, toda entidad de información se modela como un recurso identificable mediante una dirección única o URI, lo que facilita un diseño limpio, predecible y desacoplado entre el cliente y el servidor.
+</p>
+</section>
+
+<section>
+<h2>Principios fundamentales de REST</h2>
+<p>
+La arquitectura REST se apoya en restricciones clave que garantizan su escalabilidad. La más importante es la comunicación sin estado o stateless, lo que significa que cada petición del cliente debe contener toda la información necesaria para ser comprendida y procesada, sin que el servidor almacene contexto de peticiones anteriores.
+</p>
+<p>
+Otros principios incluyen la separación clara entre cliente y servidor, una interfaz uniforme para acceder a los recursos, la capacidad de almacenar respuestas en caché para mejorar el rendimiento y una arquitectura en capas transparente.
+</p>
+</section>
+
+<section>
+<h2>Métodos HTTP y operaciones CRUD</h2>
+<p>
+Las APIs REST aprovechan la semántica nativa del protocolo HTTP para realizar operaciones sobre los recursos. El método GET se utiliza para consultar y recuperar información sin modificar el estado del servidor, mientras que POST permite crear nuevos recursos.
+</p>
+<p>
+Por su parte, PUT reemplaza completamente un recurso existente, PATCH aplica modificaciones parciales y DELETE elimina un recurso específico. El uso correcto de estos verbos permite construir rutas intuitivas centradas en sustantivos en plural, como /usuarios o /productos.
+</p>
+</section>
+
+<section>
+<h2>Códigos de estado y formato JSON</h2>
+<p>
+Para comunicar el resultado de cada operación de manera inequívoca, las APIs REST emplean los códigos de estado estándar de HTTP. Los códigos de la familia 200 indican éxito, como 200 OK o 201 Created; los de la familia 400 señalan errores del cliente, como 400 Bad Request, 401 Unauthorized o 404 Not Found; y los 500 indican fallos internos del servidor.
+</p>
+<p>
+Aunque REST admite diversos formatos de representación, JSON se ha consolidado como el estándar universal debido a su ligereza, legibilidad humana y compatibilidad nativa con JavaScript y los lenguajes modernos.
+</p>
+</section>
+
+<section>
+<h2>Documentación, versionado y buenas prácticas</h2>
+<p>
+Una API profesional debe ser fácil de consumir y mantener a lo largo del tiempo. Incorporar paginación, filtrado y ordenamiento en colecciones grandes evita sobrecargar la red y mejora los tiempos de respuesta.
+</p>
+<p>
+Además, establecer estrategias de versionado mediante rutas como /api/v1/ permite evolucionar el contrato de datos sin romper aplicaciones clientes antiguas, mientras que especificaciones como OpenAPI y Swagger generan documentación interactiva esencial para los equipos integradores.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D04_javascript.html">JavaScript: programación en el navegador</a></li>
+<li><a href="D10_backend.html">Desarrollo Backend</a></li>
+<li><a href="D12_bases_datos.html">Bases de datos</a></li>
+<li><a href="D13_nodejs.html">Node.js</a></li>
+<li><a href="D24_seguridad_web.html">Seguridad web</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

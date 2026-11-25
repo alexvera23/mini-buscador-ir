@@ -2,37 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Entornos de desarrollo</title>
+    <title>Entornos de desarrollo, pruebas y producción</title>
     <meta name="doc-id" content="D17">
-    <meta name="category" content="herramientas">
+    <meta name="category" content="infraestructura">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Entornos de desarrollo</h1>
-        </header>
-        <section>
-            <h2>Configuración del espacio de trabajo</h2>
-            <p>
-                Un entorno de desarrollo incluye editores de código, linters, terminales
-                y herramientas de depuración. Un entorno bien configurado aumenta la productividad.
-            </p>
-        </section>
-        <section>
-            <h2>Reproducibilidad</h2>
-            <p>
-                Herramientas como Docker ayudan a replicar entornos idénticos.
-                El control de versiones con Git es esencial para mantener la coherencia del proyecto.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D14_git.html">Git</a></li>
-                <li><a href="D16_docker.html">Docker</a></li>
-                <li><a href="D19_testing.html">Testing de aplicaciones web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Entornos de desarrollo, pruebas y producción</h1>
+
+<section>
+<h2>¿Por qué separar los entornos de software?</h2>
+<p>
+En el ciclo de vida del desarrollo web profesional, nunca se debe programar ni experimentar directamente sobre el sistema que utilizan los usuarios finales. Para evitar interrupciones del servicio o pérdidas de datos, las aplicaciones se despliegan en múltiples entornos aislados, cada uno con un propósito específico dentro del flujo de entrega.
+</p>
+<p>
+Esta separación permite detectar errores de configuración, fallos de rendimiento y problemas de integración mucho antes de que el código alcance al público general.
+</p>
+</section>
+
+<section>
+<h2>Entorno de desarrollo local (Development)</h2>
+<p>
+El entorno de desarrollo es el espacio de trabajo individual en la computadora de cada programador. Está optimizado para la productividad y la depuración rápida: incluye recarga automática ante cambios en el código, mensajes de error detallados con trazas completas y herramientas de inspección.
+</p>
+<p>
+En este entorno se utilizan bases de datos locales con datos ficticios o de prueba, permitiendo experimentar libremente sin riesgo de alterar información real.
+</p>
+</section>
+
+<section>
+<h2>Entorno de pruebas y preproducción (Testing y Staging)</h2>
+<p>
+Una vez que una funcionalidad supera las verificaciones locales, pasa a entornos intermedios compartidos por el equipo. El entorno de pruebas o QA se dedica a ejecutar baterías de pruebas automatizadas, verificaciones de integración y revisiones funcionales.
+</p>
+<p>
+Posteriormente, el entorno de preproducción o Staging replica con la mayor fidelidad posible la arquitectura, el hardware y las configuraciones del servidor real. Sirve como ensayo general para validar migraciones de bases de datos y demostraciones finales antes del lanzamiento.
+</p>
+</section>
+
+<section>
+<h2>Entorno de producción (Production)</h2>
+<p>
+El entorno de producción es el sistema vivo al que acceden los usuarios reales y donde opera el negocio. Aquí la prioridad absoluta es la estabilidad, la seguridad, el rendimiento y la alta disponibilidad.
+</p>
+<p>
+En producción se desactivan los mensajes detallados de depuración para no exponer detalles internos, se minifican los archivos estáticos, se habilitan certificados SSL y se mantienen sistemas constantes de monitoreo y copias de seguridad.
+</p>
+</section>
+
+<section>
+<h2>Gestión de configuración y variables de entorno</h2>
+<p>
+Para que el mismo código fuente funcione en todos los entornos sin modificar archivos internos, las configuraciones variables se extraen hacia variables de entorno. Parámetros como cadenas de conexión a bases de datos, puertos, claves de APIs externas y niveles de registro se cargan dinámicamente desde el sistema operativo o archivos .env.
+</p>
+<p>
+Por seguridad, los archivos .env con credenciales reales nunca deben subirse a los repositorios de control de versiones.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D14_git.html">Git: control de versiones distribuido</a></li>
+<li><a href="D16_docker.html">Docker y contenedores</a></li>
+<li><a href="D19_testing.html">Testing de software</a></li>
+<li><a href="D22_cicd.html">Integración y entrega continua (CI/CD)</a></li>
+<li><a href="D23_despliegue.html">Despliegue en producción</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

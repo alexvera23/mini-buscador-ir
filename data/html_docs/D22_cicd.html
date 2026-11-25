@@ -2,41 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CI/CD y automatización</title>
+    <title>CI/CD: integración continua y despliegue continuo</title>
     <meta name="doc-id" content="D22">
-    <meta name="category" content="deployment">
+    <meta name="category" content="devops">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>CI/CD y automatización</h1>
-        </header>
-        <section>
-            <h2>Integración y Entrega Continua</h2>
-            <p>
-                CI/CD (Continuous Integration / Continuous Deployment) automatiza la compilación,
-                las pruebas y el despliegue del software. Permite entregar cambios de forma rápida y segura.
-            </p>
-        </section>
-        <section>
-            <h2>Pipeline de despliegue</h2>
-            <p>
-                Un pipeline típico incluye la extracción de código desde Git o GitHub,
-                la ejecución de pruebas (Testing), la construcción de imágenes Docker
-                y el despliegue final.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D14_git.html">Git</a></li>
-                <li><a href="D15_github.html">GitHub</a></li>
-                <li><a href="D16_docker.html">Docker</a></li>
-                <li><a href="D19_testing.html">Testing</a></li>
-                <li><a href="D21_arquitectura_software.html">Arquitectura</a></li>
-                <li><a href="D23_despliegue.html">Despliegue</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>CI/CD: integración continua y despliegue continuo</h1>
+
+<section>
+<h2>¿Qué es CI/CD en el desarrollo moderno?</h2>
+<p>
+CI/CD es un conjunto de prácticas y herramientas DevOps que automatizan las etapas de integración, verificación y entrega de código desde el repositorio hasta los servidores finales. Sus siglas corresponden a Integración Continua (Continuous Integration) y Entrega o Despliegue Continuo (Continuous Delivery / Continuous Deployment).
+</p>
+<p>
+El propósito central de CI/CD es eliminar las tareas manuales repetitivas y propensas a errores, permitiendo que los equipos publiquen mejoras frecuentes, pequeñas y confiables con total trazabilidad.
+</p>
+</section>
+
+<section>
+<h2>Integración Continua (CI)</h2>
+<p>
+La Integración Continua consiste en que los desarrolladores integren sus cambios de código en un repositorio compartido varias veces al día. Cada vez que se sube una modificación o se abre un Pull Request, un servidor automatizado dispara una secuencia de comprobaciones.
+</p>
+<p>
+Este flujo compila el proyecto, verifica reglas de estilo con linters, analiza posibles vulnerabilidades de seguridad y ejecuta toda la batería de pruebas unitarias y de integración, alertando inmediatamente al equipo si alguna verificación falla.
+</p>
+</section>
+
+<section>
+<h2>Entrega Continua frente a Despliegue Continuo</h2>
+<p>
+Una vez superada la fase de integración, la Entrega Continua asegura que el software quede empaquetado en un artefacto o imagen Docker lista para ser liberada en cualquier momento, requiriendo únicamente una aprobación humana explícita para pasar a producción.
+</p>
+<p>
+Por su parte, el Despliegue Continuo lleva la automatización un paso más allá: cada cambio que supera exitosamente todas las pruebas automatizadas se publica directamente en el entorno de producción sin intervención manual, acelerando al máximo la entrega de valor al usuario.
+</p>
+</section>
+
+<section>
+<h2>Anatomía de un pipeline automatizado</h2>
+<p>
+Un pipeline de CI/CD se define generalmente mediante archivos declarativos en formato YAML almacenados dentro del mismo repositorio. Está organizado en etapas secuenciales o paralelas llamadas jobs y steps.
+</p>
+<p>
+Las etapas habituales incluyen la descarga del código, instalación en caché de dependencias, ejecución de pruebas, construcción de artefactos optimizados y despliegue mediante estrategias seguras como Blue-Green o Canary Releases que minimizan el tiempo de inactividad.
+</p>
+</section>
+
+<section>
+<h2>Herramientas principales de CI/CD</h2>
+<p>
+Actualmente existen múltiples plataformas maduras para implementar pipelines automatizados. GitHub Actions y GitLab CI destacan por su integración nativa directa con los repositorios de código.
+</p>
+<p>
+Otras soluciones ampliamente utilizadas en la industria incluyen Jenkins para infraestructuras autoalojadas altamente personalizables, así como CircleCI y Azure DevOps para flujos empresariales multiplataforma.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D14_git.html">Git: control de versiones distribuido</a></li>
+<li><a href="D15_github.html">GitHub y colaboración</a></li>
+<li><a href="D16_docker.html">Docker y contenedores</a></li>
+<li><a href="D19_testing.html">Testing de software</a></li>
+<li><a href="D23_despliegue.html">Despliegue en producción</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

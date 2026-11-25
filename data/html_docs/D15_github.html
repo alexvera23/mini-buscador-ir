@@ -2,37 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>GitHub y colaboración</title>
+    <title>GitHub: colaboración, repositorios remotos y flujo de trabajo</title>
     <meta name="doc-id" content="D15">
     <meta name="category" content="herramientas">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>GitHub y colaboración</h1>
-        </header>
-        <section>
-            <h2>Plataforma de colaboración</h2>
-            <p>
-                GitHub es una plataforma basada en la nube que aloja repositorios Git.
-                Facilita la colaboración mediante pull requests, revisiones de código e issues.
-            </p>
-        </section>
-        <section>
-            <h2>Integración y calidad</h2>
-            <p>
-                GitHub Actions permite automatizar flujos de trabajo (CI/CD).
-                Además, las revisiones fomentan el Clean Code y la detección temprana de errores.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D14_git.html">Git y control de versiones</a></li>
-                <li><a href="D18_clean_code.html">Clean Code</a></li>
-                <li><a href="D22_cicd.html">CI/CD y automatización</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>GitHub: colaboración, repositorios remotos y flujo de trabajo</h1>
+
+<section>
+<h2>¿Qué es GitHub?</h2>
+<p>
+GitHub es una plataforma en la nube diseñada para alojar repositorios Git y potenciar el desarrollo colaborativo de software. Además de servir como respaldo remoto seguro para el código fuente, proporciona una interfaz web y herramientas sociales que conectan a millones de desarrolladores y organizaciones en todo el mundo.
+</p>
+<p>
+Mientras Git gestiona el control de versiones a nivel local, GitHub aporta las capacidades de sincronización en equipo, revisión de código, seguimiento de incidencias, automatización y gestión de proyectos.
+</p>
+</section>
+
+<section>
+<h2>Repositorios remotos y sincronización</h2>
+<p>
+Para trabajar con GitHub, los desarrolladores vinculan su repositorio local con uno remoto mediante protocolos seguros como SSH o HTTPS. Comandos como git clone descargan un proyecto completo por primera vez, git push envía los commits locales hacia el servidor remoto y git pull descarga e integra las actualizaciones realizadas por otros compañeros.
+</p>
+<p>
+En proyectos de código abierto, el mecanismo de Fork permite crear una copia personal independiente de un repositorio ajeno para proponer mejoras sin necesitar permisos directos de escritura en el proyecto original.
+</p>
+</section>
+
+<section>
+<h2>Pull Requests y revisión de código</h2>
+<p>
+El flujo de trabajo colaborativo en GitHub gira en torno a los Pull Requests. Cuando un desarrollador termina una funcionalidad en su rama, abre un Pull Request solicitando que sus cambios sean revisados e integrados en la rama principal.
+</p>
+<p>
+Esta herramienta muestra las diferencias exactas línea por línea, permite a otros miembros del equipo dejar comentarios contextuales, sugerir mejoras de diseño y ejecutar verificaciones automáticas antes de aprobar la fusión, elevando significativamente la calidad del software.
+</p>
+</section>
+
+<section>
+<h2>Gestión de proyectos con Issues y Projects</h2>
+<p>
+GitHub integra sistemas completos para planificar y documentar el trabajo técnico. Mediante los Issues, los equipos reportan errores, solicitan nuevas características y discuten decisiones arquitectónicas utilizando etiquetas, hitos y asignaciones de responsables.
+</p>
+<p>
+Por su parte, GitHub Projects ofrece tableros visuales estilo Kanban y vistas de hoja de ruta sincronizadas automáticamente con el estado de los Issues y Pull Requests del repositorio.
+</p>
+</section>
+
+<section>
+<h2>Automatización y publicación en GitHub</h2>
+<p>
+Más allá del almacenamiento de código, la plataforma incluye GitHub Actions para ejecutar flujos de trabajo automatizados ante eventos como un push o la apertura de un Pull Request, permitiendo correr pruebas y despliegues sin servidores externos.
+</p>
+<p>
+Complementariamente, servicios como GitHub Pages permiten publicar sitios web estáticos y documentación técnica directamente desde un repositorio de forma gratuita y sencilla.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D14_git.html">Git: control de versiones distribuido</a></li>
+<li><a href="D18_clean_code.html">Clean Code</a></li>
+<li><a href="D19_testing.html">Testing de software</a></li>
+<li><a href="D20_scrum.html">Metodología Scrum</a></li>
+<li><a href="D22_cicd.html">Integración y entrega continua (CI/CD)</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

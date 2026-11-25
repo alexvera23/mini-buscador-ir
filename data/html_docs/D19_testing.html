@@ -2,39 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Testing de aplicaciones web</title>
+    <title>Testing de software: pruebas automatizadas y calidad web</title>
     <meta name="doc-id" content="D19">
-    <meta name="category" content="ingenieria">
+    <meta name="category" content="calidad">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Testing de aplicaciones web</h1>
-        </header>
-        <section>
-            <h2>Aseguramiento de la calidad</h2>
-            <p>
-                El testing incluye pruebas unitarias, de integración y de extremo a extremo (E2E).
-                Su objetivo es garantizar que el software funcione según lo esperado.
-            </p>
-        </section>
-        <section>
-            <h2>Automatización de pruebas</h2>
-            <p>
-                Las pruebas automatizadas son esenciales en metodologías ágiles y en
-                pipelines de CI/CD. Un buen código (Clean Code) y una buena arquitectura
-                facilitan la creación de pruebas robustas.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D18_clean_code.html">Clean Code</a></li>
-                <li><a href="D20_scrum.html">Scrum</a></li>
-                <li><a href="D21_arquitectura_software.html">Arquitectura de software</a></li>
-                <li><a href="D22_cicd.html">CI/CD</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Testing de software: pruebas automatizadas y calidad web</h1>
+
+<section>
+<h2>Importancia del testing en el desarrollo web</h2>
+<p>
+El testing de software es el proceso sistemático de verificar que una aplicación web cumple con los requisitos esperados y funciona correctamente bajo diversas condiciones antes de llegar a los usuarios. Confiar únicamente en pruebas manuales resulta lento, costoso y propenso a olvidos humanos conforme crece el sistema.
+</p>
+<p>
+Las pruebas automatizadas proporcionan una red de seguridad indispensable: permiten refactorizar código, actualizar dependencias y añadir nuevas funciones con la confianza de detectar inmediatamente cualquier regresión.
+</p>
+</section>
+
+<section>
+<h2>La pirámide de pruebas</h2>
+<p>
+Para equilibrar velocidad de ejecución, costo de mantenimiento y cobertura funcional, la industria utiliza el modelo de la pirámide de pruebas. En la base se encuentran las pruebas unitarias, que son rápidas, aisladas y numerosas.
+</p>
+<p>
+En el nivel intermedio se sitúan las pruebas de integración, encargadas de verificar la colaboración entre distintos módulos o servicios, mientras que en la cúspide se ubican las pruebas de extremo a extremo, más lentas pero capaces de simular recorridos reales completos.
+</p>
+</section>
+
+<section>
+<h2>Pruebas unitarias y de integración</h2>
+<p>
+Las pruebas unitarias evalúan de forma aislada las unidades más pequeñas de código, como una función pura, un cálculo matemático o un componente individual. Para aislar dependencias externas como bases de datos o APIs, se emplean técnicas de simulación como mocks y stubs.
+</p>
+<p>
+Por su parte, las pruebas de integración validan que múltiples componentes trabajen juntos correctamente, por ejemplo comprobando que un endpoint de una API REST procesa una petición, consulta la base de datos de prueba y devuelve el código de estado esperado.
+</p>
+</section>
+
+<section>
+<h2>Pruebas End-to-End (E2E)</h2>
+<p>
+Las pruebas de extremo a extremo automatizan un navegador web real para reproducir el comportamiento de un usuario final: abrir páginas, rellenar formularios, hacer clic en botones y verificar que los elementos visuales esperados aparezcan en pantalla.
+</p>
+<p>
+Herramientas modernas como Playwright y Cypress facilitan la escritura de pruebas E2E estables, ofreciendo capturas de pantalla, grabación de videos ante fallos y ejecución paralela en distintos navegadores.
+</p>
+</section>
+
+<section>
+<h2>Desarrollo guiado por pruebas (TDD) y cobertura</h2>
+<p>
+El Desarrollo Guiado por Pruebas o TDD propone invertir el flujo tradicional: primero se escribe una prueba automatizada que falla porque la funcionalidad aún no existe, luego se escribe el código mínimo para que la prueba pase y finalmente se refactoriza.
+</p>
+<p>
+Aunque métricas como la cobertura de código indican qué porcentaje de líneas han sido ejecutadas durante las pruebas, la verdadera calidad radica en probar casos límite, manejo de errores y flujos críticos del negocio.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D15_github.html">GitHub y colaboración</a></li>
+<li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
+<li><a href="D18_clean_code.html">Clean Code</a></li>
+<li><a href="D20_scrum.html">Metodología Scrum</a></li>
+<li><a href="D22_cicd.html">Integración y entrega continua (CI/CD)</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

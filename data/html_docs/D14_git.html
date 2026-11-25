@@ -2,39 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Git y control de versiones</title>
+    <title>Git: control de versiones distribuido</title>
     <meta name="doc-id" content="D14">
     <meta name="category" content="herramientas">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Git y control de versiones</h1>
-        </header>
-        <section>
-            <h2>Historial de cambios</h2>
-            <p>
-                Git es un sistema de control de versiones distribuido.
-                Permite registrar la evolución del código, crear ramas y
-                colaborar en equipo sin sobrescribir el trabajo ajeno.
-            </p>
-        </section>
-        <section>
-            <h2>Flujos de trabajo</h2>
-            <p>
-                Existen diversos flujos de trabajo como Git Flow o trunk-based development.
-                Git es el estándar para gestionar el código fuente antes de pasar
-                a la integración y despliegue continuo.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D15_github.html">GitHub y colaboración</a></li>
-                <li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
-                <li><a href="D22_cicd.html">CI/CD y automatización</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Git: control de versiones distribuido</h1>
+
+<section>
+<h2>¿Qué es Git y por qué es indispensable?</h2>
+<p>
+Git es un sistema de control de versiones distribuido creado por Linus Torvalds para registrar y gestionar la evolución del código fuente a lo largo del tiempo. Permite guardar instantáneas precisas del estado de un proyecto, comparar cambios entre distintas fechas y revertir modificaciones erróneas sin perder el historial previo.
+</p>
+<p>
+Su arquitectura distribuida implica que cada desarrollador posee en su computadora una copia completa del repositorio junto con todo su historial de revisiones, permitiendo trabajar sin conexión a internet y garantizando resiliencia ante fallos en servidores centrales.
+</p>
+</section>
+
+<section>
+<h2>Estados de los archivos y flujo básico</h2>
+<p>
+Dentro de un repositorio Git, los archivos transitan por tres áreas principales: el directorio de trabajo donde se editan los ficheros, el área de preparación o staging area donde se seleccionan los cambios específicos que formarán parte de la siguiente versión, y el repositorio local donde se confirman permanentemente.
+</p>
+<p>
+Comandos fundamentales como git init inician un proyecto, git status inspecciona el estado actual, git add prepara los archivos modificados y git commit registra una confirmación acompañada de un mensaje descriptivo claro.
+</p>
+</section>
+
+<section>
+<h2>Ramas y estrategias de fusión</h2>
+<p>
+Una de las mayores fortalezas de Git es la creación casi instantánea y ligera de ramas o branches. Las ramas permiten aislar el desarrollo de nuevas funcionalidades, experimentos o correcciones de errores urgentes sin afectar la estabilidad de la rama principal del proyecto.
+</p>
+<p>
+Una vez completado y verificado el trabajo en una rama secundaria, los cambios se integran de vuelta mediante comandos como git merge, que combina historiales conservando la bifurcación, o git rebase, que reescribe la secuencia de commits para mantener una historia lineal y limpia.
+</p>
+</section>
+
+<section>
+<h2>Resolución de conflictos y revisión del historial</h2>
+<p>
+Cuando dos personas modifican simultáneamente las mismas líneas de un mismo archivo en ramas distintas, Git detiene la fusión y señala un conflicto de integración. El desarrollador debe inspeccionar las marcas de conflicto en el código, decidir qué cambios conservar y completar el commit de resolución.
+</p>
+<p>
+Herramientas como git log y git diff permiten auditar quién realizó cada modificación, en qué momento y con qué propósito, facilitando la depuración de regresiones en proyectos complejos.
+</p>
+</section>
+
+<section>
+<h2>Buenas prácticas en el uso de Git</h2>
+<p>
+Mantener un historial comprensible requiere disciplina en el equipo. Realizar commits pequeños y atómicos que representen una única unidad lógica de cambio facilita las revisiones y las reversiones selectivas.
+</p>
+<p>
+Asimismo, seguir convenciones de mensajes como Conventional Commits y utilizar correctamente el archivo .gitignore para excluir dependencias pesadas, archivos compilados y credenciales sensibles asegura repositorios limpios y seguros.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D15_github.html">GitHub y colaboración</a></li>
+<li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
+<li><a href="D18_clean_code.html">Clean Code</a></li>
+<li><a href="D20_scrum.html">Metodología Scrum</a></li>
+<li><a href="D22_cicd.html">Integración y entrega continua (CI/CD)</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

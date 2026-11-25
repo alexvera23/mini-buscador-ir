@@ -2,42 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Arquitectura de software web</title>
+    <title>Arquitectura de Software: patrones, escalabilidad y diseño</title>
     <meta name="doc-id" content="D21">
-    <meta name="category" content="ingenieria">
+    <meta name="category" content="arquitectura">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Arquitectura de software web</h1>
-        </header>
-        <section>
-            <h2>Diseño de sistemas complejos</h2>
-            <p>
-                La arquitectura de software define la estructura de un sistema, sus componentes
-                y cómo interactúan. En la web, abarca desde el frontend hasta el backend y la base de datos.
-            </p>
-        </section>
-        <section>
-            <h2>Patrones y decisiones</h2>
-            <p>
-                Patrones como MVC, microservicios o arquitecturas orientadas a eventos
-                guían el diseño. Una buena arquitectura se alinea con las metodologías ágiles,
-                el Clean Code y el Testing para garantizar la calidad.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D09_arquitectura_frontend.html">Arquitectura frontend</a></li>
-                <li><a href="D10_backend.html">Backend</a></li>
-                <li><a href="D11_apis_rest.html">APIs REST</a></li>
-                <li><a href="D18_clean_code.html">Clean Code</a></li>
-                <li><a href="D19_testing.html">Testing</a></li>
-                <li><a href="D20_scrum.html">Scrum</a></li>
-                <li><a href="D22_cicd.html">CI/CD</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Arquitectura de Software: patrones, escalabilidad y diseño</h1>
+
+<section>
+<h2>¿Qué es la arquitectura de software?</h2>
+<p>
+La arquitectura de software representa la estructura fundamental de un sistema, abarcando sus componentes principales, las relaciones entre ellos y los principios que guían su diseño y evolución. A diferencia de los detalles de implementación de bajo nivel, la arquitectura define las decisiones estratégicas más difíciles de cambiar una vez iniciado el proyecto.
+</p>
+<p>
+Su objetivo principal es satisfacer tanto los requisitos funcionales del sistema como los atributos de calidad no funcionales, tales como disponibilidad, rendimiento, seguridad, escalabilidad y facilidad de mantenimiento.
+</p>
+</section>
+
+<section>
+<h2>Arquitectura monolítica frente a microservicios</h2>
+<p>
+En una arquitectura monolítica, toda la interfaz, la lógica de negocio y el acceso a datos se empaquetan y despliegan como una única unidad ejecutable. Este enfoque resulta sencillo de desarrollar, probar y desplegar inicialmente, siendo ideal para equipos pequeños y productos en etapas tempranas.
+</p>
+<p>
+Por el contrario, la arquitectura de microservicios divide la aplicación en un conjunto de servicios pequeños e independientes, cada uno enfocado en una capacidad de negocio específica y con su propia base de datos. Aunque aporta escalabilidad independiente y autonomía entre equipos, introduce mayor complejidad en redes y observabilidad.
+</p>
+</section>
+
+<section>
+<h2>Patrones arquitectónicos en capas y hexagonal</h2>
+<p>
+La arquitectura en capas organiza el código horizontalmente en niveles como presentación, lógica de negocio y persistencia de datos, logrando una separación clara de responsabilidades. Sin embargo, puede generar dependencia excesiva hacia la base de datos.
+</p>
+<p>
+Para proteger la lógica central del negocio frente a cambios tecnológicos externos, patrones como la Arquitectura Hexagonal o Clean Architecture colocan el dominio en el centro y definen puertos e interfaces que permiten intercambiar bases de datos o frameworks sin alterar las reglas principales.
+</p>
+</section>
+
+<section>
+<h2>Principios SOLID en el diseño orientado a objetos</h2>
+<p>
+A nivel de diseño de módulos y clases, los cinco principios SOLID guían la creación de estructuras flexibles y desacopladas: Responsabilidad Única, Abierto/Cerrado, Sustitución de Liskov, Segregación de Interfaces e Inversión de Dependencias.
+</p>
+<p>
+Aplicar estos principios facilita extender el sistema con nuevas funcionalidades sin necesidad de modificar código probado y estable.
+</p>
+</section>
+
+<section>
+<h2>Escalabilidad horizontal, vertical y alta disponibilidad</h2>
+<p>
+Cuando aumenta el tráfico de usuarios, un sistema debe escalar para mantener tiempos de respuesta adecuados. El escalado vertical consiste en añadir más memoria o CPU a un servidor existente, mientras que el escalado horizontal añade múltiples instancias de servidores detrás de un balanceador de carga.
+</p>
+<p>
+Complementar esta distribución con cachés distribuidas, colas de mensajería asíncrona y replicación de bases de datos permite construir plataformas resilientes tolerantes a fallos.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D09_arquitectura_frontend.html">Arquitectura Frontend</a></li>
+<li><a href="D10_backend.html">Desarrollo Backend</a></li>
+<li><a href="D12_bases_datos.html">Bases de datos</a></li>
+<li><a href="D18_clean_code.html">Clean Code</a></li>
+<li><a href="D23_despliegue.html">Despliegue en producción</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

@@ -2,40 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Backend: lógica y servidores</title>
+    <title>Desarrollo Backend: lógica de servidor y procesamiento</title>
     <meta name="doc-id" content="D10">
     <meta name="category" content="backend">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Backend: lógica y servidores</h1>
-        </header>
-        <section>
-            <h2>El lado del servidor</h2>
-            <p>
-                El backend es la parte de la aplicación que se ejecuta en el servidor.
-                Se encarga de procesar peticiones, aplicar reglas de negocio y gestionar datos.
-            </p>
-        </section>
-        <section>
-            <h2>Comunicación y servicios</h2>
-            <p>
-                Los servidores backend exponen servicios a través de APIs REST.
-                Se comunican con bases de datos relacionales y otros sistemas para
-                satisfacer las solicitudes del frontend.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D01_intro_desarrollo_web.html">Introducción al desarrollo web</a></li>
-                <li><a href="D11_apis_rest.html">APIs REST</a></li>
-                <li><a href="D12_bases_datos.html">Bases de datos relacionales</a></li>
-                <li><a href="D13_nodejs.html">Node.js y desarrollo backend</a></li>
-                <li><a href="D21_arquitectura_software.html">Arquitectura de software web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Desarrollo Backend: lógica de servidor y procesamiento</h1>
+
+<section>
+<h2>¿Qué es el desarrollo backend?</h2>
+<p>
+El desarrollo backend se refiere a la construcción de toda la lógica, infraestructura y procesamiento de datos que ocurre detrás de escena en una aplicación web. Mientras el frontend se encarga de la presentación visual en el navegador, el backend opera en servidores remotos recibiendo peticiones, aplicando reglas de negocio y devolviendo respuestas estructuradas.
+</p>
+<p>
+Este componente es responsable de garantizar que la información sea persistente, íntegra y accesible únicamente para usuarios autorizados, actuando como el núcleo operativo de cualquier sistema digital.
+</p>
+</section>
+
+<section>
+<h2>Comunicación cliente-servidor y protocolo HTTP</h2>
+<p>
+La interacción entre el cliente y el servidor se sustenta principalmente en el protocolo HTTP o su variante cifrada HTTPS. El cliente envía una solicitud especificando una ruta o URL, un método que indica la acción deseada, encabezados con metadatos y, en ocasiones, un cuerpo con datos.
+</p>
+<p>
+El servidor procesa dicha petición y responde con un código de estado numérico que informa el resultado de la operación, junto con los datos solicitados generalmente serializados en formatos ligeros como JSON.
+</p>
+</section>
+
+<section>
+<h2>Lógica de negocio, rutas y middlewares</h2>
+<p>
+Dentro de una aplicación backend, el sistema de enrutamiento dirige cada petición entrante hacia el controlador adecuado según su URL y método HTTP. Antes de llegar al controlador principal, la solicitud suele atravesar una cadena de funciones intermedias llamadas middlewares.
+</p>
+<p>
+Los middlewares ejecutan tareas transversales esenciales como registrar bitácoras de actividad, validar el formato de los datos enviados, comprobar tokens de autenticación, gestionar permisos y capturar errores de forma centralizada.
+</p>
+</section>
+
+<section>
+<h2>Autenticación, autorización y sesiones</h2>
+<p>
+Controlar quién accede a qué recursos es una responsabilidad crítica del servidor. La autenticación verifica la identidad del usuario mediante credenciales, certificados o proveedores externos, mientras que la autorización determina qué acciones puede realizar según su rol.
+</p>
+<p>
+Para mantener el estado entre peticiones HTTP sin estado, los sistemas backend emplean cookies seguras respaldadas por sesiones en servidor o tokens firmados como JWT que viajan en los encabezados de cada solicitud.
+</p>
+</section>
+
+<section>
+<h2>Lenguajes y frameworks del lado del servidor</h2>
+<p>
+El ecosistema backend ofrece múltiples tecnologías adaptadas a distintos requerimientos de rendimiento y productividad. Entornos como Node.js permiten usar JavaScript en el servidor, Python destaca con Django y FastAPI, Java ofrece robustez con Spring Boot, y lenguajes como Go, C# o PHP impulsan millones de servicios web.
+</p>
+<p>
+La elección tecnológica depende de factores como la concurrencia esperada, la integración con sistemas existentes y la experiencia del equipo de desarrollo.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D01_intro_desarrollo_web.html">Introducción al desarrollo web</a></li>
+<li><a href="D11_apis_rest.html">APIs REST</a></li>
+<li><a href="D12_bases_datos.html">Bases de datos</a></li>
+<li><a href="D13_nodejs.html">Node.js</a></li>
+<li><a href="D24_seguridad_web.html">Seguridad web</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

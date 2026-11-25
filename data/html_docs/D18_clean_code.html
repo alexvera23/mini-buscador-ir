@@ -2,39 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Clean Code</title>
+    <title>Clean Code: principios para escribir código legible y mantenible</title>
     <meta name="doc-id" content="D18">
-    <meta name="category" content="ingenieria">
+    <meta name="category" content="calidad">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Clean Code</h1>
-        </header>
-        <section>
-            <h2>Código legible y mantenible</h2>
-            <p>
-                Clean Code es una filosofía de desarrollo que promueve escribir código
-                claro, con nombres significativos, funciones pequeñas y una estructura lógica.
-            </p>
-        </section>
-        <section>
-            <h2>Refactorización y calidad</h2>
-            <p>
-                Aplicar principios de Clean Code facilita las pruebas (Testing) y
-                mejora la arquitectura general del software. Reduce la deuda técnica y
-                minimiza vulnerabilidades de seguridad.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D19_testing.html">Testing</a></li>
-                <li><a href="D20_scrum.html">Scrum y desarrollo ágil</a></li>
-                <li><a href="D21_arquitectura_software.html">Arquitectura de software</a></li>
-                <li><a href="D24_seguridad_web.html">Seguridad web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Clean Code: principios para escribir código legible y mantenible</h1>
+
+<section>
+<h2>¿Qué es Clean Code?</h2>
+<p>
+El concepto de Clean Code o código limpio, popularizado por Robert C. Martin, se refiere a un estilo de desarrollo de software enfocado en producir código fácil de leer, comprender y modificar por cualquier miembro del equipo. En la industria del software, se pasa mucho más tiempo leyendo código existente que escribiendo código nuevo.
+</p>
+<p>
+Un código limpio no solo cumple con los requisitos funcionales actuales, sino que expresa claramente la intención del programador y minimiza la deuda técnica a medida que el proyecto evoluciona.
+</p>
+</section>
+
+<section>
+<h2>Nombres significativos y expresivos</h2>
+<p>
+Elegir nombres claros para variables, funciones, clases y archivos es una de las prácticas más efectivas para mejorar la legibilidad. Un buen identificador debe revelar por sí mismo qué representa o qué acción realiza sin necesidad de leer toda su implementación.
+</p>
+<p>
+Se recomienda evitar abreviaturas crípticas, utilizar sustantivos para clases y objetos, emplear verbos descriptivos para funciones y mantener un vocabulario consistente en todo el dominio de la aplicación.
+</p>
+</section>
+
+<section>
+<h2>Funciones pequeñas y responsabilidad única</h2>
+<p>
+Las funciones deben ser concisas, tener pocos parámetros y dedicarse a realizar una única tarea bien definida. Cuando una función crece demasiado y mezcla validaciones, transformaciones de datos y llamadas a bases de datos, resulta difícil de probar y propensa a errores.
+</p>
+<p>
+Aplicar el principio de responsabilidad única y evitar efectos secundarios ocultos permite construir bloques de lógica predecibles que pueden reutilizarse y combinarse fácilmente.
+</p>
+</section>
+
+<section>
+<h2>Comentarios efectivos y formato consistente</h2>
+<p>
+El código bien escrito debe ser lo suficientemente expresivo como para documentarse a sí mismo. Los comentarios excesivos suelen volverse obsoletos cuando cambia el código y generan ruido visual; deben reservarse para explicar el porqué de una decisión compleja, advertir sobre consecuencias importantes o documentar APIs públicas.
+</p>
+<p>
+Asimismo, mantener un formato uniforme mediante herramientas automáticas como Prettier y linters como ESLint elimina discusiones estilísticas y asegura coherencia visual en todo el repositorio.
+</p>
+</section>
+
+<section>
+<h2>Refactorización continua y principios DRY y KISS</h2>
+<p>
+Principios clásicos como DRY (No te repitas) ayudan a evitar la duplicación de lógica que obliga a corregir el mismo error en múltiples lugares, mientras que KISS (Mantenlo simple) previene la sobreingeniería innecesaria.
+</p>
+<p>
+La refactorización constante consiste en mejorar la estructura interna del código sin alterar su comportamiento externo, aplicando la regla de dejar cada archivo un poco más limpio de lo que se encontró.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D04_javascript.html">JavaScript: programación en el navegador</a></li>
+<li><a href="D08_angular.html">Angular</a></li>
+<li><a href="D14_git.html">Git: control de versiones distribuido</a></li>
+<li><a href="D19_testing.html">Testing de software</a></li>
+<li><a href="D21_arquitectura_software.html">Arquitectura de Software</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

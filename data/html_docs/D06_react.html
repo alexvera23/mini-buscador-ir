@@ -2,48 +2,75 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>React y desarrollo de interfaces</title>
+    <title>React: desarrollo de interfaces basadas en componentes</title>
     <meta name="doc-id" content="D06">
     <meta name="category" content="frontend">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>React y desarrollo de interfaces</h1>
-        </header>
-        <section>
-            <h2>Introducción a React</h2>
-            <p>
-                React es una biblioteca de JavaScript para construir interfaces de usuario
-                interactivas basadas en componentes. Permite dividir la interfaz en piezas
-                independientes y reutilizables.
-            </p>
-        </section>
-        <section>
-            <h2>Componentes y estado</h2>
-            <p>
-                Los componentes manejan su propio estado y propiedades. React utiliza un
-                Virtual DOM para optimizar las actualizaciones de la interfaz, mejorando
-                el rendimiento en aplicaciones complejas.
-            </p>
-        </section>
-        <section>
-            <h2>Integración con el ecosistema</h2>
-            <p>
-                React se integra con herramientas de enrutamiento y gestores de estado.
-                A menudo se conecta con un backend a través de APIs para consumir datos.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D05_dom_eventos.html">DOM y eventos en JavaScript</a></li>
-                <li><a href="D07_vue.html">Vue.js: framework frontend</a></li>
-                <li><a href="D08_angular.html">Angular y aplicaciones web</a></li>
-                <li><a href="D09_arquitectura_frontend.html">Arquitectura frontend</a></li>
-                <li><a href="D10_backend.html">Backend: lógica y servidores</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>React: desarrollo de interfaces basadas en componentes</h1>
+
+<section>
+<h2>¿Qué es React?</h2>
+<p>
+React es una biblioteca de JavaScript de código abierto desarrollada originalmente por Meta para construir interfaces de usuario interactivas y dinámicas. A diferencia de los frameworks monolíticos tradicionales, React se enfoca específicamente en la capa de vista de las aplicaciones web, permitiendo a los desarrolladores diseñar vistas simples para cada estado de la aplicación y actualizar de manera eficiente únicamente los componentes necesarios cuando cambian los datos.
+</p>
+<p>
+Su enfoque declarativo facilita la lectura, el mantenimiento y la depuración del código, ya que el desarrollador describe cómo debe lucir la interfaz en un momento determinado en lugar de manipular manualmente cada nodo del árbol del documento ante cada interacción del usuario.
+</p>
+</section>
+
+<section>
+<h2>Componentes y JSX</h2>
+<p>
+La arquitectura fundamental de React se basa en componentes reutilizables e independientes que encapsulan su propia estructura, lógica y estilos. Actualmente, el estándar de la industria es utilizar componentes funcionales que reciben datos externos a través de propiedades conocidas como props y devuelven elementos visuales.
+</p>
+<p>
+Para definir la estructura de estos componentes, React emplea JSX, una extensión de sintaxis para JavaScript que permite escribir etiquetas similares a HTML directamente dentro del código JavaScript. JSX facilita la integración de expresiones lógicas, renderizado condicional y listas dinámicas de elementos de forma intuitiva y expresiva.
+</p>
+</section>
+
+<section>
+<h2>Estado y Hooks esenciales</h2>
+<p>
+El estado interno representa los datos dinámicos que cambian a lo largo del ciclo de vida de un componente, como el texto ingresado en un formulario, el estado de carga de una petición o los elementos agregados a un carrito de compras. Para gestionar estas capacidades en componentes funcionales, React introdujo los Hooks.
+</p>
+<p>
+Hooks fundamentales como useState permiten declarar y actualizar variables de estado locales, mientras que useEffect permite sincronizar componentes con sistemas externos, ejecutar llamadas a APIs, suscribirse a eventos o limpiar recursos. Otros hooks como useContext, useMemo y useRef resuelven necesidades avanzadas de compartición de datos y optimización del rendimiento.
+</p>
+</section>
+
+<section>
+<h2>Virtual DOM y reconciliación</h2>
+<p>
+Manipular directamente el DOM real del navegador suele ser una operación costosa en términos de rendimiento cuando ocurren actualizaciones frecuentes. Para resolver este desafío, React mantiene una representación ligera en memoria llamada Virtual DOM.
+</p>
+<p>
+Cada vez que cambia el estado o las propiedades de un componente, React crea un nuevo árbol virtual, lo compara con la versión anterior mediante un algoritmo de diferenciación llamado reconciliación y calcula el conjunto mínimo de cambios reales que deben aplicarse al navegador, logrando transiciones fluidas.
+</p>
+</section>
+
+<section>
+<h2>Ecosistema y enrutamiento</h2>
+<p>
+Al ser una biblioteca centrada en la interfaz, React se complementa con un amplio ecosistema de herramientas para construir aplicaciones completas de una sola página o aplicaciones renderizadas en el servidor. Bibliotecas como React Router gestionan la navegación entre vistas sin recargar la página completa.
+</p>
+<p>
+Además, frameworks completos construidos sobre React, como Next.js o Remix, añaden renderizado híbrido, generación de sitios estáticos, optimización de imágenes y rutas de servidor, consolidando a React como una de las tecnologías líderes en el desarrollo web moderno.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D04_javascript.html">JavaScript: programación en el navegador</a></li>
+<li><a href="D05_dom_eventos.html">DOM y eventos</a></li>
+<li><a href="D07_vue.html">Vue.js</a></li>
+<li><a href="D08_angular.html">Angular</a></li>
+<li><a href="D09_arquitectura_frontend.html">Arquitectura Frontend</a></li>
+<li><a href="D11_apis_rest.html">APIs REST</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

@@ -2,37 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bases de datos relacionales</title>
+    <title>Bases de datos: persistencia relacional y NoSQL</title>
     <meta name="doc-id" content="D12">
     <meta name="category" content="backend">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Bases de datos relacionales</h1>
-        </header>
-        <section>
-            <h2>Almacenamiento estructurado</h2>
-            <p>
-                Las bases de datos relacionales organizan la información en tablas
-                con filas y columnas, utilizando SQL para consultas y manipulación de datos.
-            </p>
-        </section>
-        <section>
-            <h2>Integración con el backend</h2>
-            <p>
-                El backend se conecta a estas bases de datos para persistir la información.
-                Es común utilizar ORMs para mapear objetos del código a las tablas.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D10_backend.html">Backend</a></li>
-                <li><a href="D11_apis_rest.html">APIs REST</a></li>
-                <li><a href="D13_nodejs.html">Node.js</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Bases de datos: persistencia relacional y NoSQL</h1>
+
+<section>
+<h2>Persistencia de datos en aplicaciones web</h2>
+<p>
+Las bases de datos constituyen el componente encargado de almacenar, organizar y recuperar de manera permanente la información generada por una aplicación web. Sin una capa de persistencia fiable, los perfiles de usuario, pedidos, registros financieros y configuraciones desaparecerían al reiniciar el servidor.
+</p>
+<p>
+Los sistemas gestores de bases de datos ofrecen mecanismos optimizados para realizar consultas rápidas, controlar el acceso concurrente de miles de usuarios simultáneos y realizar copias de seguridad ante fallos de hardware.
+</p>
+</section>
+
+<section>
+<h2>Bases de datos relacionales (SQL)</h2>
+<p>
+Las bases de datos relacionales organizan la información en tablas estructuradas compuestas por filas y columnas con esquemas estrictamente definidos. Cada tabla representa una entidad y se vincula con otras mediante llaves primarias y llaves foráneas, evitando la duplicación innecesaria de datos mediante procesos de normalización.
+</p>
+<p>
+Motores como PostgreSQL, MySQL y MariaDB utilizan el lenguaje estándar SQL para realizar consultas complejas y garantizan las propiedades ACID: atomicidad, consistencia, aislamiento y durabilidad, fundamentales para transacciones críticas.
+</p>
+</section>
+
+<section>
+<h2>Bases de datos no relacionales (NoSQL)</h2>
+<p>
+Las bases de datos NoSQL surgieron para atender escenarios donde los esquemas rígidos o el escalado horizontal masivo presentan desafíos. En lugar de tablas tradicionales, emplean modelos flexibles como documentos tipo JSON en MongoDB, pares clave-valor en Redis, familias de columnas en Cassandra o grafos en Neo4j.
+</p>
+<p>
+Este enfoque agiliza el desarrollo cuando la estructura de los datos evoluciona constantemente y resulta especialmente eficiente para cachés en memoria, análisis de eventos en tiempo real y catálogos heterogéneos.
+</p>
+</section>
+
+<section>
+<h2>Modelado, índices y optimización de consultas</h2>
+<p>
+Un diseño cuidadoso del esquema de datos determina en gran medida el rendimiento futuro de la aplicación. Definir relaciones claras, elegir tipos de datos adecuados y aplicar restricciones de integridad protege la calidad de la información desde la base.
+</p>
+<p>
+Asimismo, la creación de índices sobre columnas frecuentemente consultadas acelera drásticamente las búsquedas al evitar recorridos completos de las tablas, aunque requiere un equilibrio cuidadoso ya que un exceso de índices puede ralentizar las operaciones de escritura.
+</p>
+</section>
+
+<section>
+<h2>ORM y acceso seguro desde el backend</h2>
+<p>
+Para interactuar con la base de datos desde el código del servidor, los desarrolladores suelen emplear herramientas ORM como Prisma, Sequelize, TypeORM o SQLAlchemy. Estas bibliotecas mapean tablas relacionales a objetos del lenguaje de programación, facilitando consultas expresivas y migraciones controladas del esquema.
+</p>
+<p>
+Igualmente crucial es utilizar consultas parametrizadas o sentencias preparadas para prevenir vulnerabilidades de inyección SQL y proteger la confidencialidad de los registros almacenados.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D10_backend.html">Desarrollo Backend</a></li>
+<li><a href="D11_apis_rest.html">APIs REST</a></li>
+<li><a href="D13_nodejs.html">Node.js</a></li>
+<li><a href="D21_arquitectura_software.html">Arquitectura de Software</a></li>
+<li><a href="D24_seguridad_web.html">Seguridad web</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

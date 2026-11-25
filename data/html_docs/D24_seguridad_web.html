@@ -2,40 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Seguridad web</title>
+    <title>Seguridad web: protección de aplicaciones y datos</title>
     <meta name="doc-id" content="D24">
-    <meta name="category" content="deployment">
+    <meta name="category" content="seguridad">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Seguridad web</h1>
-        </header>
-        <section>
-            <h2>Protección de aplicaciones</h2>
-            <p>
-                La seguridad web abarca prácticas para proteger aplicaciones y datos
-                contra accesos no autorizados. Incluye la validación de entradas y
-                la protección contra ataques como XSS o inyección SQL.
-            </p>
-        </section>
-        <section>
-            <h2>Infraestructura y APIs</h2>
-            <p>
-                Asegurar las APIs REST mediante autenticación robusta es fundamental.
-                El despliegue debe realizarse sobre HTTPS y siguiendo principios de
-                código seguro (Clean Code) para minimizar riesgos.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D01_intro_desarrollo_web.html">Introducción al desarrollo web</a></li>
-                <li><a href="D11_apis_rest.html">APIs REST</a></li>
-                <li><a href="D18_clean_code.html">Clean Code</a></li>
-                <li><a href="D23_despliegue.html">Despliegue de aplicaciones web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Seguridad web: protección de aplicaciones y datos</h1>
+
+<section>
+<h2>Importancia de la seguridad en aplicaciones web</h2>
+<p>
+Las aplicaciones web están expuestas continuamente a internet, lo que las convierte en objetivos frecuentes de ataques automatizados y actores maliciosos. La seguridad web comprende las prácticas, protocolos y controles técnicos diseñados para proteger la confidencialidad, integridad y disponibilidad de los sistemas y de los datos de los usuarios.
+</p>
+<p>
+Incorporar la seguridad desde las primeras etapas del diseño resulta mucho más efectivo y económico que intentar corregir brechas después de sufrir un incidente.
+</p>
+</section>
+
+<section>
+<h2>Vulnerabilidades críticas y OWASP Top 10</h2>
+<p>
+La fundación OWASP publica periódicamente el listado OWASP Top 10, que reúne los riesgos de seguridad más críticos en aplicaciones web. Entre las amenazas más habituales destacan la inyección de código, los fallos en el control de acceso, las configuraciones incorrectas de seguridad y la exposición de datos sensibles.
+</p>
+<p>
+Comprender cómo operan estos vectores de ataque permite a los desarrolladores implementar defensas preventivas en cada capa de la arquitectura.
+</p>
+</section>
+
+<section>
+<h2>Prevención de XSS, CSRF e Inyección SQL</h2>
+<p>
+El ataque Cross-Site Scripting o XSS ocurre cuando una aplicación permite inyectar scripts maliciosos que se ejecutan en el navegador de otros usuarios para robar sesiones. Se previene validando y sanitizando todas las entradas del usuario y escapando las salidas en el HTML.
+</p>
+<p>
+Por su parte, Cross-Site Request Forgery o CSRF engaña al navegador autenticado para ejecutar acciones no deseadas, mitigándose mediante tokens anti-CSRF y cookies con el atributo SameSite. Asimismo, la inyección SQL se neutraliza empleando exclusivamente consultas parametrizadas.
+</p>
+</section>
+
+<section>
+<h2>Cifrado, contraseñas y encabezados de seguridad</h2>
+<p>
+Toda comunicación entre cliente y servidor debe viajar cifrada mediante HTTPS con protocolos TLS actualizados. En cuanto al almacenamiento de contraseñas, nunca deben guardarse en texto plano ni con algoritmos rápidos obsoletos; deben procesarse mediante funciones criptográficas lentas con sal aleatoria como bcrypt o Argon2.
+</p>
+<p>
+En el servidor, configurar encabezados HTTP de seguridad como Content-Security-Policy (CSP), Strict-Transport-Security (HSTS) y X-Frame-Options añade capas adicionales de protección en el navegador.
+</p>
+</section>
+
+<section>
+<h2>Control de acceso y gestión de dependencias</h2>
+<p>
+Aplicar el principio de mínimo privilegio asegura que cada usuario y servicio posea únicamente los permisos estrictamente necesarios para cumplir su función, verificando la autorización en el servidor en cada petición.
+</p>
+<p>
+Finalmente, dado que las aplicaciones modernas dependen de cientos de paquetes de terceros, es esencial auditar periódicamente las dependencias con herramientas como npm audit o Dependabot para aplicar parches ante vulnerabilidades conocidas.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D10_backend.html">Desarrollo Backend</a></li>
+<li><a href="D11_apis_rest.html">APIs REST</a></li>
+<li><a href="D12_bases_datos.html">Bases de datos</a></li>
+<li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
+<li><a href="D23_despliegue.html">Despliegue en producción</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

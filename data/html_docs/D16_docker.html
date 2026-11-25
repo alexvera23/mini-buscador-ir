@@ -2,40 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Docker y contenedores</title>
+    <title>Docker: contenedores y portabilidad de aplicaciones</title>
     <meta name="doc-id" content="D16">
-    <meta name="category" content="herramientas">
+    <meta name="category" content="infraestructura">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Docker y contenedores</h1>
-        </header>
-        <section>
-            <h2>Empaquetado de aplicaciones</h2>
-            <p>
-                Docker permite empaquetar una aplicación y sus dependencias en un contenedor
-                ligero y portátil. Garantiza que la aplicación funcione igual en cualquier entorno.
-            </p>
-        </section>
-        <section>
-            <h2>Entornos y despliegue</h2>
-            <p>
-                Los contenedores simplifican la configuración de entornos de desarrollo
-                y son la base para el despliegue moderno en la nube y en pipelines de CI/CD.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D10_backend.html">Backend</a></li>
-                <li><a href="D13_nodejs.html">Node.js</a></li>
-                <li><a href="D14_git.html">Git</a></li>
-                <li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
-                <li><a href="D22_cicd.html">CI/CD</a></li>
-                <li><a href="D23_despliegue.html">Despliegue de aplicaciones web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Docker: contenedores y portabilidad de aplicaciones</h1>
+
+<section>
+<h2>¿Qué es Docker y qué problema resuelve?</h2>
+<p>
+Docker es una plataforma de código abierto que permite empaquetar, distribuir y ejecutar aplicaciones dentro de unidades estandarizadas llamadas contenedores. Resuelve uno de los problemas más frecuentes del desarrollo de software: la discrepancia entre el entorno local del programador y los servidores de producción.
+</p>
+<p>
+Al incluir dentro del contenedor el código de la aplicación junto con su entorno de ejecución, bibliotecas y dependencias exactas, Docker garantiza que el software funcione de manera idéntica sin importar en qué sistema operativo o infraestructura se ejecute.
+</p>
+</section>
+
+<section>
+<h2>Contenedores frente a máquinas virtuales</h2>
+<p>
+A diferencia de las máquinas virtuales tradicionales, que emulan hardware completo y requieren instalar un sistema operativo invitado independiente para cada aplicación, los contenedores de Docker comparten directamente el núcleo o kernel del sistema operativo anfitrión.
+</p>
+<p>
+Esta arquitectura hace que los contenedores sean considerablemente más ligeros, consuman mucha menos memoria RAM y espacio en disco, y puedan iniciarse o detenerse en cuestión de milisegundos en lugar de minutos.
+</p>
+</section>
+
+<section>
+<h2>Imágenes, Dockerfile y registros</h2>
+<p>
+El funcionamiento de Docker se basa en dos conceptos fundamentales: las imágenes y los contenedores. Una imagen es una plantilla inmutable de solo lectura que contiene las instrucciones y archivos necesarios para crear una aplicación, mientras que un contenedor es una instancia en ejecución de dicha imagen.
+</p>
+<p>
+Las imágenes personalizadas se definen mediante un archivo de texto llamado Dockerfile, donde se especifican pasos como la imagen base, la copia del código, la instalación de paquetes y el comando de arranque. Estas imágenes pueden almacenarse y compartirse en registros como Docker Hub.
+</p>
+</section>
+
+<section>
+<h2>Persistencia con volúmenes y redes</h2>
+<p>
+Por diseño, los datos creados dentro de un contenedor son efímeros y desaparecen cuando este se elimina. Para almacenar información permanente como los archivos de una base de datos, Docker proporciona volúmenes que vinculan directorios gestionados del anfitrión con rutas internas del contenedor.
+</p>
+<p>
+Asimismo, Docker crea redes virtuales aisladas que permiten que múltiples contenedores se comuniquen entre sí mediante sus nombres de servicio sin exponer puertos innecesarios hacia internet.
+</p>
+</section>
+
+<section>
+<h2>Orquestación básica con Docker Compose</h2>
+<p>
+Las aplicaciones web modernas raramente consisten en un único proceso; suelen combinar un servidor frontend, una API backend, una base de datos y un servicio de caché. Docker Compose permite definir y gestionar todo este ecosistema multicontenedor en un único archivo declarativo llamado docker-compose.yml.
+</p>
+<p>
+Con un solo comando, cualquier desarrollador puede levantar toda la infraestructura completa de un proyecto en su máquina local de forma reproducible.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D10_backend.html">Desarrollo Backend</a></li>
+<li><a href="D13_nodejs.html">Node.js</a></li>
+<li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
+<li><a href="D22_cicd.html">Integración y entrega continua (CI/CD)</a></li>
+<li><a href="D23_despliegue.html">Despliegue en producción</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

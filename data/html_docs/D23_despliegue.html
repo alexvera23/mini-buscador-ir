@@ -2,38 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Despliegue de aplicaciones web</title>
+    <title>Despliegue web: servidores, nube y puesta en producción</title>
     <meta name="doc-id" content="D23">
-    <meta name="category" content="deployment">
+    <meta name="category" content="devops">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Despliegue de aplicaciones web</h1>
-        </header>
-        <section>
-            <h2>Puesta en producción</h2>
-            <p>
-                El despliegue es el proceso de poner una aplicación web a disposición de los usuarios.
-                Implica configurar servidores, plataformas cloud o contenedores.
-            </p>
-        </section>
-        <section>
-            <h2>Entornos y seguridad</h2>
-            <p>
-                Se deben gestionar múltiples entornos (desarrollo, staging, producción).
-                El despliegue seguro requiere configurar HTTPS, variables de entorno y
-                asegurar la infraestructura.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D16_docker.html">Docker</a></li>
-                <li><a href="D22_cicd.html">CI/CD</a></li>
-                <li><a href="D24_seguridad_web.html">Seguridad web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Despliegue web: servidores, nube y puesta en producción</h1>
+
+<section>
+<h2>¿Qué implica desplegar una aplicación web?</h2>
+<p>
+El despliegue o deployment es el conjunto de procesos mediante los cuales una aplicación web pasa de ejecutarse en el equipo local del desarrollador a estar disponible públicamente en internet para los usuarios finales. Involucra configurar servidores, redes, dominios, certificados de seguridad y sistemas de almacenamiento.
+</p>
+<p>
+Un despliegue profesional busca garantizar que la aplicación sea accesible con baja latencia, soporte picos de tráfico y pueda actualizarse sin interrumpir el servicio activo.
+</p>
+</section>
+
+<section>
+<h2>Modelos de alojamiento: VPS, PaaS y Serverless</h2>
+<p>
+Existen distintas alternativas de infraestructura según el nivel de control deseado. Los Servidores Privados Virtuales o VPS en proveedores como AWS EC2 o DigitalOcean ofrecen control total sobre el sistema operativo Linux, exigiendo que el equipo gestione actualizaciones y seguridad.
+</p>
+<p>
+Las Plataformas como Servicio o PaaS, como Render, Heroku, Vercel o Netlify, abstraen la administración del servidor permitiendo desplegar directamente desde un repositorio Git. Por otro lado, la arquitectura Serverless ejecuta funciones bajo demanda escalando automáticamente a cero cuando no hay peticiones.
+</p>
+</section>
+
+<section>
+<h2>Servidores web, proxy inverso y DNS</h2>
+<p>
+Para conectar un nombre de dominio legible con la dirección IP del servidor donde reside la aplicación, se configuran registros en el Sistema de Nombres de Dominio o DNS. Una vez que el tráfico llega al servidor, suele ser recibido por un servidor web como Nginx o Caddy.
+</p>
+<p>
+Nginx actúa habitualmente como proxy inverso: recibe las peticiones externas en los puertos estándar, sirve directamente archivos estáticos con alta velocidad, gestiona el cifrado HTTPS y redirige las solicitudes dinámicas hacia los procesos internos del backend.
+</p>
+</section>
+
+<section>
+<h2>Certificados SSL/TLS y redes CDN</h2>
+<p>
+Habilitar HTTPS mediante certificados digitales SSL/TLS es indispensable para cifrar la comunicación entre el navegador y el servidor, proteger credenciales y evitar advertencias de seguridad en los navegadores modernos. Servicios como Let's Encrypt permiten emitir y renovar estos certificados de forma gratuita y automatizada.
+</p>
+<p>
+Adicionalmente, integrar una Red de Entrega de Contenidos o CDN distribuye copias de imágenes, hojas de estilo y scripts en servidores perimetrales alrededor del mundo, reduciendo drásticamente los tiempos de carga.
+</p>
+</section>
+
+<section>
+<h2>Monitoreo, registros y copias de seguridad</h2>
+<p>
+El trabajo de despliegue no termina al publicar la aplicación. Es fundamental implementar sistemas de observabilidad que recolecten registros de errores, métricas de consumo de CPU y memoria, y alertas automáticas ante caídas del servicio.
+</p>
+<p>
+Finalmente, automatizar respaldos periódicos de las bases de datos y verificar su correcta restauración protege la continuidad del negocio ante cualquier incidente.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D16_docker.html">Docker y contenedores</a></li>
+<li><a href="D17_entornos.html">Entornos de desarrollo</a></li>
+<li><a href="D21_arquitectura_software.html">Arquitectura de Software</a></li>
+<li><a href="D22_cicd.html">Integración y entrega continua (CI/CD)</a></li>
+<li><a href="D24_seguridad_web.html">Seguridad web</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>

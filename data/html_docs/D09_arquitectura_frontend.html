@@ -2,39 +2,74 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Arquitectura frontend</title>
+    <title>Arquitectura Frontend: patrones, estado y rendimiento</title>
     <meta name="doc-id" content="D09">
     <meta name="category" content="frontend">
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Arquitectura frontend</h1>
-        </header>
-        <section>
-            <h2>Diseño de aplicaciones del lado del cliente</h2>
-            <p>
-                La arquitectura frontend define cómo se estructuran los componentes,
-                el estado y las rutas en una aplicación. Un buen diseño facilita el mantenimiento.
-            </p>
-        </section>
-        <section>
-            <h2>Patrones y organización</h2>
-            <p>
-                Patrones como Flux, Redux o la arquitectura basada en componentes ayudan
-                a gestionar la complejidad. La separación de responsabilidades es clave
-                para conectar con la arquitectura de software general.
-            </p>
-        </section>
-        <nav>
-            <h2>Documentos relacionados</h2>
-            <ul>
-                <li><a href="D06_react.html">React</a></li>
-                <li><a href="D07_vue.html">Vue.js</a></li>
-                <li><a href="D08_angular.html">Angular</a></li>
-                <li><a href="D21_arquitectura_software.html">Arquitectura de software web</a></li>
-            </ul>
-        </nav>
-    </article>
+<article>
+<h1>Arquitectura Frontend: patrones, estado y rendimiento</h1>
+
+<section>
+<h2>¿Qué es la arquitectura frontend?</h2>
+<p>
+La arquitectura frontend comprende el conjunto de decisiones técnicas, patrones de diseño, estructura de carpetas y herramientas que definen cómo se construye, escala y mantiene la capa cliente de una aplicación web. A medida que las interfaces han asumido mayor lógica de negocio, diseñar una arquitectura sólida se ha vuelto indispensable.
+</p>
+<p>
+Una buena arquitectura busca reducir el acoplamiento entre módulos, facilitar las pruebas automatizadas, permitir que múltiples desarrolladores trabajen en paralelo sin conflictos y garantizar una experiencia de usuario rápida y consistente.
+</p>
+</section>
+
+<section>
+<h2>Estrategias de renderizado web</h2>
+<p>
+Existen diversas formas de generar y entregar el contenido al navegador. En el renderizado del lado del cliente (CSR), el navegador descarga un archivo HTML mínimo y ejecuta JavaScript para construir toda la interfaz dinámicamente, ideal para paneles interactivos privados.
+</p>
+<p>
+Por el contrario, el renderizado del lado del servidor (SSR) genera el HTML completo en cada solicitud, mejorando el tiempo de primera pintura y el posicionamiento SEO. Finalmente, la generación de sitios estáticos (SSG) precompila las páginas durante el despliegue para servirlas desde redes CDN con latencia mínima.
+</p>
+</section>
+
+<section>
+<h2>Gestión del estado en aplicaciones complejas</h2>
+<p>
+Conforme crece una aplicación, compartir datos entre componentes distantes se vuelve complejo. La arquitectura frontend distingue entre el estado local de la interfaz, el estado global de la aplicación y el estado asíncrono proveniente del servidor.
+</p>
+<p>
+Patrones como el flujo de datos unidireccional evitan modificaciones impredecibles, mientras que herramientas especializadas para caché y sincronización de datos remotos reducen la duplicación de peticiones de red y mantienen la interfaz sincronizada con el backend.
+</p>
+</section>
+
+<section>
+<h2>Modularización y diseño por capas</h2>
+<p>
+Organizar el código por características de negocio en lugar de hacerlo únicamente por tipo de archivo mejora la cohesión y facilita localizar cada funcionalidad. Separar la capa de presentación visual de los servicios de acceso a datos y de las reglas de dominio evita dependencias circulares.
+</p>
+<p>
+En organizaciones grandes, enfoques como los Microfrontends permiten dividir una aplicación monolítica en fragmentos independientes que distintos equipos pueden desarrollar, probar y desplegar de manera autónoma.
+</p>
+</section>
+
+<section>
+<h2>Optimización del rendimiento y Core Web Vitals</h2>
+<p>
+El rendimiento frontend impacta directamente en la retención de usuarios y la accesibilidad. Técnicas como la división de código o code splitting, la carga diferida de imágenes y componentes, la compresión de activos y el almacenamiento en caché permiten disminuir el peso inicial descargado por el navegador.
+</p>
+<p>
+Medir métricas clave como el tiempo de carga del contenido principal, la capacidad de respuesta ante interacciones y la estabilidad visual asegura que la arquitectura cumpla con los estándares modernos de calidad web.
+</p>
+</section>
+
+<nav>
+<h2>Documentos relacionados</h2>
+<ul>
+<li><a href="D01_intro_desarrollo_web.html">Introducción al desarrollo web</a></li>
+<li><a href="D06_react.html">React</a></li>
+<li><a href="D07_vue.html">Vue.js</a></li>
+<li><a href="D08_angular.html">Angular</a></li>
+<li><a href="D21_arquitectura_software.html">Arquitectura de Software</a></li>
+</ul>
+</nav>
+</article>
 </body>
 </html>
