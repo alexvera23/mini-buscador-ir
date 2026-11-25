@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a la evolución de la World Wide Web</title>
+    <meta name="description" content="Panorama general de la evolución de la World Wide Web, desde los documentos estáticos iniciales hasta las arquitecturas modernas de aplicaciones web.">
+    <meta name="keywords" content="World Wide Web, historia web, fundamentos web, arquitectura cliente-servidor, navegador">
+    <meta name="document-id" content="D001">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D001">
+    <header>
+        <h1>Introducción a la evolución de la World Wide Web</h1>
+    </header>
+
+    <section>
+        <h2>Qué es la World Wide Web y por qué transformó el software</h2>
+        <p>
+            La World Wide Web nació a finales del siglo XX como un sistema distribuido de documentos enlazados mediante hipertexto, accesible a través de Internet. A diferencia de las aplicaciones de escritorio tradicionales, que exigían compilación específica para cada sistema operativo e instalación local previa, la web propuso un modelo universal basado en un cliente ligero denominado navegador y servidores remotos capaces de entregar recursos bajo demanda.
+        </p>
+        <p>
+            Comprender esta trayectoria histórica resulta indispensable para cualquier estudiante o profesional del desarrollo web. Muchas decisiones actuales —desde la separación entre estructura, presentación y comportamiento hasta los modelos híbridos de renderizado— no surgieron en el vacío, sino como respuestas técnicas a limitaciones concretas de cada etapa. Este documento ofrece una visión panorámica del recorrido completo, sin profundizar en la sintaxis particular de frameworks modernos ni en detalles de bajo nivel de enrutamiento de red.
+        </p>
+    </section>
+
+    <section>
+        <h2>Los cimientos: de las redes académicas a los primeros sitios</h2>
+        <p>
+            Antes de que existiera la web, ya operaban redes de computadoras conmutadas por paquetes. El paso <a href="D002_arpanet_origenes_internet.html">de ARPANET a la creación de la World Wide Web</a> en el CERN combinó el transporte confiable de datos con la idea de hipertexto: documentos capaces de referenciar otros documentos ubicados en máquinas distintas mediante identificadores uniformes.
+        </p>
+        <p>
+            Sobre esa base surgió <a href="D003_web_1_0_sitios_estaticos.html">la era de la Web 1.0 y los sitios estáticos</a>, caracterizada por archivos almacenados directamente en el sistema de archivos del servidor y entregados tal cual al navegador. La comunicación dependía de una arquitectura cliente-servidor sencilla: el usuario solicitaba una dirección, el servidor devolvía un documento y el navegador lo interpretaba visualmente. Aunque limitada en interactividad, esta etapa demostró la potencia de los estándares abiertos frente a plataformas cerradas.
+        </p>
+    </section>
+
+    <section>
+        <h2>La tríada tecnológica y los protocolos fundamentales</h2>
+        <p>
+            El funcionamiento cotidiano de la web se apoya en tres tecnologías complementarias en el cliente y un conjunto de protocolos de transporte en la red. En primer lugar, la estructura semántica recae en <a href="../03_html/D021_html_semantico_estructura_documentos.html">HTML semántico y estructura fundamental de documentos</a>, que define encabezados, párrafos, formularios y enlaces. En segundo lugar, la apariencia visual y la adaptación a distintas pantallas corresponden a los <a href="../04_css/D031_css_selectores_cascada_especificidad.html">fundamentos de CSS, selectores, cascada y especificidad</a>.
+        </p>
+        <p>
+            En tercer lugar, la programación dinámica en el navegador se articula mediante los <a href="../05_javascript/D041_javascript_fundamentos_lenguaje.html">fundamentos de JavaScript moderno</a>, permitiendo responder a eventos del usuario y modificar el documento sin recargar la página completa. Todo este intercambio viaja sobre la <a href="../02_protocolos/D011_arquitectura_internet_protocolos.html">arquitectura de Internet y la pila de protocolos TCP/IP</a>, junto con HTTP, HTTPS y el sistema de nombres de dominio.
+        </p>
+    </section>
+
+    <section>
+        <h2>Estandarización, interactividad y la Web 2.0</h2>
+        <p>
+            El rápido crecimiento comercial de la web durante la década de 1990 provocó una intensa competencia entre fabricantes de navegadores que añadían etiquetas y comportamientos incompatibles entre sí. La <a href="D004_guerra_navegadores_estandares.html">guerra de los navegadores y el nacimiento de los estándares W3C</a> evidenció que, sin especificaciones compartidas, los desarrolladores debían mantener versiones distintas de un mismo sitio.
+        </p>
+        <p>
+            Superada parcialmente esa fragmentación, la web evolucionó hacia aplicaciones interactivas. Con <a href="D005_web_2_0_ajax_contenido_dinamico.html">Web 2.0 y el uso de AJAX para contenido dinámico</a>, los navegadores comenzaron a solicitar fragmentos de datos en segundo plano y actualizar solo partes de la interfaz. Este cambio transformó sitios meramente informativos en plataformas colaborativas, editores en línea, mapas interactivos y clientes de correo ejecutados dentro del navegador.
+        </p>
+    </section>
+
+    <section>
+        <h2>De la web de documentos a las aplicaciones modernas</h2>
+        <p>
+            A medida que las aplicaciones web crecieron en complejidad, también lo hicieron las exigencias sobre organización del código y rendimiento. En el lado del cliente, la necesidad de mantener interfaces coherentes impulsó la <a href="../../02_frontend/04_componentes/D081_arquitectura_componentes_frontend.html">arquitectura de componentes, flujo de datos y renderizado en el frontend</a>. En el lado del servidor, la lógica dejó de limitarse a servir archivos planos para dar paso a los <a href="../../03_backend/05_servidores/D141_arquitectura_servidores_logica_negocio.html">fundamentos de servidores backend y estructuración de la lógica de negocio</a>.
+        </p>
+        <p>
+            Esta evolución dio lugar a diversas <a href="../../06_arquitectura/05_arquitectura_web/D291_arquitectura_fullstack_integracion_cliente_servidor.html">topologías de integración entre frontend y backend</a>: desde aplicaciones multipágina generadas en servidor hasta aplicaciones de una sola página (SPA) conectadas a APIs independientes, y más recientemente modelos híbridos con renderizado en servidor e hidratación selectiva.
+        </p>
+        <p>
+            En la actualidad, <a href="D010_tendencias_web_moderna_edge.html">la web moderna con computación en el borde, islas y WebAssembly</a> combina la ubicuidad del navegador con capacidades de ejecución cercanas al software nativo, manteniendo intacto el principio original de accesibilidad universal mediante un enlace.
+        </p>
+    </section>
+
+    <section>
+        <h2>Resumen de etapas evolutivas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Etapa</th>
+                    <th>Modelo predominante</th>
+                    <th>Capacidad principal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Web 1.0</td>
+                    <td>Documentos HTML estáticos</td>
+                    <td>Publicación y lectura de hipertexto</td>
+                </tr>
+                <tr>
+                    <td>Web 2.0</td>
+                    <td>AJAX y contenido dinámico</td>
+                    <td>Interactividad asíncrona y plataformas sociales</td>
+                </tr>
+                <tr>
+                    <td>Web móvil y SPA</td>
+                    <td>Diseño responsivo y APIs JSON</td>
+                    <td>Aplicaciones ricas en cliente multidispositivo</td>
+                </tr>
+                <tr>
+                    <td>Web contemporánea</td>
+                    <td>SSR híbrido, Edge y WebAssembly</td>
+                    <td>Rendimiento cercano al nativo y baja latencia</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>Documento guía de la categoría Fundamentos de la web (C01) y de la subcategoría Historia y evolución de la web (C01.1).</p>
+    </footer>
+</article>
+</body>
+</html>

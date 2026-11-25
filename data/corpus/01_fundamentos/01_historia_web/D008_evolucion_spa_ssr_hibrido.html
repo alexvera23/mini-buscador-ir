@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolución desde páginas multipágina hasta SPA, SSR e hidratación</title>
+    <meta name="description" content="Recorrido histórico de los modelos de renderizado web: MPA clásico, Single Page Applications, Server-Side Rendering e hidratación.">
+    <meta name="keywords" content="MPA, SPA, SSR, hidratación, renderizado web, historia frontend">
+    <meta name="document-id" content="D008">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D008">
+    <header>
+        <h1>Evolución desde páginas multipágina hasta SPA, SSR e hidratación</h1>
+    </header>
+
+    <section>
+        <h2>Dónde se construye la interfaz de una aplicación web</h2>
+        <p>
+            A lo largo de la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>, una de las preguntas arquitectónicas más recurrentes ha sido dónde debe ensamblarse el HTML que ve el usuario: en el servidor antes de enviarlo por la red, o en el navegador mediante JavaScript. Tras <a href="D007_web_movil_diseno_adaptativo.html">el impacto de la web móvil y la transición al diseño adaptativo</a>, esta discusión se volvió crítica para equilibrar fluidez interactiva y tiempo de carga inicial.
+        </p>
+        <p>
+            Este documento traza la evolución conceptual de estos modelos sin enseñar la API interna de React, Vue o Angular.
+        </p>
+    </section>
+
+    <section>
+        <h2>MPA: el modelo multipágina clásico en servidor</h2>
+        <p>
+            En una <strong>Multi-Page Application (MPA)</strong> tradicional, cada navegación solicita una ruta distinta al servidor. El backend consulta la base de datos, rellena una plantilla HTML y devuelve el documento completo. Su ventaja principal es la simplicidad operativa y la entrega inmediata de contenido indexable por buscadores, aunque cada cambio de vista reinicia el contexto de la página.
+        </p>
+    </section>
+
+    <section>
+        <h2>El auge de las Single Page Applications (SPA)</h2>
+        <p>
+            Con el crecimiento de aplicaciones complejas en la década de 2010 surgieron las <strong>Single Page Applications (SPA)</strong>. En este modelo, el servidor entrega un archivo HTML casi vacío acompañado de un paquete JavaScript. El navegador descarga el código, ejecuta la aplicación, consulta APIs JSON y dibuja dinámicamente toda la interfaz modificando el DOM, interceptando enlaces mediante History API para navegar sin recargas.
+        </p>
+        <p>
+            Las SPA ofrecieron transiciones instantáneas entre vistas, pero introdujeron dos inconvenientes: una pantalla en blanco inicial mientras se descargaba y ejecutaba JavaScript pesado, y dificultades para rastreadores web que no ejecutaban scripts.
+        </p>
+    </section>
+
+    <section>
+        <h2>SSR e hidratación: combinando servidor y cliente</h2>
+        <p>
+            Para recuperar la velocidad de primer pintado y el posicionamiento SEO sin perder interactividad rica, la industria adoptó el <strong>Server-Side Rendering (SSR)</strong> moderno. El servidor ejecuta los componentes de la interfaz para generar el HTML inicial con datos reales y lo envía al navegador, permitiendo que el usuario vea el contenido de inmediato.
+        </p>
+        <p>
+            Posteriormente ocurre la <strong>hidratación</strong>: el navegador descarga el JavaScript asociado y adjunta los manejadores de eventos sobre el DOM ya existente, convirtiendo la página estática en una aplicación interactiva. Ejemplos concretos de este mecanismo incluyen el <a href="../../02_frontend/03_angular/D079_angular_ssr_hidratacion_universal.html">renderizado en servidor e hidratación no destructiva en Angular</a>.
+        </p>
+        <p>
+            La evaluación sistemática de estos enfoques se amplía en la <a href="../../02_frontend/04_componentes/D085_estrategias_renderizado_csr_ssr_ssg_isr.html">comparativa de estrategias de renderizado CSR, SSR, SSG e ISR</a> y en técnicas más recientes como la <a href="../../02_frontend/04_componentes/D086_hidratacion_parcial_arquitectura_islas.html">hidratación progresiva, selectiva y arquitectura de islas</a>. Todo este ecosistema evoluciona apoyado en especificaciones mantenidas por los <a href="D009_organismos_estandarizacion_web.html">organismos de estandarización W3C, WHATWG, IETF y TC39</a>.
+        </p>
+        <h3>Criterios prácticos para elegir modelo de renderizado</h3>
+        <p>
+            Ningún modelo es superior en todos los escenarios; la elección depende del tipo de aplicación:
+        </p>
+        <ul>
+            <li><strong>MPA o generación estática:</strong> Ideal para documentación, blogs y sitios editoriales donde el contenido cambia con poca frecuencia y la indexación es prioritaria.</li>
+            <li><strong>SPA pura (CSR):</strong> Adecuada para paneles administrativos internos o herramientas privadas tras inicio de sesión, donde el SEO no importa y prima la interactividad continua.</li>
+            <li><strong>SSR e hidratación híbrida:</strong> Recomendable para comercios electrónicos, portales públicos y aplicaciones que exigen tanto carga inicial rápida como transiciones fluidas en cliente.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

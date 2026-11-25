@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organismos de estandarización: W3C, WHATWG, IETF y TC39</title>
+    <meta name="description" content="Documento de referencia sobre el rol, alcance y procesos de especificación de W3C, WHATWG, IETF y TC39 en la web.">
+    <meta name="keywords" content="W3C, WHATWG, IETF, TC39, estándares web, RFC, ECMAScript">
+    <meta name="document-id" content="D009">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D009">
+    <header>
+        <h1>Organismos de estandarización: W3C, WHATWG, IETF y TC39</h1>
+    </header>
+
+    <section>
+        <h2>Por qué la web depende de comités abiertos</h2>
+        <p>
+            A diferencia de plataformas controladas por una sola empresa, la web funciona gracias a especificaciones públicas acordadas entre fabricantes de navegadores, proveedores de infraestructura, academia y comunidad. Como se observa en la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>, la interoperabilidad actual existe porque ninguna compañía puede alterar unilateralmente el funcionamiento de HTML, HTTP o JavaScript.
+        </p>
+        <p>
+            Este documento de referencia describe las responsabilidades de los cuatro organismos principales que gobiernan la plataforma web. No cubre la historia comercial de empresas tecnológicas individuales.
+        </p>
+    </section>
+
+    <section>
+        <h2>W3C (World Wide Web Consortium)</h2>
+        <p>
+            Fundado en 1994 por Tim Berners-Lee, el <strong>W3C</strong> desarrolla recomendaciones técnicas para tecnologías de la capa de presentación y accesibilidad. Sus grupos de trabajo mantienen especificaciones clave como CSS, SVG, WCAG (pautas de accesibilidad) y WAI-ARIA. Su proceso formal avanza desde borradores de trabajo hasta recomendaciones oficiales tras demostrar implementaciones interoperables.
+        </p>
+    </section>
+
+    <section>
+        <h2>WHATWG (Web Hypertext Application Technology Working Group)</h2>
+        <p>
+            Formado en 2004 por ingenieros de Apple, Mozilla y Opera ante la lentitud percibida en la evolución de HTML4 hacia XHTML2, el <strong>WHATWG</strong> mantiene el <em>HTML Living Standard</em>, el estándar del DOM, Fetch y Streams. En lugar de publicar versiones cerradas numeradas, adopta un modelo de especificación viva actualizada continuamente. Desde 2019, W3C y WHATWG acordaron colaborar sobre un único estándar HTML y DOM mantenido por WHATWG, base de las <a href="../03_html/D022_etiquetas_estructurales_html5.html">etiquetas estructurales HTML5</a> y de capacidades como los <a href="../../02_frontend/04_componentes/D087_web_components_nativos_estandares.html">Web Components nativos</a>.
+        </p>
+    </section>
+
+    <section>
+        <h2>IETF (Internet Engineering Task Force)</h2>
+        <p>
+            El <strong>IETF</strong> es una comunidad internacional abierta encargada de los estándares de red y protocolos de transporte e Internet. Publica sus especificaciones mediante documentos denominados <strong>RFC (Request for Comments)</strong>. Bajo su órbita se definen TCP/IP, DNS, HTTP/1.1, HTTP/2, HTTP/3, TLS, WebSocket y formatos como JSON y URI.
+        </p>
+    </section>
+
+    <section>
+        <h2>TC39 (Ecma International Technical Committee 39)</h2>
+        <p>
+            El comité <strong>TC39</strong> de Ecma International estandariza el lenguaje ECMAScript, base de JavaScript. Sus propuestas avanzan por cuatro etapas de madurez (desde la etapa 0 de idea hasta la etapa 4 de inclusión definitiva en el estándar anual), exigiendo pruebas de conformidad en <em>Test262</em> e implementaciones reales antes de aprobarse.
+        </p>
+        <p>
+            La coordinación entre estos organismos permite que arquitecturas complejas —desde la <a href="D008_evolucion_spa_ssr_hibrido.html">evolución hacia SPA, SSR e hidratación</a> hasta la organización de equipos mediante <a href="../../02_frontend/04_componentes/D090_microfrontends_composicion_equipos.html">microfrontends</a> y <a href="D010_tendencias_web_moderna_edge.html">las tendencias de la web moderna</a>— se apoyen en contratos estables a largo plazo.
+        </p>
+        <h3>Mapa rápido de responsabilidades</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Organismo</th>
+                    <th>Ámbito principal</th>
+                    <th>Ejemplos de especificaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>W3C</td>
+                    <td>Presentación, gráficos y accesibilidad</td>
+                    <td>CSS, SVG, WCAG, WAI-ARIA</td>
+                </tr>
+                <tr>
+                    <td>WHATWG</td>
+                    <td>Documento y plataforma de navegador</td>
+                    <td>HTML Living Standard, DOM, Fetch</td>
+                </tr>
+                <tr>
+                    <td>IETF</td>
+                    <td>Protocolos de red e intercambio</td>
+                    <td>HTTP/2, HTTP/3, TLS, URI, JSON</td>
+                </tr>
+                <tr>
+                    <td>TC39</td>
+                    <td>Lenguaje de programación cliente/servidor</td>
+                    <td>ECMAScript (ES6+)</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>Documento de referencia — Subcategoría C01.1.</p>
+    </footer>
+</article>
+</body>
+</html>

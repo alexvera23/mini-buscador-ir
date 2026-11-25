@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La web moderna: computación en el borde, islas y WebAssembly</title>
+    <meta name="description" content="Estado contemporáneo de la plataforma web: edge computing, arquitectura de islas, streaming HTML, WebAssembly y PWAs.">
+    <meta name="keywords" content="web moderna, edge computing, arquitectura de islas, WebAssembly, PWA, streaming HTML">
+    <meta name="document-id" content="D010">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D010">
+    <header>
+        <h1>La web moderna: computación en el borde, islas y WebAssembly</h1>
+    </header>
+
+    <section>
+        <h2>Convergencia de rendimiento, distribución y capacidades nativas</h2>
+        <p>
+            Al cerrar el recorrido iniciado en la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a> y respaldado por los <a href="D009_organismos_estandarizacion_web.html">organismos de estandarización W3C, WHATWG, IETF y TC39</a>, la plataforma web contemporánea busca resolver una tensión histórica: ofrecer la inmediatez de los documentos estáticos junto con la potencia de las aplicaciones nativas. Este artículo explora las tendencias arquitectónicas actuales sin implementar código en proveedores cloud específicos.
+        </p>
+    </section>
+
+    <section>
+        <h2>Computación en el borde (Edge Computing) y Streaming HTML</h2>
+        <p>
+            Tradicionalmente, un servidor de origen único procesaba las peticiones desde una región geográfica fija, añadiendo latencia de red para usuarios lejanos. La <strong>computación en el borde</strong> despliega lógica ligera en nodos distribuidos globalmente cerca del usuario final, reduciendo el tiempo de respuesta inicial.
+        </p>
+        <p>
+            Combinado con <em>streaming HTML</em>, el servidor puede enviar inmediatamente la cabecera y estructura principal de la página mientras resuelve consultas lentas en paralelo y transmite los fragmentos restantes conforme quedan listos, mejorando la percepción de velocidad y la experiencia de usuario regida por las <a href="../../02_frontend/05_ux_ui/D092_heuristicas_usabilidad_nielsen_web.html">heurísticas de usabilidad y leyes cognitivas</a>.
+        </p>
+    </section>
+
+    <section>
+        <h2>Arquitectura de islas e hidratación selectiva</h2>
+        <p>
+            Para evitar enviar cientos de kilobytes de JavaScript en páginas mayoritariamente informativas, la <a href="../../02_frontend/04_componentes/D086_hidratacion_parcial_arquitectura_islas.html">arquitectura de islas e hidratación selectiva</a> propone tratar el documento como HTML estático por defecto, hidratando únicamente componentes interactivos aislados —como un buscador, un carrusel o un carrito— bajo demanda o cuando entran en el área visible.
+        </p>
+    </section>
+
+    <section>
+        <h2>WebAssembly y aplicaciones instalables</h2>
+        <p>
+            En el plano computacional, <a href="../../10_ecosistema/02_webassembly/D461_webassembly_wasm_capacidades_navegador.html">WebAssembly (Wasm) expande las capacidades nativas en el navegador</a> al permitir que código compilado desde Rust, C++ o Go se ejecute a velocidad casi nativa dentro del mismo entorno seguro que JavaScript, habilitando editores multimedia, motores 3D y procesamiento científico en la web.
+        </p>
+        <p>
+            Paralelamente, las <a href="../../10_ecosistema/03_pwa/D471_pwa_progressive_web_apps_arquitectura.html">Progressive Web Apps (PWA)</a> dotan a los sitios web de funcionamiento sin conexión, caché programable mediante Service Workers e instalación directa en dispositivos móviles y de escritorio, consolidando a la web como la plataforma de distribución de software más universal existente.
+        </p>
+        <h3>Equilibrio entre innovación y simplicidad</h3>
+        <p>
+            Aunque estas capacidades amplían enormemente lo que puede construirse en un navegador, la ingeniería web moderna enfatiza no introducir complejidad innecesaria. Elegir computación en el borde, islas o WebAssembly debe responder a cuellos de botella medibles en latencia, tamaño de paquete o cómputo intensivo, manteniendo la accesibilidad y la semántica como base irrenunciable de cualquier proyecto.
+        </p>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La era de la Web 1.0 y los sitios estáticos</title>
+    <meta name="description" content="Características técnicas de la Web 1.0: páginas HTML estáticas servidas desde disco, maquetación con tablas y primeros formularios CGI.">
+    <meta name="keywords" content="Web 1.0, sitios estáticos, CGI, HTML inicial, servidores HTTP, historia web">
+    <meta name="document-id" content="D003">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D003">
+    <header>
+        <h1>La era de la Web 1.0 y los sitios estáticos</h1>
+    </header>
+
+    <section>
+        <h2>Un modelo centrado en la lectura</h2>
+        <p>
+            Tras la liberación pública de los estándares nacidos <a href="D002_arpanet_origenes_internet.html">de ARPANET a la creación de la World Wide Web</a>, la primera generación de sitios comerciales, académicos y personales —conocida retrospectivamente como Web 1.0— se consolidó entre 1993 y principios de la década de 2000. Su rasgo definitorio era la unidireccionalidad: unos pocos autores publicaban documentos en servidores y la mayoría de los usuarios se limitaba a leerlos.
+        </p>
+        <p>
+            Dentro del panorama descrito en la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>, esta etapa representa la web como biblioteca digital distribuida. Aquí no se aborda el renderizado en cliente con JavaScript moderno, sino la arquitectura elemental de archivos planos y sus primeras extensiones dinámicas en servidor.
+        </p>
+    </section>
+
+    <section>
+        <h2>Servidores de archivos y protocolo sin estado</h2>
+        <p>
+            En un sitio estático clásico, cada URL correspondía directamente a un archivo físico alojado en el disco del servidor, como <code>index.html</code> o <code>contacto.html</code>. Cuando el navegador enviaba una petición HTTP GET, el servidor web (como NCSA HTTPd o las primeras versiones de Apache) leía el archivo del sistema de ficheros y lo devolvía sin modificarlo.
+        </p>
+        <p>
+            Este enfoque ofrecía ventajas notables de simplicidad, velocidad y seguridad básica: no había bases de datos que consultar ni código ejecutándose por cada visita. Sin embargo, mantener sitios grandes resultaba costoso, pues cambiar un menú de navegación obligaba a editar manualmente decenas de archivos HTML o recurrir a herramientas de generación local antes de subirlos por FTP. Además, la organización de los textos dependía de una correcta <a href="../03_html/D023_jerarquia_encabezados_texto_enlaces.html">jerarquía de encabezados, texto estructurado e hipervínculos</a> para facilitar la lectura.
+        </p>
+    </section>
+
+    <section>
+        <h2>Maquetación con tablas y marcado presentacional</h2>
+        <p>
+            Durante los primeros años de la Web 1.0, CSS aún no existía o contaba con soporte muy desigual. Para lograr diseños con barras laterales, cabeceras y columnas, los desarrolladores recurrieron masivamente a elementos <code>&lt;table&gt;</code> anidados, imágenes transparentes de un píxel como espaciadores y etiquetas presentacionales como <code>&lt;font&gt;</code> o <code>&lt;center&gt;</code>.
+        </p>
+        <p>
+            Esa práctica mezclaba contenido y apariencia visual dentro del mismo archivo, dificultando la accesibilidad para lectores de pantalla y el mantenimiento del código. Con el tiempo, la maduración de <a href="../03_html/D021_html_semantico_estructura_documentos.html">HTML semántico y la separación estructural</a> corrigió esta tendencia, devolviendo a las tablas su propósito exclusivo para datos tabulares.
+        </p>
+    </section>
+
+    <section>
+        <h2>Primeros pasos dinámicos: CGI y formularios</h2>
+        <p>
+            Aunque predominaba el contenido estático, pronto surgió la necesidad de procesar búsquedas, libros de visitas y formularios de contacto. La solución estándar temprana fue <strong>CGI (Common Gateway Interface)</strong>, una especificación que permitía al servidor web ejecutar un programa externo —escrito habitualmente en Perl o C— por cada petición recibida y devolver su salida estándar como una página HTML generada al vuelo.
+        </p>
+        <pre><code>#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+print "&lt;html&gt;&lt;body&gt;&lt;h1&gt;Respuesta generada por CGI&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;";</code></pre>
+        <p>
+            El principal cuello de botella de CGI residía en que cada solicitud lanzaba un nuevo proceso del sistema operativo, consumiendo memoria y tiempo de CPU bajo tráfico elevado. Para recoger los datos enviados por el usuario antes de procesarlos en CGI, los sitios dependían de los primeros <a href="../03_html/D024_formularios_html_validacion_nativa.html">formularios HTML y controles de entrada</a>. Esa limitación de rendimiento motivó el nacimiento de módulos integrados en servidor como <code>mod_perl</code>, PHP y posteriormente arquitecturas persistentes en memoria.
+        </p>
+        <h3>Patrones característicos de la Web 1.0</h3>
+        <ul>
+            <li><strong>Páginas de bienvenida (splash pages):</strong> Portadas introductorias con gráficos pesados antes de acceder al contenido real.</li>
+            <li><strong>Contadores de visitas y libros de firmas:</strong> Primeros componentes dinámicos generados mediante scripts CGI compartidos.</li>
+            <li><strong>Marcos (framesets):</strong> División de la ventana del navegador en múltiples documentos HTML independientes, lo que rompía el historial de navegación y los marcadores.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Limitaciones y transición hacia la competencia entre navegadores</h2>
+        <p>
+            Las conexiones telefónicas lentas (dial-up) imponían restricciones severas sobre el peso de imágenes y documentos. Cada interacción con un formulario exigía recargar la página completa desde el servidor, generando esperas perceptibles. Paralelamente, la aparición de navegadores gráficos populares como Mosaic y Netscape abrió una etapa de rápida innovación desordenada conocida como <a href="D004_guerra_navegadores_estandares.html">la guerra de los navegadores y el nacimiento de los estándares W3C</a>.
+        </p>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

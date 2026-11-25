@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 2.0, AJAX y el auge de las aplicaciones interactivas</title>
+    <meta name="description" content="Transición hacia la Web 2.0, funcionamiento de XMLHttpRequest (AJAX) para actualizaciones parciales y nacimiento de aplicaciones web interactivas.">
+    <meta name="keywords" content="Web 2.0, AJAX, XMLHttpRequest, interactividad, aplicaciones web, asincronía">
+    <meta name="document-id" content="D005">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D005">
+    <header>
+        <h1>Web 2.0, AJAX y el auge de las aplicaciones interactivas</h1>
+    </header>
+
+    <section>
+        <h2>Del sitio de solo lectura a la plataforma participativa</h2>
+        <p>
+            A mediados de la década de 2000, tras superar la etapa crítica de <a href="D004_guerra_navegadores_estandares.html">la guerra de los navegadores y el nacimiento de los estándares W3C</a>, la web experimentó un cambio cultural y técnico conocido como <strong>Web 2.0</strong>. El usuario dejó de ser únicamente consumidor de páginas estáticas para convertirse en creador de contenido en blogs, wikis, redes sociales y herramientas colaborativas.
+        </p>
+        <p>
+            Dentro del recorrido de la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>, este punto marca el nacimiento de la web como plataforma de aplicaciones. Este documento explica el mecanismo técnico que lo hizo posible —AJAX con <code>XMLHttpRequest</code>— sin cubrir la API moderna <code>fetch</code> ni frameworks SPA actuales.
+        </p>
+    </section>
+
+    <section>
+        <h2>El problema de la recarga completa de página</h2>
+        <p>
+            En el modelo clásico de la web, cada acción relevante —enviar un comentario, aplicar un filtro o validar un nombre de usuario— enviaba un formulario HTTP tradicional y obligaba al servidor a devolver un documento HTML completo. El navegador destruía la vista actual, descargaba nuevamente estilos y scripts, y volvía a dibujar toda la pantalla, produciendo parpadeos y pérdida de contexto visual.
+        </p>
+        <p>
+            Para aplicaciones como clientes de correo o mapas interactivos, este ciclo sincrónico resultaba inaceptable frente a la fluidez del software de escritorio.
+        </p>
+    </section>
+
+    <section>
+        <h2>AJAX y XMLHttpRequest en funcionamiento</h2>
+        <p>
+            En 2005, Jesse James Garrett acuñó el término <strong>AJAX</strong> (<em>Asynchronous JavaScript and XML</em>) para describir un conjunto de técnicas ya existentes que permitían comunicarse con el servidor en segundo plano. El motor central era el objeto <code>XMLHttpRequest</code>, introducido originalmente por Microsoft para Outlook Web Access y adoptado luego por el resto de navegadores.
+        </p>
+        <p>
+            Con <code>XMLHttpRequest</code>, JavaScript podía iniciar una petición HTTP asíncrona, continuar respondiendo a clics o desplazamientos del usuario mientras llegaba la respuesta y, al completarse, actualizar únicamente los nodos necesarios del DOM. El ejemplo clásico ilustra el patrón basado en eventos de estado:
+        </p>
+        <pre><code>const xhr = new XMLHttpRequest();
+xhr.open("GET", "/api/sugerencias?q=web", true);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 &amp;&amp; xhr.status === 200) {
+        console.log("Datos recibidos:", xhr.responseText);
+    }
+};
+xhr.send();</code></pre>
+        <p>
+            Aunque inicialmente se utilizaban callbacks anidados propensos a complejidad, este modelo impulsó la comprensión profunda del <a href="../05_javascript/D044_event_loop_asincronia_promesas.html">Event Loop, la pila de llamadas y la asincronía en JavaScript</a>, que años después evolucionaría hacia Promesas y <code>async/await</code>.
+        </p>
+    </section>
+
+    <section>
+        <h2>Separación entre datos y presentación</h2>
+        <p>
+            Al solicitar únicamente datos en lugar de páginas HTML completas, el rol del servidor comenzó a transformarse. En lugar de ensamblar exclusivamente vistas visuales, los servidores empezaron a exponer endpoints dedicados a entregar información estructurada, sentando las bases del <a href="../../03_backend/04_apis/D131_diseno_apis_web_principios_contratos.html">diseño de APIs web y contratos cliente-servidor</a>.
+        </p>
+        <p>
+            Aunque la "X" de AJAX hacía referencia a XML, en la práctica la industria adoptó rápidamente un formato más ligero y nativo para JavaScript, proceso analizado en la <a href="D006_transicion_xml_a_json.html">transición de XML y SOAP hacia JSON en el intercambio de datos</a>. Aplicaciones emblemáticas como Google Maps y Gmail demostraron en 2004–2005 que un navegador estándar podía ofrecer experiencias altamente responsivas sin complementos propietarios como Flash o applets Java.
+        </p>
+        <h3>Desafíos introducidos por la interactividad asíncrona</h3>
+        <p>
+            El paso hacia aplicaciones dinámicas trajo consigo nuevos retos técnicos que no existían en la Web 1.0:
+        </p>
+        <ul>
+            <li><strong>Gestión del historial del navegador:</strong> Al actualizar la pantalla sin cambiar de URL, el botón de retroceso dejaba de funcionar como el usuario esperaba, obligando inicialmente a usar fragmentos con almohadilla (<code>#!</code>).</li>
+            <li><strong>Accesibilidad en regiones dinámicas:</strong> Los lectores de pantalla no detectaban automáticamente qué parte del documento había cambiado tras una petición AJAX, motivando el desarrollo de regiones vivas (<code>aria-live</code>).</li>
+            <li><strong>Manejo de estados intermedios:</strong> Los desarrolladores debieron diseñar indicadores de carga, reintentos ante fallos de red y prevención de condiciones de carrera cuando múltiples peticiones respondían fuera de orden.</li>
+        </ul>
+        <p>
+            Resolver estas fricciones sentó las bases de las bibliotecas y frameworks modernos de interfaz de usuario.
+        </p>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

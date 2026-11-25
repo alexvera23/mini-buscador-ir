@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De ARPANET a la creación de la World Wide Web</title>
+    <meta name="description" content="Transición desde las redes conmutadas por paquetes de ARPANET hasta la propuesta de hipertexto de Tim Berners-Lee en el CERN.">
+    <meta name="keywords" content="ARPANET, CERN, Tim Berners-Lee, hipertexto, conmutación de paquetes, historia de Internet">
+    <meta name="document-id" content="D002">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D002">
+    <header>
+        <h1>De ARPANET a la creación de la World Wide Web</h1>
+    </header>
+
+    <section>
+        <h2>Internet y la Web no son sinónimos</h2>
+        <p>
+            En el uso cotidiano suelen confundirse Internet y la World Wide Web, pero técnicamente representan capas distintas. Internet es la infraestructura global de redes interconectadas que transporta paquetes de datos entre computadoras, mientras que la Web es un sistema de información construido encima de esa infraestructura. Entender esta diferencia aclara cómo surgió el entorno descrito en la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>.
+        </p>
+        <p>
+            Este artículo analiza el tránsito histórico desde las primeras redes académicas hasta la propuesta formal de hipertexto en el CERN. No aborda la configuración de enrutadores modernos ni la programación de sockets, temas propios de la administración de redes.
+        </p>
+    </section>
+
+    <section>
+        <h2>ARPANET y la conmutación de paquetes</h2>
+        <p>
+            A finales de la década de 1960, la Agencia de Proyectos de Investigación Avanzada (ARPA) de Estados Unidos impulsó ARPANET con el objetivo de conectar centros universitarios y de investigación para compartir recursos de cómputo. Su innovación decisiva fue la <strong>conmutación de paquetes</strong>: en lugar de reservar un circuito físico exclusivo como en la telefonía tradicional, la información se dividía en bloques pequeños que viajaban por rutas independientes y se reensamblaban en el destino.
+        </p>
+        <p>
+            Este diseño aportó tolerancia a fallos y aprovechamiento eficiente de los enlaces. Durante la década de 1970, Vint Cerf y Bob Kahn desarrollaron la <a href="../02_protocolos/D011_arquitectura_internet_protocolos.html">arquitectura de Internet y la pila de protocolos TCP/IP</a>, que permitió interconectar redes heterogéneas bajo un idioma común. En 1983, ARPANET adoptó oficialmente TCP/IP, sentando las bases técnicas de la Internet moderna.
+        </p>
+    </section>
+
+    <section>
+        <h2>El problema de la información en el CERN y el hipertexto</h2>
+        <p>
+            A finales de los años ochenta, el CERN (Organización Europea para la Investigación Nuclear) reunía a miles de investigadores de distintos países que utilizaban sistemas operativos, formatos de archivo y redes incompatibles. La documentación técnica, los resultados experimentales y los directorios de personal quedaban dispersos en máquinas aisladas, dificultando su consulta.
+        </p>
+        <p>
+            En marzo de 1989, Tim Berners-Lee presentó la propuesta <em>Information Management: A Proposal</em>. Su planteamiento retomaba la idea de <strong>hipertexto</strong> —acuñada previamente por Ted Nelson— para enlazar documentos de forma no lineal mediante referencias cruzadas, pero llevándola a escala distribuida sobre Internet. A diferencia de sistemas anteriores de hipertexto cerrados en una sola computadora, cualquier documento debía poder apuntar a otro alojado en un servidor distinto.
+        </p>
+    </section>
+
+    <section>
+        <h2>Los tres pilares técnicos iniciales</h2>
+        <p>
+            Entre 1990 y 1991, Berners-Lee y Robert Cailliau materializaron la propuesta mediante tres piezas mínimas y abiertas:
+        </p>
+        <ul>
+            <li><strong>URI / URL:</strong> Un esquema de direccionamiento único para localizar recursos en la red sin depender de la ubicación física del usuario.</li>
+            <li><strong>HTTP:</strong> Un protocolo de aplicación simple, sin estado, basado en peticiones y respuestas de texto para solicitar y entregar documentos.</li>
+            <li><strong>HTML:</strong> Un lenguaje de marcado ligero, derivado de SGML, capaz de estructurar títulos, párrafos y enlaces hipertextuales.</li>
+        </ul>
+        <p>
+            Sobre una estación NeXT, Berners-Lee escribió el primer servidor web (<em>CERN httpd</em>) y el primer navegador-editor gráfico, llamado inicialmente <em>WorldWideWeb</em>. Poco después, el CERN liberó el código al dominio público en 1993, decisión crucial que impidió que la tecnología quedara atrapada bajo licencias propietarias y permitió la rápida aparición de <a href="D003_web_1_0_sitios_estaticos.html">la era de la Web 1.0 y los sitios estáticos</a>.
+        </p>
+    </section>
+
+    <section>
+        <h2>De la publicación estática a las interfaces modernas</h2>
+        <p>
+            Aunque aquellos primeros documentos carecían de estilos complejos o lógica interactiva en el cliente, establecieron la separación entre identificación de recursos, protocolo de transporte y formato de representación. Décadas más tarde, esa misma base seguiría sosteniendo tecnologías aparentemente lejanas, como el ciclo de sincronización de <a href="../../02_frontend/01_react/D052_react_hooks_usestate_useeffect.html">hooks esenciales en React</a>, las pruebas aisladas de <a href="../../02_frontend/02_vue/D070_vue_testing_vitest_test_utils.html">componentes Vue con Vitest</a> o la definición declarativa de <a href="../../02_frontend/03_angular/D072_angular_componentes_standalone_plantillas.html">componentes standalone en Angular</a>. Todas ellas operan dentro de navegadores que continúan resolviendo URLs mediante HTTP para renderizar árboles HTML.
+        </p>
+        <h3>Diferencias clave respecto a sistemas de hipertexto previos</h3>
+        <p>
+            Antes del CERN ya existían proyectos como Xanadu de Ted Nelson o HyperCard de Apple, pero presentaban limitaciones estructurales que impidieron su adopción global:
+        </p>
+        <ul>
+            <li><strong>Centralización frente a distribución:</strong> Los sistemas previos exigían repositorios locales o servidores únicos con enlaces bidireccionales estrictos, mientras que la Web toleraba enlaces unidireccionales y eventuales errores 404.</li>
+            <li><strong>Independencia de plataforma:</strong> Al apoyarse en texto plano ASCII sobre TCP/IP, cualquier computadora con un cliente mínimo podía participar sin hardware propietario.</li>
+            <li><strong>Extensibilidad gradual:</strong> La separación entre el protocolo de transferencia y el lenguaje de marcado permitió incorporar imágenes, formularios y scripts sin rediseñar la infraestructura de red subyacente.</li>
+        </ul>
+        <p>
+            Esta tolerancia a fallos parciales y la ausencia de una autoridad central de aprobación explican por qué la Web escaló exponencialmente sobre la red académica heredada de ARPANET hasta convertirse en el medio universal de distribución de software e información.
+        </p>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

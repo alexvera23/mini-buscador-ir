@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La guerra de los navegadores y el nacimiento de los estándares W3C</title>
+    <meta name="description" content="Competencia entre Netscape Navigator e Internet Explorer, fragmentación propietaria de la web y papel del W3C en la unificación de estándares.">
+    <meta name="keywords" content="guerra de los navegadores, Netscape, Internet Explorer, W3C, estándares web, compatibilidad">
+    <meta name="document-id" content="D004">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D004">
+    <header>
+        <h1>La guerra de los navegadores y el nacimiento de los estándares W3C</h1>
+    </header>
+
+    <section>
+        <h2>De la cooperación académica a la competencia comercial</h2>
+        <p>
+            Durante <a href="D003_web_1_0_sitios_estaticos.html">la era de la Web 1.0 y los sitios estáticos</a>, Mosaic demostró que una interfaz gráfica sencilla podía popularizar la web más allá del ámbito científico. En 1994, parte de su equipo fundó Netscape Communications y lanzó Netscape Navigator, que rápidamente alcanzó una cuota dominante del mercado. Poco después, Microsoft respondió integrando Internet Explorer en el sistema operativo Windows, iniciando la llamada primera guerra de los navegadores (1995–2001).
+        </p>
+        <p>
+            Este episodio ocupa un lugar central en la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a> porque definió el problema de la compatibilidad entre clientes. Este artículo no detalla las APIs modernas de los navegadores actuales, sino las causas y consecuencias de aquella fragmentación.
+        </p>
+    </section>
+
+    <section>
+        <h2>Extensiones propietarias y fragmentación del código</h2>
+        <p>
+            Para diferenciarse comercialmente, tanto Netscape como Microsoft introdujeron etiquetas HTML, modelos de objetos y comportamientos exclusivos sin consenso previo. Netscape popularizó <code>&lt;blink&gt;</code>, marcos (<em>frames</em>) y creó LiveScript —renombrado rápidamente a JavaScript— en 1995. Microsoft respondió con <code>&lt;marquee&gt;</code>, JScript, VBScript y controles ActiveX.
+        </p>
+        <p>
+            La consecuencia directa para los desarrolladores fue la proliferación de sitios con insignias de <em>"Mejor visto en Netscape"</em> o <em>"Optimizado para Internet Explorer"</em>. A menudo era necesario escribir dos versiones distintas de la lógica de manipulación de página o recurrir a detección frágil de cadenas <code>User-Agent</code>, un problema de compatibilidad que guarda paralelismos con las <a href="../../03_backend/04_apis/D134_versionado_evolucion_compatibilidad_apis.html">estrategias de versionado y evolución retrocompatible de APIs</a>.
+        </p>
+    </section>
+
+    <section>
+        <h2>El papel del W3C y el movimiento por los estándares</h2>
+        <p>
+            Ante el riesgo de que la web se dividiera en ecosistemas cerrados incompatibles, Tim Berners-Lee fundó en octubre de 1994 el <strong>World Wide Web Consortium (W3C)</strong> en el MIT, con respaldo del CERN y otras instituciones. Su misión consistía en redactar especificaciones abiertas y neutrales para HTML, HTTP y estilos visuales.
+        </p>
+        <p>
+            Uno de los hitos más importantes fue la publicación de CSS1 en 1996, que sentó las bases de los <a href="../04_css/D031_css_selectores_cascada_especificidad.html">fundamentos de CSS, selectores, cascada y especificidad</a>. Sin embargo, las implementaciones iniciales diferían en aspectos críticos como el cálculo del modelo de caja (<em>box model</em>) entre Internet Explorer 5 y el estándar W3C, obligando a los diseñadores a emplear trucos de sintaxis (<em>CSS hacks</em>) durante años.
+        </p>
+    </section>
+
+    <section>
+        <h2>Estándares abiertos frente a plataformas cerradas</h2>
+        <p>
+            A partir de 1998, iniciativas como el <em>Web Standards Project</em> presionaron a los fabricantes para adoptar fielmente las recomendaciones del W3C y de ECMA (donde se estandarizó ECMAScript). La apertura del código de Netscape dio origen al proyecto Mozilla y posteriormente a Firefox, reavivando la competencia técnica basada en cumplimiento de estándares, seguridad y velocidad de ejecución.
+        </p>
+        <p>
+            El legado de aquella etapa sigue vigente en la arquitectura actual: las capacidades modernas de extensibilidad en el navegador, como los <a href="../../02_frontend/04_componentes/D087_web_components_nativos_estandares.html">Web Components nativos, Custom Elements y Shadow DOM</a>, se diseñan mediante procesos públicos de especificación para garantizar interoperabilidad entre motores antes de su adopción masiva.
+        </p>
+        <p>
+            Con la estabilización progresiva de los estándares DOM y CSS, la industria estuvo lista para dar el siguiente salto cualitativo: <a href="D005_web_2_0_ajax_contenido_dinamico.html">la Web 2.0, AJAX y el auge de las aplicaciones interactivas</a>.
+        </p>
+        <h3>Lecciones técnicas heredadas de la fragmentación</h3>
+        <p>
+            La guerra de los navegadores dejó enseñanzas duraderas para la ingeniería web moderna:
+        </p>
+        <ul>
+            <li><strong>Detección de características frente a detección de navegador:</strong> En lugar de preguntar qué navegador usa el visitante mediante la cabecera <code>User-Agent</code>, las buenas prácticas actuales verifican si una API concreta existe en tiempo de ejecución.</li>
+            <li><strong>Degradación elegante y mejora progresiva:</strong> Construir una base funcional en HTML accesible que luego se enriquece con CSS y JavaScript si el cliente lo soporta.</li>
+            <li><strong>Pruebas cruzadas entre motores:</strong> Validar aplicaciones en distintos motores de renderizado (Blink, Gecko, WebKit) evita depender de comportamientos no estandarizados de un único fabricante.</li>
+        </ul>
+        <p>
+            Estas prácticas evitaron que la web regresara a un ecosistema cerrado y permitieron que nuevos dispositivos, desde teléfonos hasta televisores, accedieran al mismo contenido sin reescrituras completas.
+        </p>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

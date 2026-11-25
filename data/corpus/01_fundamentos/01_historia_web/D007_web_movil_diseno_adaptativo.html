@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El impacto de la web móvil y la transición al diseño adaptativo</title>
+    <meta name="description" content="Cómo la masificación de teléfonos inteligentes transformó la web mediante viewports móviles, diseño fluido y estrategias mobile-first.">
+    <meta name="keywords" content="web móvil, mobile-first, diseño adaptativo, viewport, historia web">
+    <meta name="document-id" content="D007">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D007">
+    <header>
+        <h1>El impacto de la web móvil y la transición al diseño adaptativo</h1>
+    </header>
+
+    <section>
+        <h2>El fin del escritorio como único dispositivo objetivo</h2>
+        <p>
+            Durante más de quince años tras el inicio descrito en la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>, los diseñadores asumieron que los sitios se consultarían en monitores de escritorio con resoluciones predecibles y conexión por cable. La llegada del iPhone en 2007 y la rápida expansión de Android rompieron ese supuesto: millones de usuarios comenzaron a navegar desde pantallas táctiles verticales, con ancho limitado y redes móviles variables.
+        </p>
+        <p>
+            Este artículo analiza el cambio histórico hacia la web multidispositivo, tras haber revisado la <a href="D006_transicion_xml_a_json.html">transición de XML y SOAP hacia JSON en el intercambio de datos</a>. No detalla reglas sintácticas específicas de Flexbox o Grid, que pertenecen al estudio técnico de CSS.
+        </p>
+    </section>
+
+    <section>
+        <h2>De sitios separados m.dominio a un único código base</h2>
+        <p>
+            La primera reacción de la industria consistió en detectar el navegador móvil en el servidor y redirigir hacia subdominios paralelos como <code>m.ejemplo.com</code>, con plantillas HTML simplificadas. Sin embargo, mantener dos sitios independientes duplicaba esfuerzos, generaba enlaces rotos al compartir URLs entre escritorio y móvil, y fraccionaba el posicionamiento en buscadores.
+        </p>
+        <p>
+            En 2010, Ethan Marcotte propuso el término <strong>Responsive Web Design</strong> (diseño web adaptable o responsivo), demostrando que un mismo documento HTML podía adaptarse fluidamente a cualquier pantalla combinando tres técnicas: cuadrículas fluidas en porcentajes, imágenes flexibles y consultas de medios en CSS.
+        </p>
+    </section>
+
+    <section>
+        <h2>La etiqueta viewport y el enfoque Mobile-First</h2>
+        <p>
+            Para evitar que los navegadores móviles simularan una pantalla de escritorio de 980 píxeles y redujeran el texto hasta hacerlo ilegible, se estandarizó la metaetiqueta <code>viewport</code> en la cabecera del documento:
+        </p>
+        <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></pre>
+        <p>
+            Junto con ella emergió la estrategia <strong>mobile-first</strong>: diseñar primero para las restricciones de pantalla pequeña, interacción táctil y ancho de banda limitado, añadiendo complejidad visual progresivamente para pantallas mayores. La implementación técnica moderna de estos principios se profundiza en el <a href="../04_css/D035_diseno_responsivo_media_container_queries.html">diseño responsivo con media queries, unidades fluidas y container queries</a>.
+        </p>
+    </section>
+
+    <section>
+        <h2>Consecuencias en rendimiento, pruebas y arquitectura</h2>
+        <p>
+            La navegación móvil expuso inmediatamente el costo de descargar megabytes de JavaScript y hojas de estilo bloqueantes sobre redes 3G o 4G. Esta presión impulsó mejoras en la calidad del software cliente —como las <a href="../../02_frontend/03_angular/D080_angular_testing_jasmine_karma_jest.html">pruebas unitarias y de componentes en Angular con TestBed</a> para asegurar interfaces estables— y motivó arquitecturas más ligeras como la <a href="../../02_frontend/04_componentes/D086_hidratacion_parcial_arquitectura_islas.html">hidratación parcial y arquitectura de islas</a>.
+        </p>
+        <p>
+            Asimismo, la necesidad de ofrecer experiencias rápidas en dispositivos móviles preparó el terreno para la <a href="D008_evolucion_spa_ssr_hibrido.html">evolución desde páginas multipágina hasta SPA, SSR e hidratación</a>.
+        </p>
+        <h3>Principios de adaptación más allá del tamaño de pantalla</h3>
+        <p>
+            El diseño adaptativo no se limita a encoger columnas cuando disminuye el ancho horizontal:
+        </p>
+        <ul>
+            <li><strong>Interacción táctil frente a puntero:</strong> Los botones y enlaces requieren áreas táctiles mínimas cómodas para los dedos y no pueden depender de estados <code>:hover</code> exclusivos del ratón.</li>
+            <li><strong>Presupuesto de red y batería:</strong> Cargar imágenes de resolución de escritorio en un teléfono desperdicia datos móviles y energía de procesamiento al decodificarlas.</li>
+            <li><strong>Priorización de contenido:</strong> El enfoque mobile-first obliga a decidir qué información y acciones son esenciales antes de añadir barras laterales o paneles secundarios en monitores amplios.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>

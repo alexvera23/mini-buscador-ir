@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transición de XML y SOAP hacia JSON en el intercambio de datos</title>
+    <meta name="description" content="Comparación técnica entre XML/SOAP y JSON como formatos de intercambio de datos en la web moderna.">
+    <meta name="keywords" content="XML, JSON, SOAP, intercambio de datos, serialización, APIs web">
+    <meta name="document-id" content="D006">
+    <meta name="category-id" content="C01">
+    <meta name="subcategory-id" content="C01.1">
+</head>
+<body>
+<article id="D006">
+    <header>
+        <h1>Transición de XML y SOAP hacia JSON en el intercambio de datos</h1>
+    </header>
+
+    <section>
+        <h2>El problema de serializar datos entre servidor y navegador</h2>
+        <p>
+            Cuando <a href="D005_web_2_0_ajax_contenido_dinamico.html">la Web 2.0 y AJAX popularizaron las peticiones asíncronas</a>, surgió la necesidad práctica de elegir un formato estándar para transportar información estructurada entre el servidor y el navegador. A comienzos de la década de 2000, el estándar dominante en entornos empresariales era XML combinado con el protocolo SOAP. Sin embargo, en pocos años JSON desplazó casi por completo a XML en las aplicaciones web.
+        </p>
+        <p>
+            Este artículo compara ambos enfoques dentro de la narrativa de la <a href="D001_introduccion_evolucion_web.html">introducción a la evolución de la World Wide Web</a>, sin profundizar en esquemas XSD avanzados ni en GraphQL.
+        </p>
+    </section>
+
+    <section>
+        <h2>XML y SOAP: contratos estrictos y alta verbosidad</h2>
+        <p>
+            XML (<em>Extensible Markup Language</em>) fue diseñado como un formato de marcado extensible heredero de SGML, excelente para representar documentos complejos con atributos, espacios de nombres y validación formal mediante DTD o XSD. Sobre XML se construyó <strong>SOAP (Simple Object Access Protocol)</strong>, un protocolo de mensajería que envolvía cada operación en sobres (<code>Envelope</code>), cabeceras y cuerpos estrictamente tipados.
+        </p>
+        <p>
+            Aunque SOAP ofrecía garantías sólidas para integraciones bancarias o corporativas, presentaba desventajas notables en el navegador:
+        </p>
+        <ul>
+            <li><strong>Verbosidad:</strong> Cada dato requería etiquetas de apertura y cierre, incrementando el tamaño de la carga útil transmitida por red.</li>
+            <li><strong>Coste de análisis:</strong> Procesar árboles XML en JavaScript mediante DOMParser resultaba más lento y verboso que manipular objetos nativos.</li>
+            <li><strong>Acoplamiento de contratos:</strong> Los descriptores WSDL rígidos dificultaban iteraciones rápidas en interfaces web.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>JSON: simplicidad estructural y afinidad con JavaScript</h2>
+        <p>
+            Popularizado por Douglas Crockford a principios de los años 2000, <strong>JSON (JavaScript Object Notation)</strong> tomó un subconjunto mínimo de la sintaxis literal de objetos de JavaScript para representar pares clave-valor, arreglos, cadenas, números, booleanos y nulos. Su principal ventaja radicaba en que casi cualquier lenguaje de programación podía mapearlo directamente a diccionarios y listas nativas.
+        </p>
+        <pre><code>{
+  "id": "D006",
+  "formato": "JSON",
+  "ligero": true,
+  "etiquetas": ["datos", "web"]
+}</code></pre>
+        <p>
+            En el navegador, la llegada de <code>JSON.parse()</code> y <code>JSON.stringify()</code> —y posteriormente el método <code>response.json()</code> en la <a href="../05_javascript/D045_fetch_api_consumo_servicios_web.html">Fetch API para consumo de servicios web</a>— convirtió la deserialización en una operación nativa, rápida y segura frente a prácticas inseguras antiguas como <code>eval()</code>.
+        </p>
+    </section>
+
+    <section>
+        <h2>Impacto en APIs REST y persistencia moderna</h2>
+        <p>
+            La ligereza de JSON encajó de forma natural con los <a href="../../03_backend/04_apis/D132_arquitectura_rest_recursos_verbo_http.html">principios de REST basados en recursos y verbos HTTP</a>, donde las respuestas suelen ser representaciones directas de entidades de negocio. Del mismo modo, en el servidor, la adopción generalizada de JSON influyó en herramientas modernas de persistencia y en la <a href="../../03_backend/01_nodejs/D109_nodejs_acceso_datos_prisma_pg.html">integración de Node.js con bases de datos mediante drivers y ORMs</a>, que serializan registros relacionales directamente hacia respuestas JSON.
+        </p>
+        <p>
+            Mientras tanto, el crecimiento de dispositivos conectados con pantallas pequeñas y redes celulares impulsó otro cambio paralelo en la presentación visual: <a href="D007_web_movil_diseno_adaptativo.html">el impacto de la web móvil y la transición al diseño adaptativo</a>.
+        </p>
+        <h3>Comparativa técnica entre XML/SOAP y JSON/REST</h3>
+        <p>
+            Aunque JSON domina el desarrollo web cotidiano, ambos formatos responden a prioridades distintas de ingeniería:
+        </p>
+        <ul>
+            <li><strong>Tipado y validación:</strong> XML cuenta con esquemas XSD maduros y espacios de nombres nativos; JSON requiere especificaciones externas como JSON Schema para validar estructura y tipos.</li>
+            <li><strong>Tipos de datos soportados:</strong> JSON distingue cadenas, números, booleanos, nulos, objetos y arreglos, pero carece de tipo nativo para fechas o binarios (que suelen serializarse en ISO 8601 o Base64).</li>
+            <li><strong>Legibilidad y ancho de banda:</strong> JSON reduce significativamente el tamaño de las respuestas HTTP antes incluso de aplicar compresión Gzip o Brotli.</li>
+        </ul>
+        <p>
+            En sistemas heredados o integraciones empresariales estrictas, XML y SOAP siguen vigentes, pero para aplicaciones web interactivas JSON consolidó un estándar práctico y universal.
+        </p>
+    </section>
+
+    <footer>
+        <p>Subcategoría C01.1 — Historia y evolución de la web.</p>
+    </footer>
+</article>
+</body>
+</html>
