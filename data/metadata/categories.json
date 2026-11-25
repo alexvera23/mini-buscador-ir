@@ -1,0 +1,669 @@
+{
+  "version": "1.0.0",
+  "total_categories": 10,
+  "total_subcategories": 50,
+  "categories": [
+    {
+      "category_id": "C01",
+      "code": "01",
+      "name": "Fundamentos de la web",
+      "dir_name": "01_fundamentos",
+      "id_range": "D001-D050",
+      "description": "Bases históricas, protocolos de red, estructura semántica HTML, estilos CSS y programación en el navegador con JavaScript.",
+      "tags": [
+        "web",
+        "http",
+        "html",
+        "css",
+        "javascript",
+        "navegador"
+      ],
+      "related_categories": [
+        "C02",
+        "C03"
+      ],
+      "category_hub_ids": [
+        "D001"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C01.1",
+          "code": "01.1",
+          "name": "Historia y evolución de la web",
+          "dir_name": "01_historia_web",
+          "id_range": "D001-D010",
+          "hub_id": "D001"
+        },
+        {
+          "subcategory_id": "C01.2",
+          "code": "01.2",
+          "name": "Internet, HTTP/HTTPS y DNS",
+          "dir_name": "02_protocolos",
+          "id_range": "D011-D020",
+          "hub_id": "D011"
+        },
+        {
+          "subcategory_id": "C01.3",
+          "code": "01.3",
+          "name": "HTML y semántica",
+          "dir_name": "03_html",
+          "id_range": "D021-D030",
+          "hub_id": "D021"
+        },
+        {
+          "subcategory_id": "C01.4",
+          "code": "01.4",
+          "name": "CSS y diseño responsivo",
+          "dir_name": "04_css",
+          "id_range": "D031-D040",
+          "hub_id": "D031"
+        },
+        {
+          "subcategory_id": "C01.5",
+          "code": "01.5",
+          "name": "JavaScript y navegador",
+          "dir_name": "05_javascript",
+          "id_range": "D041-D050",
+          "hub_id": "D041"
+        }
+      ]
+    },
+    {
+      "category_id": "C02",
+      "code": "02",
+      "name": "Frontend",
+      "dir_name": "02_frontend",
+      "id_range": "D051-D100",
+      "description": "Frameworks modernos de interfaz, arquitectura de componentes, gestión de estado, renderizado y principios de diseño UX/UI.",
+      "tags": [
+        "frontend",
+        "react",
+        "vue",
+        "angular",
+        "componentes",
+        "ux-ui"
+      ],
+      "related_categories": [
+        "C06",
+        "C07",
+        "C01"
+      ],
+      "category_hub_ids": [
+        "D081"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C02.1",
+          "code": "02.1",
+          "name": "React",
+          "dir_name": "01_react",
+          "id_range": "D051-D060",
+          "hub_id": "D051"
+        },
+        {
+          "subcategory_id": "C02.2",
+          "code": "02.2",
+          "name": "Vue",
+          "dir_name": "02_vue",
+          "id_range": "D061-D070",
+          "hub_id": "D061"
+        },
+        {
+          "subcategory_id": "C02.3",
+          "code": "02.3",
+          "name": "Angular",
+          "dir_name": "03_angular",
+          "id_range": "D071-D080",
+          "hub_id": "D071"
+        },
+        {
+          "subcategory_id": "C02.4",
+          "code": "02.4",
+          "name": "Componentes, estado y renderizado",
+          "dir_name": "04_componentes",
+          "id_range": "D081-D090",
+          "hub_id": "D081"
+        },
+        {
+          "subcategory_id": "C02.5",
+          "code": "02.5",
+          "name": "UX/UI y diseño de interfaces",
+          "dir_name": "05_ux_ui",
+          "id_range": "D091-D100",
+          "hub_id": "D091"
+        }
+      ]
+    },
+    {
+      "category_id": "C03",
+      "code": "03",
+      "name": "Backend",
+      "dir_name": "03_backend",
+      "id_range": "D101-D150",
+      "description": "Desarrollo del lado del servidor con Node.js, Python y Java/Spring Boot, diseño de APIs REST y GraphQL, y lógica de negocio.",
+      "tags": [
+        "backend",
+        "nodejs",
+        "python",
+        "java",
+        "spring",
+        "api",
+        "rest",
+        "graphql"
+      ],
+      "related_categories": [
+        "C04",
+        "C08",
+        "C06"
+      ],
+      "category_hub_ids": [
+        "D141"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C03.1",
+          "code": "03.1",
+          "name": "Node.js",
+          "dir_name": "01_nodejs",
+          "id_range": "D101-D110",
+          "hub_id": "D101"
+        },
+        {
+          "subcategory_id": "C03.2",
+          "code": "03.2",
+          "name": "Python para backend",
+          "dir_name": "02_python",
+          "id_range": "D111-D120",
+          "hub_id": "D111"
+        },
+        {
+          "subcategory_id": "C03.3",
+          "code": "03.3",
+          "name": "Java y Spring Boot",
+          "dir_name": "03_java_spring",
+          "id_range": "D121-D130",
+          "hub_id": "D121"
+        },
+        {
+          "subcategory_id": "C03.4",
+          "code": "03.4",
+          "name": "APIs REST y GraphQL",
+          "dir_name": "04_apis",
+          "id_range": "D131-D140",
+          "hub_id": "D131"
+        },
+        {
+          "subcategory_id": "C03.5",
+          "code": "03.5",
+          "name": "Servidores y lógica de negocio",
+          "dir_name": "05_servidores",
+          "id_range": "D141-D150",
+          "hub_id": "D141"
+        }
+      ]
+    },
+    {
+      "category_id": "C04",
+      "code": "04",
+      "name": "Bases de datos",
+      "dir_name": "04_bases_datos",
+      "id_range": "D151-D200",
+      "description": "Sistemas de persistencia relacionales y NoSQL, motores PostgreSQL, MySQL y MongoDB, ORMs, modelado, indexación y optimización.",
+      "tags": [
+        "bases-de-datos",
+        "sql",
+        "postgresql",
+        "mysql",
+        "mongodb",
+        "nosql",
+        "orm"
+      ],
+      "related_categories": [
+        "C03",
+        "C06"
+      ],
+      "category_hub_ids": [
+        "D151"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C04.1",
+          "code": "04.1",
+          "name": "SQL y bases de datos relacionales",
+          "dir_name": "01_sql",
+          "id_range": "D151-D160",
+          "hub_id": "D151"
+        },
+        {
+          "subcategory_id": "C04.2",
+          "code": "04.2",
+          "name": "PostgreSQL y MySQL",
+          "dir_name": "02_postgresql_mysql",
+          "id_range": "D161-D170",
+          "hub_id": "D161"
+        },
+        {
+          "subcategory_id": "C04.3",
+          "code": "04.3",
+          "name": "MongoDB y bases NoSQL",
+          "dir_name": "03_nosql",
+          "id_range": "D171-D180",
+          "hub_id": "D171"
+        },
+        {
+          "subcategory_id": "C04.4",
+          "code": "04.4",
+          "name": "ORM y herramientas de abstracción",
+          "dir_name": "04_orm",
+          "id_range": "D181-D190",
+          "hub_id": "D181"
+        },
+        {
+          "subcategory_id": "C04.5",
+          "code": "04.5",
+          "name": "Modelado, índices y optimización",
+          "dir_name": "05_modelado",
+          "id_range": "D191-D200",
+          "hub_id": "D191"
+        }
+      ]
+    },
+    {
+      "category_id": "C05",
+      "code": "05",
+      "name": "Herramientas de desarrollo",
+      "dir_name": "05_herramientas",
+      "id_range": "D201-D250",
+      "description": "Control de versiones con Git, colaboración en GitHub, entorno Linux y terminal, editores/IDEs y gestión de paquetes.",
+      "tags": [
+        "herramientas",
+        "git",
+        "github",
+        "linux",
+        "terminal",
+        "ide",
+        "npm"
+      ],
+      "related_categories": [
+        "C09",
+        "C06",
+        "C07"
+      ],
+      "category_hub_ids": [
+        "D201"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C05.1",
+          "code": "05.1",
+          "name": "Git y control de versiones",
+          "dir_name": "01_git",
+          "id_range": "D201-D210",
+          "hub_id": "D201"
+        },
+        {
+          "subcategory_id": "C05.2",
+          "code": "05.2",
+          "name": "GitHub y colaboración",
+          "dir_name": "02_github",
+          "id_range": "D211-D220",
+          "hub_id": "D211"
+        },
+        {
+          "subcategory_id": "C05.3",
+          "code": "05.3",
+          "name": "Linux y terminal",
+          "dir_name": "03_linux_terminal",
+          "id_range": "D221-D230",
+          "hub_id": "D221"
+        },
+        {
+          "subcategory_id": "C05.4",
+          "code": "05.4",
+          "name": "Editores e IDE",
+          "dir_name": "04_editores",
+          "id_range": "D231-D240",
+          "hub_id": "D231"
+        },
+        {
+          "subcategory_id": "C05.5",
+          "code": "05.5",
+          "name": "npm, pnpm y gestores de paquetes",
+          "dir_name": "05_gestores_paquetes",
+          "id_range": "D241-D250",
+          "hub_id": "D241"
+        }
+      ]
+    },
+    {
+      "category_id": "C06",
+      "code": "06",
+      "name": "Arquitectura de software",
+      "dir_name": "06_arquitectura",
+      "id_range": "D251-D300",
+      "description": "Estilos arquitectónicos monolíticos y distribuidos, arquitectura por capas y MVC, patrones de diseño y topologías web.",
+      "tags": [
+        "arquitectura",
+        "monolito",
+        "microservicios",
+        "mvc",
+        "patrones",
+        "diseno"
+      ],
+      "related_categories": [
+        "C02",
+        "C03",
+        "C07"
+      ],
+      "category_hub_ids": [
+        "D251"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C06.1",
+          "code": "06.1",
+          "name": "Arquitectura monolítica y modular",
+          "dir_name": "01_monolitos",
+          "id_range": "D251-D260",
+          "hub_id": "D251"
+        },
+        {
+          "subcategory_id": "C06.2",
+          "code": "06.2",
+          "name": "Microservicios",
+          "dir_name": "02_microservicios",
+          "id_range": "D261-D270",
+          "hub_id": "D261"
+        },
+        {
+          "subcategory_id": "C06.3",
+          "code": "06.3",
+          "name": "MVC y arquitectura por capas",
+          "dir_name": "03_mvc_capas",
+          "id_range": "D271-D280",
+          "hub_id": "D271"
+        },
+        {
+          "subcategory_id": "C06.4",
+          "code": "06.4",
+          "name": "Patrones de diseño",
+          "dir_name": "04_patrones",
+          "id_range": "D281-D290",
+          "hub_id": "D281"
+        },
+        {
+          "subcategory_id": "C06.5",
+          "code": "06.5",
+          "name": "Arquitectura frontend/backend",
+          "dir_name": "05_arquitectura_web",
+          "id_range": "D291-D300",
+          "hub_id": "D291"
+        }
+      ]
+    },
+    {
+      "category_id": "C07",
+      "code": "07",
+      "name": "Ingeniería de software",
+      "dir_name": "07_ingenieria",
+      "id_range": "D301-D350",
+      "description": "Prácticas de código limpio, estrategias de pruebas unitarias, de integración y E2E, y marcos ágiles como Scrum.",
+      "tags": [
+        "ingenieria",
+        "clean-code",
+        "testing",
+        "pruebas",
+        "scrum",
+        "agil"
+      ],
+      "related_categories": [
+        "C06",
+        "C09",
+        "C02"
+      ],
+      "category_hub_ids": [
+        "D301"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C07.1",
+          "code": "07.1",
+          "name": "Clean Code y calidad de código",
+          "dir_name": "01_clean_code",
+          "id_range": "D301-D310",
+          "hub_id": "D301"
+        },
+        {
+          "subcategory_id": "C07.2",
+          "code": "07.2",
+          "name": "Pruebas unitarias",
+          "dir_name": "02_testing_unitario",
+          "id_range": "D311-D320",
+          "hub_id": "D311"
+        },
+        {
+          "subcategory_id": "C07.3",
+          "code": "07.3",
+          "name": "Pruebas de integración",
+          "dir_name": "03_testing_integracion",
+          "id_range": "D321-D330",
+          "hub_id": "D321"
+        },
+        {
+          "subcategory_id": "C07.4",
+          "code": "07.4",
+          "name": "Pruebas frontend y E2E",
+          "dir_name": "04_testing_e2e",
+          "id_range": "D331-D340",
+          "hub_id": "D331"
+        },
+        {
+          "subcategory_id": "C07.5",
+          "code": "07.5",
+          "name": "Scrum y metodologías ágiles",
+          "dir_name": "05_scrum",
+          "id_range": "D341-D350",
+          "hub_id": "D341"
+        }
+      ]
+    },
+    {
+      "category_id": "C08",
+      "code": "08",
+      "name": "Seguridad web",
+      "dir_name": "08_seguridad",
+      "id_range": "D351-D400",
+      "description": "Riesgos OWASP, autenticación y autorización, prevención de inyecciones y XSS, seguridad en el navegador y criptografía aplicada.",
+      "tags": [
+        "seguridad",
+        "owasp",
+        "autenticacion",
+        "xss",
+        "csrf",
+        "criptografia"
+      ],
+      "related_categories": [
+        "C03",
+        "C09"
+      ],
+      "category_hub_ids": [
+        "D351"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C08.1",
+          "code": "08.1",
+          "name": "OWASP y vulnerabilidades",
+          "dir_name": "01_owasp",
+          "id_range": "D351-D360",
+          "hub_id": "D351"
+        },
+        {
+          "subcategory_id": "C08.2",
+          "code": "08.2",
+          "name": "Autenticación y autorización",
+          "dir_name": "02_auth",
+          "id_range": "D361-D370",
+          "hub_id": "D361"
+        },
+        {
+          "subcategory_id": "C08.3",
+          "code": "08.3",
+          "name": "SQL Injection y XSS",
+          "dir_name": "03_inyecciones",
+          "id_range": "D371-D380",
+          "hub_id": "D371"
+        },
+        {
+          "subcategory_id": "C08.4",
+          "code": "08.4",
+          "name": "CORS, CSRF y seguridad del navegador",
+          "dir_name": "04_seguridad_navegador",
+          "id_range": "D381-D390",
+          "hub_id": "D381"
+        },
+        {
+          "subcategory_id": "C08.5",
+          "code": "08.5",
+          "name": "Criptografía, HTTPS y gestión de secretos",
+          "dir_name": "05_criptografia",
+          "id_range": "D391-D400",
+          "hub_id": "D391"
+        }
+      ]
+    },
+    {
+      "category_id": "C09",
+      "code": "09",
+      "name": "DevOps e infraestructura",
+      "dir_name": "09_devops",
+      "id_range": "D401-D450",
+      "description": "Contenerización con Docker y Docker Compose, pipelines CI/CD, despliegue en VPS y cloud, Nginx y observabilidad.",
+      "tags": [
+        "devops",
+        "docker",
+        "compose",
+        "cicd",
+        "cloud",
+        "nginx",
+        "observabilidad"
+      ],
+      "related_categories": [
+        "C03",
+        "C08",
+        "C05"
+      ],
+      "category_hub_ids": [
+        "D401"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C09.1",
+          "code": "09.1",
+          "name": "Docker y contenedores",
+          "dir_name": "01_docker",
+          "id_range": "D401-D410",
+          "hub_id": "D401"
+        },
+        {
+          "subcategory_id": "C09.2",
+          "code": "09.2",
+          "name": "Docker Compose",
+          "dir_name": "02_compose",
+          "id_range": "D411-D420",
+          "hub_id": "D411"
+        },
+        {
+          "subcategory_id": "C09.3",
+          "code": "09.3",
+          "name": "CI/CD",
+          "dir_name": "03_cicd",
+          "id_range": "D421-D430",
+          "hub_id": "D421"
+        },
+        {
+          "subcategory_id": "C09.4",
+          "code": "09.4",
+          "name": "Hosting, VPS y cloud",
+          "dir_name": "04_cloud",
+          "id_range": "D431-D440",
+          "hub_id": "D431"
+        },
+        {
+          "subcategory_id": "C09.5",
+          "code": "09.5",
+          "name": "Nginx y observabilidad",
+          "dir_name": "05_observabilidad",
+          "id_range": "D441-D450",
+          "hub_id": "D441"
+        }
+      ]
+    },
+    {
+      "category_id": "C10",
+      "code": "10",
+      "name": "Ecosistema web y tendencias",
+      "dir_name": "10_ecosistema",
+      "id_range": "D451-D500",
+      "description": "Tipado estático con TypeScript, WebAssembly y APIs modernas del navegador, PWAs, WebSockets en tiempo real e IA aplicada a la web.",
+      "tags": [
+        "ecosistema",
+        "typescript",
+        "webassembly",
+        "pwa",
+        "websockets",
+        "ia"
+      ],
+      "related_categories": [
+        "C02",
+        "C03",
+        "C09"
+      ],
+      "category_hub_ids": [
+        "D451"
+      ],
+      "subcategories": [
+        {
+          "subcategory_id": "C10.1",
+          "code": "10.1",
+          "name": "TypeScript",
+          "dir_name": "01_typescript",
+          "id_range": "D451-D460",
+          "hub_id": "D451"
+        },
+        {
+          "subcategory_id": "C10.2",
+          "code": "10.2",
+          "name": "WebAssembly y APIs del navegador",
+          "dir_name": "02_webassembly",
+          "id_range": "D461-D470",
+          "hub_id": "D461"
+        },
+        {
+          "subcategory_id": "C10.3",
+          "code": "10.3",
+          "name": "Progressive Web Apps (PWA)",
+          "dir_name": "03_pwa",
+          "id_range": "D471-D480",
+          "hub_id": "D471"
+        },
+        {
+          "subcategory_id": "C10.4",
+          "code": "10.4",
+          "name": "WebSockets y aplicaciones en tiempo real",
+          "dir_name": "04_websockets",
+          "id_range": "D481-D490",
+          "hub_id": "D481"
+        },
+        {
+          "subcategory_id": "C10.5",
+          "code": "10.5",
+          "name": "Inteligencia artificial aplicada al desarrollo web",
+          "dir_name": "05_ia_desarrollo",
+          "id_range": "D491-D500",
+          "hub_id": "D491"
+        }
+      ]
+    }
+  ]
+}
