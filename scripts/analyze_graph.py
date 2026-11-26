@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Structural graph analyzer for the planned 500-document corpus."""
+"""Structural graph analyzer for the planned IR corpus."""
 
 from __future__ import annotations
 

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducción a React, JSX y composición declarativa de interfaces</title>
+  <meta name="description" content="Presenta la filosofía declarativa de React, la sintaxis JSX, la creación de componentes funcionales y el flujo unidireccional de datos mediante props. No profundiza en gestión global de estado compleja ni frameworks meta como Next.js. Requiere dominar JavaScript ES6+ y el DOM. Enlaza con hooks y Virtual DOM.">
+  <meta name="keywords" content="react, jsx, componentes, props, frontend">
+  <meta name="doc-id" content="D012">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="react_introduccion_componentes_jsx">
+</head>
+<body>
+  <article data-doc-id="D012" data-category-id="C02" data-slug="react_introduccion_componentes_jsx">
+    <header>
+      <h1>Introducción a React, JSX y composición declarativa de interfaces</h1>
+      <p>Fundamentos de la biblioteca de interfaces de usuario, sintaxis JSX, componentes funcionales y transmisión de datos mediante propiedades inmutables.</p>
+    </header>
+
+    <section>
+      <h2>Filosofía declarativa de React</h2>
+      <p>React es una biblioteca de JavaScript especializada en la construcción de interfaces de usuario mediante piezas modulares e independientes. A diferencia de los enfoques imperativos tradicionales —donde el código busca nodos específicos en el DOM y ejecuta instrucciones secuenciales para añadir clases, modificar texto o insertar elementos—, React adopta un paradigma estrictamente declarativo dentro de los principios de la <a href="D011_arquitectura_componentes_frontend.html">arquitectura de componentes en el frontend</a>.</p>
+      <p>En React, el desarrollador define qué estructura visual corresponde a cada posible estado de la aplicación. Cuando los datos cambian, React vuelve a ejecutar los componentes afectados para obtener una nueva descripción de la interfaz, calcula las diferencias respecto al renderizado previo mediante su árbol de reconciliación y actualiza únicamente los nodos estrictamente necesarios en el navegador. Este diseño permite razonar sobre cada vista como una proyección determinista de los datos vigentes en un instante dado.</p>
+    </section>
+
+    <section>
+      <h2>Sintaxis JSX y su transformación a JavaScript</h2>
+      <p>Para describir estructuras de interfaz de manera legible, React utiliza JSX (<em>JavaScript XML</em>), una extensión de sintaxis que permite escribir etiquetas similares a HTML directamente dentro de archivos JavaScript o TypeScript. JSX no es interpretado de forma nativa por los navegadores; durante la fase de compilación, herramientas como Babel, SWC o esbuild transforman cada etiqueta JSX en llamadas a funciones estándar de JavaScript que crean objetos descriptores denominados elementos de React.</p>
+      <pre><code>// Código escrito con sintaxis JSX
+function SaludoUsuario({ nombre, rol }) {
+  return (
+    &lt;section className="tarjeta-perfil"&gt;
+      &lt;h2&gt;Hola, {nombre}&lt;/h2&gt;
+      &lt;p&gt;Rol asignado: {rol.toUpperCase()}&lt;/p&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+      <p>Debido a que JSX se compila a expresiones de JavaScript, existen reglas sintácticas esenciales que lo distinguen del HTML tradicional:</p>
+      <ul>
+        <li><strong>Expresiones entre llaves:</strong> Cualquier expresión válida de JavaScript —variables, llamadas a funciones, operadores ternarios— puede incrustarse dentro del marcado encerrándola entre llaves <code>{ }</code>.</li>
+        <li><strong>Atributos en camelCase:</strong> Las propiedades siguen la convención de nombres de las APIs del DOM en JavaScript, por lo que se escribe <code>className</code> en lugar de <code>class</code>, <code>htmlFor</code> en lugar de <code>for</code> y <code>onClick</code> para eventos.</li>
+        <li><strong>Cierre explícito de etiquetas:</strong> Todas las etiquetas deben cerrarse correctamente, incluidas las etiquetas vacías como <code>&lt;img /&gt;</code> o <code>&lt;input /&gt;</code>.</li>
+        <li><strong>Elemento raíz único:</strong> Una expresión JSX debe devolver un único nodo contenedor. Cuando no se desea añadir un <code>&lt;div&gt;</code> innecesario al DOM, se emplean fragmentos mediante <code>&lt;&gt;...&lt;/&gt;</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Componentes funcionales y propiedades (Props)</h2>
+      <p>En el desarrollo moderno con React, los componentes se definen como funciones de JavaScript cuyo nombre comienza con letra mayúscula para que el compilador las distinga de las etiquetas HTML nativas. Estas funciones reciben un único objeto como argumento, conocido convencionalmente como <code>props</code> (abreviatura de propiedades), y retornan elementos JSX.</p>
+      <p>Las <code>props</code> constituyen el canal de comunicación descendente entre un componente padre y sus hijos. Una regla fundamental de React establece que las <code>props</code> son estrictamente de solo lectura: un componente nunca debe modificar el objeto de propiedades que recibe. Si se requiere alterar un dato, el componente propietario debe actualizar su propio estado y volver a renderizar al hijo con los nuevos valores.</p>
+      <pre><code>function InsigniaEstado({ activo, etiqueta }) {
+  const claseEstado = activo ? 'estado-activo' : 'estado-inactivo';
+  return &lt;span className={claseEstado}&gt;{etiqueta}&lt;/span&gt;;
+}
+
+function FilaServicio({ nombre, enLinea }) {
+  return (
+    &lt;div className="fila-servicio"&gt;
+      &lt;span&gt;{nombre}&lt;/span&gt;
+      &lt;InsigniaEstado
+        activo={enLinea}
+        etiqueta={enLinea ? 'Operativo' : 'Sin conexión'}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Composición con children y renderizado dinámico</h2>
+      <p>En lugar de recurrir a la herencia de clases para especializar interfaces, React favorece la composición. La propiedad especial <code>children</code> permite que un componente contenedor reciba elementos arbitrarios anidados entre sus etiquetas de apertura y cierre sin conocer de antemano qué contenido renderizará en su interior. Este patrón resulta ideal para construir paneles, ventanas modales, barras laterales o contenedores de diseño.</p>
+      <pre><code>function PanelContenedor({ titulo, children }) {
+  return (
+    &lt;aside className="panel"&gt;
+      &lt;header&gt;&lt;h3&gt;{titulo}&lt;/h3&gt;&lt;/header&gt;
+      &lt;div className="panel-contenido"&gt;{children}&lt;/div&gt;
+    &lt;/aside&gt;
+  );
+}</code></pre>
+      <p>Para transformar colecciones de datos en listas de elementos visuales, se utiliza habitualmente el método <code>Array.prototype.map()</code> dentro de JSX. Cada elemento generado dinámicamente dentro de una lista debe incluir una propiedad especial llamada <code>key</code> con un identificador único y estable entre renderizados, como el identificador de base de datos del registro. La propiedad <code>key</code> permite al algoritmo de reconciliación identificar qué elementos fueron añadidos, eliminados o reordenados sin destruir ni recrear innecesariamente los nodos existentes.</p>
+      <pre><code>function ListaCategorias({ categorias }) {
+  if (categorias.length === 0) {
+    return &lt;p&gt;No existen categorías registradas.&lt;/p&gt;;
+  }
+
+  return (
+    &lt;ul&gt;
+      {categorias.map((categoria) =&gt; (
+        &lt;li key={categoria.id}&gt;{categoria.nombre}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Buenas prácticas y evolución hacia el manejo de estado</h2>
+      <p>Para mantener componentes predecibles y fáciles de probar, conviene diseñarlos como funciones puras respecto a sus entradas: ante las mismas <code>props</code> y el mismo estado interno, deben producir exactamente la misma salida JSX sin alterar variables externas durante la fase de renderizado.</p>
+      <p>Cuando la interfaz requiere interactividad dinámica, almacenamiento de valores locales o sincronización con APIs externas, los componentes funcionales incorporan mecanismos específicos del ecosistema React:</p>
+      <ul>
+        <li>Para gestionar memoria local y efectos secundarios, consulta <a href="D016_react_hooks_usestate_useeffect.html">hooks esenciales en React: useState, useEffect y ciclo de sincronización</a>.</li>
+        <li>Para encapsular comportamientos complejos y optimizar cálculos, revisa <a href="D017_react_hooks_avanzados_custom_hooks.html">hooks avanzados y creación de Custom Hooks reutilizables</a>.</li>
+        <li>Para compartir información transversal entre múltiples niveles del árbol sin pasar propiedades manualmente, explora <a href="D018_react_context_api_gestion_estado.html">React Context API y comparación con librerías de estado global</a>.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>

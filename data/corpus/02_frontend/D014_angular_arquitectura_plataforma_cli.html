@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducción a Angular como plataforma integral de desarrollo frontend</title>
+  <meta name="description" content="Presenta la arquitectura opinada de Angular, el uso de TypeScript como base, Angular CLI y la organización de aplicaciones empresariales. No enseña sintaxis básica de TypeScript desde cero. Requiere conocer TypeScript y fundamentos web. Enlaza con componentes standalone, inyección de dependencias y RxJS.">
+  <meta name="keywords" content="angular, typescript, cli, plataforma, frontend">
+  <meta name="doc-id" content="D014">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="angular_arquitectura_plataforma_cli">
+</head>
+<body>
+  <article data-doc-id="D014" data-category-id="C02" data-slug="angular_arquitectura_plataforma_cli">
+    <header>
+      <h1>Introducción a Angular como plataforma integral de desarrollo frontend</h1>
+      <p>Arquitectura opinada, desarrollo estructurado sobre TypeScript, herramientas oficiales de línea de comandos e inyección de dependencias en aplicaciones de gran escala.</p>
+    </header>
+
+    <section>
+      <h2>Angular como plataforma frente a bibliotecas de vista</h2>
+      <p>Mientras otras herramientas del ecosistema se concentran exclusivamente en la renderización de vistas y delegan en paquetes externos decisiones como el enrutamiento, los formularios o las peticiones HTTP, Angular se concibe como una plataforma integral y opinada para construir aplicaciones web escalables bajo los fundamentos de la <a href="D011_arquitectura_componentes_frontend.html">arquitectura de componentes en el frontend</a>.</p>
+      <p>Una arquitectura opinada establece convenciones claras sobre cómo estructurar carpetas, nombrar artefactos, gestionar dependencias y configurar el entorno de compilación. Esta estandarización reduce la fatiga por toma de decisiones en equipos numerosos y facilita que cualquier desarrollador familiarizado con el framework comprenda rápidamente un proyecto empresarial, independientemente de quién lo haya iniciado.</p>
+    </section>
+
+    <section>
+      <h2>TypeScript como cimiento obligatorio</h2>
+      <p>Angular está construido íntegramente sobre <a href="../10_ecosistema/D069_typescript_tipado_estatico_ecosistema_web.html">TypeScript como lenguaje de tipado estático sobre JavaScript</a>. El uso de tipos estrictos, interfaces y decoradores no es opcional, sino el mecanismo central que permite al compilador de Angular (<em>Ahead-of-Time</em> o AOT) analizar las plantillas HTML antes de que el código llegue al navegador.</p>
+      <p>Gracias a la compilación AOT, los errores de enlace entre propiedades de clase y expresiones en la plantilla se detectan durante la construcción en lugar de manifestarse en tiempo de ejecución ante el usuario final. Además, el compilador transforma las plantillas en instrucciones optimizadas de JavaScript que aceleran el arranque inicial de la aplicación.</p>
+    </section>
+
+    <section>
+      <h2>Componentes Standalone, plantillas y Signals</h2>
+      <p>En la arquitectura moderna de Angular, la unidad básica de construcción es el componente autónomo (<em>Standalone Component</em>). Cada componente se define mediante una clase de TypeScript anotada con el decorador <code>@Component</code>, el cual vincula un selector HTML personalizado, una plantilla declarativa y sus estilos encapsulados.</p>
+      <pre><code>import { Component, signal, computed } from '@angular/core';
+
+@Component({
+  selector: 'app-resumen-carrito',
+  standalone: true,
+  template: `
+    &lt;section class="resumen"&gt;
+      &lt;h2&gt;Artículos seleccionados: {{ cantidad() }}&lt;/h2&gt;
+      &lt;p&gt;Total estimado: {{ totalFormateado() }}&lt;/p&gt;
+      &lt;button type="button" (click)="agregarArticulo()"&gt;Añadir unidad&lt;/button&gt;
+    &lt;/section&gt;
+  `
+})
+export class ResumenCarritoComponent {
+  readonly precioUnitario = 250;
+  readonly cantidad = signal(1);
+  readonly totalFormateado = computed(() =&gt; `$${this.cantidad() * this.precioUnitario} MXN`);
+
+  agregarArticulo(): void {
+    this.cantidad.update((actual) =&gt; actual + 1);
+  }
+}</code></pre>
+      <p>Angular incorpora tanto bloques de control nativos en sus plantillas (<code>@if</code>, <code>@for</code>, <code>@switch</code>) como un sistema de reactividad de grano fino basado en <em>Signals</em> (<code>signal</code>, <code>computed</code>, <code>effect</code>), lo que permite rastrear dependencias de estado de manera explícita sin depender de revisiones globales innecesarias del árbol de componentes.</p>
+    </section>
+
+    <section>
+      <h2>Servicios e Inyección de Dependencias (DI)</h2>
+      <p>Para evitar que los componentes acumulen lógica de negocio compleja, acceso a APIs REST o almacenamiento en caché, Angular promueve delegar dichas responsabilidades en clases de servicio decoradas con <code>@Injectable</code>. El framework incluye un sistema jerárquico de Inyección de Dependencias (DI) integrado en su núcleo.</p>
+      <pre><code>import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Producto {
+  id: number;
+  nombre: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class CatalogoService {
+  private readonly http = inject(HttpClient);
+
+  obtenerProductos(): Observable&lt;Producto[]&gt; {
+    return this.http.get&lt;Producto[]&gt;('/api/productos');
+  }
+}</code></pre>
+      <p>Al solicitar dependencias mediante la función <code>inject()</code> o parámetros de constructor, los componentes permanecen desacoplados de la instanciación concreta de los servicios. Esto simplifica las pruebas unitarias, ya que permite sustituir servicios reales por implementaciones simuladas (<em>mocks</em>) de forma transparente.</p>
+    </section>
+
+    <section>
+      <h2>Ecosistema integrado y Angular CLI</h2>
+      <p>La plataforma proporciona paquetes oficiales mantenidos bajo el mismo ciclo de versiones para cubrir las necesidades habituales del desarrollo frontend:</p>
+      <ul>
+        <li><strong>Angular CLI:</strong> Herramienta de línea de comandos (<code>ng new</code>, <code>ng generate</code>, <code>ng build</code>, <code>ng test</code>) que automatiza la generación de código con convenciones uniformes, la configuración de empaquetadores (esbuild/Vite) y la actualización automatizada entre versiones mayores mediante <code>ng update</code>.</li>
+        <li><strong>Angular Router:</strong> Sistema completo de navegación con carga diferida de rutas (<em>lazy loading</em>), guardias de autorización y resolución previa de datos.</li>
+        <li><strong>Reactive Forms y RxJS:</strong> Manejo robusto de formularios complejos con validadores síncronos y asíncronos, complementado por programación reactiva mediante flujos de eventos (<em>Observables</em>) para coordinar peticiones concurrentes o cancelables.</li>
+      </ul>
+      <p>Por estas características, Angular suele elegirse en aplicaciones corporativas de largo ciclo de vida, paneles administrativos complejos y equipos multidisciplinarios que priorizan consistencia estructural y contratos tipados desde el primer día.</p>
+    </section>
+  </article>
+</body>
+</html>

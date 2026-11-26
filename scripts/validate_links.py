@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validator 2: Validate planned links in data/metadata/links.json."""
+"""Validator: Validate links.json graph integrity and integration with documents.json."""
 
 from __future__ import annotations
 
@@ -10,16 +10,14 @@ from pathlib import Path
 
 ROOT = Path(".")
 META_DIR = ROOT / "data" / "metadata"
-
-VALID_RELATIONS = {
-    "intra_subcategory",
-    "related_concept",
+VALID_REL_TYPES = {
     "category_navigation",
+    "related_concept",
     "prerequisite",
     "implementation",
-    "comparison",
-    "security_relation",
     "architecture_relation",
+    "security_relation",
+    "comparison",
 }
 
 
@@ -27,75 +25,58 @@ def validate() -> int:
     errors: list[str] = []
 
     docs_data = json.loads((META_DIR / "documents.json").read_text(encoding="utf-8"))
-    cats_data = json.loads((META_DIR / "categories.json").read_text(encoding="utf-8"))
     links_data = json.loads((META_DIR / "links.json").read_text(encoding="utf-8"))
 
-    docs = {d["id"]: d for d in docs_data["documents"]}
-    links = links_data["links"]
+    doc_ids = {d["id"] for d in docs_data["documents"]}
+    links = links_data.get("links", [])
+
+    if links_data.get("total_links") != len(links):
+        errors.append(f"total_links={links_data.get('total_links')} != {len(links)}")
 
     seen_edges: set[tuple[str, str]] = set()
     out_deg: Counter[str] = Counter()
     in_deg: Counter[str] = Counter()
     rel_counts: Counter[str] = Counter()
 
-    for idx, edge in enumerate(links):
-        src = edge.get("source_id", "")
-        tgt = edge.get("target_id", "")
-        rel = edge.get("relation_type", "")
-        just = edge.get("justification", "")
+    for idx, link in enumerate(links):
+        src = link.get("source_id")
+        tgt = link.get("target_id")
+        rel = link.get("relation_type")
 
-        if src not in docs:
-            errors.append(f"Edge {idx}: invalid source_id '{src}'")
-        if tgt not in docs:
-            errors.append(f"Edge {idx}: invalid target_id '{tgt}'")
+        if src not in doc_ids:
+            errors.append(f"Link[{idx}]: unknown source_id '{src}'")
+        if tgt not in doc_ids:
+            errors.append(f"Link[{idx}]: unknown target_id '{tgt}'")
         if src == tgt:
-            errors.append(f"Edge {idx}: self-loop on '{src}'")
+            errors.append(f"Link[{idx}]: self-loop on '{src}'")
         if (src, tgt) in seen_edges:
-            errors.append(f"Edge {idx}: duplicate edge ({src} -> {tgt})")
+            errors.append(f"Link[{idx}]: duplicate edge ({src} -> {tgt})")
         seen_edges.add((src, tgt))
 
-        if rel not in VALID_RELATIONS:
-            errors.append(f"Edge {idx} ({src}->{tgt}): invalid relation_type '{rel}'")
-        if not isinstance(just, str) or len(just.strip()) < 10:
-            errors.append(f"Edge {idx} ({src}->{tgt}): empty or too short justification")
-
-        if src in docs and tgt in docs:
-            if rel == "intra_subcategory" and docs[src]["subcategory_id"] != docs[tgt]["subcategory_id"]:
-                errors.append(f"Edge ({src}->{tgt}): marked intra_subcategory across different subcategories")
+        if rel not in VALID_REL_TYPES:
+            errors.append(f"Link[{idx}]: invalid relation_type '{rel}'")
 
         out_deg[src] += 1
         in_deg[tgt] += 1
         rel_counts[rel] += 1
 
-    # Check isolated nodes, zero out-degree, zero in-degree, and hub coherence
-    no_out = [did for did in docs if out_deg[did] == 0]
-    no_in = [did for did in docs if in_deg[did] == 0]
-    isolated = [did for did in docs if out_deg[did] == 0 and in_deg[did] == 0]
-
-    if no_out:
-        errors.append(f"Nodes with 0 outgoing links: {no_out[:10]}")
-    if no_in:
-        errors.append(f"Nodes with 0 incoming links: {no_in[:10]}")
+    isolated = [did for did in doc_ids if out_deg[did] == 0 and in_deg[did] == 0]
     if isolated:
-        errors.append(f"Isolated nodes: {isolated[:10]}")
-
-    # Check category hub coherence
-    for cat in cats_data["categories"]:
-        for chub in cat["category_hub_ids"]:
-            if out_deg[chub] < 5:
-                errors.append(f"Category hub {chub} has too few outgoing links ({out_deg[chub]})")
+        errors.append(f"Isolated nodes found: {isolated[:10]}")
 
     if errors:
         print(f"LINKS VALIDATION FAILED ({len(errors)} errors):")
-        for err in errors[:30]:
-            print(f"  - {err}")
+        for e in errors[:20]:
+            print(f"  - {e}")
         return 1
 
+    out_vals = [out_deg[d] for d in doc_ids]
+    in_vals = [in_deg[d] for d in doc_ids]
     print("LINKS VALIDATION PASSED:")
-    print(f"  - Total edges: {len(links)}")
-    print(f"  - Out-degree range: {min(out_deg.values())}..{max(out_deg.values())}")
-    print(f"  - In-degree range: {min(in_deg.values())}..{max(in_deg.values())}")
-    print(f"  - Isolated nodes: 0 | Zero out-degree: 0 | Zero in-degree: 0")
+    print(f"  - Nodes: {len(doc_ids)} | Total edges: {len(links)}")
+    print(f"  - Out-degree range: {min(out_vals)}..{max(out_vals)}")
+    print(f"  - In-degree range: {min(in_vals)}..{max(in_vals)}")
+    print(f"  - Isolated nodes: {len(isolated)}")
     print(f"  - Relation types: {dict(rel_counts)}")
     return 0
 

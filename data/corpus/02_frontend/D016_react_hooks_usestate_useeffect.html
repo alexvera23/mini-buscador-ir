@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hooks esenciales en React: useState, useEffect y ciclo de sincronización</title>
+  <meta name="description" content="Explica el manejo de estado local, inmutabilidad en actualizaciones, efectos secundarios, funciones de limpieza y reglas de dependencias en hooks básicos. No cubre hooks personalizados complejos ni concurrencia avanzada. Requiere conocer componentes funcionales en React. Se relaciona con gestión de estado y ciclo de vida.">
+  <meta name="keywords" content="react, hooks, usestate, useeffect, estado">
+  <meta name="doc-id" content="D016">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="react_hooks_usestate_useeffect">
+</head>
+<body>
+  <article data-doc-id="D016" data-category-id="C02" data-slug="react_hooks_usestate_useeffect">
+    <header>
+      <h1>Hooks esenciales en React: useState, useEffect y ciclo de sincronización</h1>
+      <p>Gestión de memoria local inmutable con useState, sincronización con sistemas externos mediante useEffect, limpieza de recursos y reglas de uso de hooks.</p>
+    </header>
+
+    <section>
+      <h2>Propósito de los Hooks en componentes funcionales</h2>
+      <p>En <a href="D012_react_introduccion_componentes_jsx.html">React y sus componentes funcionales</a>, las funciones se ejecutan nuevamente cada vez que la interfaz necesita actualizarse, lo que significa que las variables locales declaradas con <code>let</code> o <code>const</code> dentro del cuerpo de la función se reinician en cada renderizado. Los <em>Hooks</em> son funciones especiales proporcionadas por React que permiten a los componentes funcionales engancharse al motor interno de estado y ciclo de sincronización sin necesidad de escribir clases, manteniendo la coherencia con la <a href="D011_arquitectura_componentes_frontend.html">arquitectura de componentes en el frontend</a>.</p>
+    </section>
+
+    <section>
+      <h2>Gestión de estado local e inmutabilidad con useState</h2>
+      <p>El hook <code>useState</code> declara una variable de estado que React preserva entre renderizados sucesivos. Recibe como argumento el valor inicial y devuelve un arreglo de dos posiciones: el valor actual del estado y una función actualizadora (<em>setter</em>). Invocar la función actualizadora con un valor distinto programa un nuevo renderizado del componente.</p>
+      <p>Cuando el nuevo estado depende directamente del valor inmediatamente anterior —por ejemplo, en contadores o interruptores— resulta recomendable pasar una función de actualización al <em>setter</em> para evitar lecturas obsoletas si ocurren múltiples actualizaciones en lote:</p>
+      <pre><code>import { useState } from 'react';
+
+function ControlCantidad() {
+  const [unidades, setUnidades] = useState(1);
+
+  function duplicarUnidades() {
+    setUnidades((previas) =&gt; previas * 2);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Unidades seleccionadas: {unidades}&lt;/p&gt;
+      &lt;button type="button" onClick={duplicarUnidades}&gt;Duplicar&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+      <p>Un principio crítico al trabajar con objetos y arreglos en <code>useState</code> es la <strong>inmutabilidad</strong>. React compara la referencia en memoria del estado anterior y el nuevo mediante <code>Object.is()</code>. Si se muta directamente una propiedad de un objeto o se usa <code>array.push()</code> sobre la referencia existente, React detectará que la referencia no ha cambiado y omitirá el renderizado. Siempre deben crearse copias nuevas mediante el operador de propagación (<code>...</code>) o métodos inmutables como <code>map</code> y <code>filter</code>:</p>
+      <pre><code>const [perfil, setPerfil] = useState({ nombre: 'Ana', activo: true });
+
+// Correcto: crea un nuevo objeto preservando las demás propiedades
+function alternarEstado() {
+  setPerfil((actual) =&gt; ({ ...actual, activo: !actual.activo }));
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Sincronización con sistemas externos mediante useEffect</h2>
+      <p>Mientras el renderizado debe permanecer libre de efectos secundarios, las aplicaciones reales necesitan interactuar con sistemas externos a React: suscribirse a eventos globales del navegador, manipular temporizadores, sincronizar el título del documento o realizar peticiones HTTP hacia una API. El hook <code>useEffect</code> permite ejecutar ese código de sincronización después de que React ha confirmado los cambios en el DOM.</p>
+      <p><code>useEffect</code> acepta dos argumentos: una función con la lógica del efecto y un arreglo opcional de dependencias que determina cuándo debe volver a ejecutarse dicha sincronización:</p>
+      <ul>
+        <li><strong>Arreglo con dependencias <code>[a, b]</code>:</strong> El efecto se ejecuta tras el montaje inicial y cada vez que cualquiera de los valores listados cambie respecto al renderizado anterior.</li>
+        <li><strong>Arreglo vacío <code>[]</code>:</strong> El efecto no depende de ningún valor reactivo, por lo que se ejecuta únicamente una vez cuando el componente se monta en pantalla.</li>
+        <li><strong>Sin arreglo de dependencias:</strong> El efecto se ejecuta después de cada renderizado del componente, un comportamiento poco frecuente que debe emplearse con cautela.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Funciones de limpieza y prevención de fugas de memoria</h2>
+      <p>Muchos efectos establecen recursos persistentes —como suscripciones a WebSockets, escuchadores de eventos con <code>addEventListener</code>, intervalos con <code>setInterval</code> o peticiones de red cancelables mediante <code>AbortController</code>—. Si el componente se desmonta de la pantalla o el efecto vuelve a ejecutarse con nuevas dependencias sin cerrar el recurso previo, se producen fugas de memoria o condiciones de carrera.</p>
+      <p>Para evitarlo, la función pasada a <code>useEffect</code> puede retornar una <strong>función de limpieza</strong> (<em>cleanup function</em>). React invoca esta función de limpieza antes de ejecutar el efecto nuevamente y justo antes de desmontar el componente:</p>
+      <pre><code>import { useState, useEffect } from 'react';
+
+function BuscadorUsuarios({ consulta }) {
+  const [resultados, setResultados] = useState([]);
+
+  useEffect(() =&gt; {
+    if (!consulta.trim()) {
+      setResultados([]);
+      return;
+    }
+
+    const controlador = new AbortController();
+
+    async function cargarUsuarios() {
+      try {
+        const respuesta = await fetch(`/api/usuarios?q=${encodeURIComponent(consulta)}`, {
+          signal: controlador.signal
+        });
+        const datos = await respuesta.json();
+        setResultados(datos);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Error al consultar usuarios:', error);
+        }
+      }
+    }
+
+    cargarUsuarios();
+
+    return () =&gt; {
+      controlador.abort();
+    };
+  }, [consulta]);
+
+  return (
+    &lt;ul&gt;
+      {resultados.map((u) =&gt; (
+        &lt;li key={u.id}&gt;{u.nombre}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Reglas fundamentales de los Hooks</h2>
+      <p>Internamente, React asocia cada llamada a un hook con el componente mediante el orden exacto en que se invocan durante cada renderizado, almacenándolos en una lista enlazada interna. Para que este mecanismo funcione sin corromperse, deben respetarse dos reglas estrictas:</p>
+      <ol>
+        <li><strong>Invocar hooks únicamente en el nivel superior:</strong> Nunca deben llamarse dentro de condicionales (<code>if</code>), bucles (<code>for</code>, <code>while</code>) ni funciones anidadas.</li>
+        <li><strong>Invocar hooks únicamente desde funciones de React:</strong> Solo pueden ejecutarse dentro de componentes funcionales de React o dentro de hooks personalizados.</li>
+      </ol>
+      <p>Asimismo, no conviene abusar de <code>useEffect</code> para calcular valores derivados del estado o de las propiedades (por ejemplo, concatenar nombre y apellido); esos valores deben calcularse directamente durante el renderizado. Cuando la lógica de estado crece en complejidad o necesita reutilizarse en múltiples componentes, el siguiente paso natural es explorar <a href="D017_react_hooks_avanzados_custom_hooks.html">hooks avanzados y creación de Custom Hooks reutilizables</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

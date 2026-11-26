@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Context API y comparación con librerías de estado global</title>
+  <meta name="description" content="Analiza el uso de Context para evitar prop drilling, sus implicaciones en re-renderizados y cuándo conviene migrar a soluciones como Zustand o Redux Toolkit. No enseña la API completa de Redux clásico. Requiere conocimientos de hooks en React. Conecta con arquitectura de estado en frontend.">
+  <meta name="keywords" content="react, context-api, estado-global, zustand, redux">
+  <meta name="doc-id" content="D018">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="react_context_api_gestion_estado">
+</head>
+<body>
+  <article data-doc-id="D018" data-category-id="C02" data-slug="react_context_api_gestion_estado">
+    <header>
+      <h1>React Context API y comparación con librerías de estado global</h1>
+      <p>Solución al prop drilling mediante Context API, impacto en el árbol de renderizado y criterios arquitectónicos para elegir entre Zustand, Redux Toolkit y herramientas de caché.</p>
+    </header>
+
+    <section>
+      <h2>El problema del prop drilling en jerarquías profundas</h2>
+      <p>En la <a href="D011_arquitectura_componentes_frontend.html">arquitectura de componentes en el frontend</a> y dentro de <a href="D012_react_introduccion_componentes_jsx.html">React</a>, los datos fluyen de forma descendente mediante propiedades. Sin embargo, a medida que una aplicación crece en profundidad, surge con frecuencia una situación conocida como <em>prop drilling</em>: un componente raíz posee información —como el usuario autenticado, el idioma seleccionado o el tema visual— que un componente anidado cinco niveles más abajo necesita consumir.</p>
+      <p>Pasar esa propiedad manualmente a través de cuatro componentes intermedios que no la utilizan acopla sus interfaces públicas y dificulta cualquier refactorización posterior. Aunque patrones de composición con <code>children</code> resuelven muchos casos locales, la <strong>Context API</strong> nativa de React ofrece un mecanismo de inyección de dependencias en el árbol de componentes para difundir valores sin intermediarios.</p>
+    </section>
+
+    <section>
+      <h2>Funcionamiento de React Context API</h2>
+      <p>La implementación de un contexto en React consta de tres pasos bien definidos: crear el objeto de contexto con <code>createContext</code>, envolver la rama de componentes interesada con un <code>Provider</code> que suministra el valor actual, y leer dicho valor en cualquier descendiente mediante el hook <code>useContext</code> (habitualmente encapsulado en un <a href="D017_react_hooks_avanzados_custom_hooks.html">Custom Hook</a> para validar su uso correcto).</p>
+      <pre><code>import { createContext, useContext, useState } from 'react';
+
+const TemaContext = createContext(null);
+
+export function ProveedorTema({ children }) {
+  const [tema, setTema] = useState('claro');
+
+  function alternarTema() {
+    setTema((actual) =&gt; (actual === 'claro' ? 'oscuro' : 'claro'));
+  }
+
+  return (
+    &lt;TemaContext.Provider value={{ tema, alternarTema }}&gt;
+      {children}
+    &lt;/TemaContext.Provider&gt;
+  );
+}
+
+export function useTema() {
+  const contexto = useContext(TemaContext);
+  if (!contexto) {
+    throw new Error('useTema debe utilizarse dentro de un ProveedorTema');
+  }
+  return contexto;
+}</code></pre>
+      <p>Context API forma parte del estándar oficial mantenido dentro del ecosistema JavaScript impulsado por la evolución de ECMAScript y <a href="../01_fundamentos/D009_organismos_estandarizacion_web.html">los organismos de estandarización web</a>, por lo que no introduce dependencias externas ni aumenta el tamaño del paquete distribuido al navegador.</p>
+    </section>
+
+    <section>
+      <h2>Implicaciones de rendimiento y re-renderizados</h2>
+      <p>Un aspecto técnico fundamental que suele pasarse por alto es que Context API está diseñado como un mecanismo de transporte de dependencias, no como un gestor de estado optimizado para actualizaciones de alta frecuencia. Cuando el atributo <code>value</code> de un <code>Provider</code> cambia de referencia, <strong>todos</strong> los componentes descendientes que consumen ese contexto mediante <code>useContext</code> vuelven a renderizarse automáticamente, incluso si solo utilizan una pequeña parte del objeto compartido.</p>
+      <p>Para mitigar re-renderizados innecesarios al utilizar Context API conviene aplicar dos prácticas:</p>
+      <ul>
+        <li><strong>Segregar contextos por dominio:</strong> En lugar de crear un único contexto monolítico con toda la información de la aplicación, dividirlo en contextos independientes (por ejemplo, <code>AuthContext</code>, <code>TemaContext</code> y <code>NotificacionesContext</code>) aísla el impacto de cada actualización.</li>
+        <li><strong>Separar el estado de las acciones:</strong> Proveer el valor del estado y las funciones despachadoras en contextos separados permite que los botones que solo disparan acciones no se re-rendericen cuando cambia el dato.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Comparación con librerías dedicadas de estado global</h2>
+      <p>Cuando una aplicación gestiona estado complejo en el cliente con actualizaciones frecuentes, múltiples suscriptores selectivos o reglas de negocio compartidas entre vistas distantes, las librerías especializadas superan las limitaciones de Context API al permitir suscripciones granulares por selector:</p>
+      <ul>
+        <li><strong>Zustand:</strong> Librería minimalista basada en almacenes (<em>stores</em>) externos al árbol de React que se consumen mediante hooks. Permite que un componente se suscriba únicamente a una propiedad específica del almacén (por ejemplo, <code>useStore((s) =&gt; s.contador)</code>), evitando re-renderizados cuando cambian otras propiedades y eliminando la necesidad de envolver la aplicación en múltiples proveedores anidados.</li>
+        <li><strong>Redux Toolkit (RTK):</strong> Estándar estructurado para aplicaciones de gran escala con flujos de estado altamente predecibles. Introduce almacenes centralizados inmutables, acciones explícitas, herramientas avanzadas de depuración temporal (<em>Redux DevTools</em>) y middlewares para trazabilidad, siendo idóneo cuando múltiples equipos colaboran bajo reglas estrictas de auditoría de cambios.</li>
+      </ul>
+      <p>Asimismo, la ingeniería frontend moderna distingue entre <strong>estado del cliente</strong> (selecciones de interfaz, formularios multipaso, preferencias locales) y <strong>estado del servidor</strong> (datos persistidos en bases de datos remotas). Para este último caso, herramientas especializadas en sincronización de caché como TanStack Query resuelven automáticamente la invalidación, reintentos y paginación sin contaminar los almacenes globales de interfaz.</p>
+    </section>
+
+    <section>
+      <h2>Criterios prácticos de selección</h2>
+      <p>Antes de incorporar una librería externa de estado global, resulta recomendable evaluar la naturaleza real del problema:</p>
+      <ol>
+        <li>Si el dato pertenece a un único componente o a sus hijos directos, basta con <code>useState</code> y <code>props</code>.</li>
+        <li>Si el dato es compartido por múltiples niveles pero cambia con poca frecuencia (autenticación, idioma, configuración regional, tema), <strong>React Context API</strong> ofrece la solución más limpia y sin dependencias.</li>
+        <li>Si existen múltiples actualizaciones frecuentes sobre un estado compartido en el cliente o lógica compleja entre módulos independientes, conviene adoptar <strong>Zustand</strong> por su ligereza o <strong>Redux Toolkit</strong> cuando se requiera gobernanza estricta y trazabilidad completa.</li>
+      </ol>
+    </section>
+  </article>
+</body>
+</html>

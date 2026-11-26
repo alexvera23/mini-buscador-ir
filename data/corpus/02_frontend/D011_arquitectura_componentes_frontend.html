@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquitectura de componentes, flujo de datos y renderizado en el frontend</title>
+  <meta name="description" content="Actúa como guía central del desarrollo frontend moderno, explicando el diseño basado en componentes reutilizables, separación entre estado y presentación, y modelos de renderizado en navegador. No enseña sintaxis particular de React, Vue o Angular. Requiere fundamentos de HTML, CSS y JavaScript. Enlaza con los hubs de cada framework y UX/UI.">
+  <meta name="keywords" content="frontend, componentes, arquitectura, estado, renderizado">
+  <meta name="doc-id" content="D011">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="arquitectura_componentes_frontend">
+</head>
+<body>
+  <article data-doc-id="D011" data-category-id="C02" data-slug="arquitectura_componentes_frontend">
+    <header>
+      <h1>Arquitectura de componentes, flujo de datos y renderizado en el frontend</h1>
+      <p>Guía estructural sobre descomposición de interfaces en unidades modulares, gestión predecible del estado y estrategias de sincronización con el navegador.</p>
+    </header>
+
+    <section>
+      <h2>Evolución hacia el diseño basado en componentes</h2>
+      <p>Durante los primeros años del desarrollo web, las interfaces solían organizarse separando estrictamente los archivos por tecnología: hojas de estilo globales en archivos CSS independientes, plantillas de marcado en documentos HTML extensos y scripts de comportamiento en ficheros JavaScript separados. Aunque esta división funcionaba en páginas informativas sencillas, se volvía difícil de mantener cuando las aplicaciones adquirían interactividad compleja: modificar un elemento visual obligaba a rastrear reglas CSS globales con cascadas impredecibles y selectores acoplados a identificadores del DOM.</p>
+      <p>Este recorrido histórico desde sitios estáticos hasta aplicaciones interactivas se detalla en <a href="../01_fundamentos/D001_introduccion_evolucion_web.html">la evolución de la World Wide Web</a>. Como respuesta a los problemas de escalabilidad en interfaces ricas, la ingeniería frontend moderna adoptó la arquitectura orientada a componentes. En lugar de dividir el código por lenguaje, la interfaz se fragmenta por unidad funcional y visual autocontenida: un botón, una tarjeta de producto, una barra de navegación o un formulario completo encapsulan su propia estructura, lógica de interacción y presentación.</p>
+    </section>
+
+    <section>
+      <h2>Anatomía de un componente y jerarquía de árbol</h2>
+      <p>Un componente de interfaz puede entenderse conceptualmente como una función que recibe datos de entrada y devuelve una descripción declarativa de lo que debe mostrarse en pantalla. Esta abstracción establece tres propiedades fundamentales:</p>
+      <ul>
+        <li><strong>Encapsulamiento:</strong> Los detalles internos de implementación —como variables auxiliares, manejadores de eventos locales o estilos encapsulados— permanecen ocultos respecto al resto de la aplicación.</li>
+        <li><strong>Composición:</strong> Los componentes complejos se construyen combinando componentes más pequeños y especializados. Esto forma un árbol jerárquico donde un nodo raíz contiene secciones, listas y controles atómicos.</li>
+        <li><strong>Reutilización:</strong> Al parametrizar su comportamiento mediante propiedades de entrada, una misma definición de componente puede instanciarse múltiples veces con distintos datos sin duplicar código.</li>
+      </ul>
+      <p>Para mantener saludable esta jerarquía, conviene distinguir entre componentes de presentación y componentes contenedores o de dominio. Los primeros se enfocan en representar visualmente los datos recibidos y emitir eventos ante interacciones del usuario, manteniendo una alta reutilización. Los segundos coordinan la obtención de datos, validaciones de negocio y orquestación del estado de una vista completa.</p>
+    </section>
+
+    <section>
+      <h2>Flujo unidireccional de datos y gestión del estado</h2>
+      <p>El estado representa cualquier dato dinámico que cambia a lo largo del tiempo en respuesta a acciones del usuario, respuestas de red o temporizadores, y cuya modificación requiere actualizar la interfaz. Ejemplos habituales incluyen el texto ingresado en un buscador, el contenido de un carrito de compras, el indicador de carga de una petición o los datos de perfil de una sesión autenticada.</p>
+      <p>En las arquitecturas modernas predomina el flujo unidireccional de datos (<em>one-way data flow</em>). Bajo este modelo, el estado reside en un componente ancestro común y desciende hacia los componentes hijos a través de propiedades de solo lectura. Cuando un componente hijo necesita alterar información que no le pertenece, no muta directamente la referencia recibida; en su lugar, invoca una función de retorno (<em>callback</em>) o emite un evento hacia el componente propietario del estado.</p>
+      <pre><code>// Representación conceptual del flujo unidireccional
+function ListaTareas({ tareas, alCompletar }) {
+  return tareas.map((tarea) =&gt; (
+    ItemTarea({
+      texto: tarea.titulo,
+      completada: tarea.hecha,
+      alHacerClic: () =&gt; alCompletar(tarea.id)
+    })
+  ));
+}</code></pre>
+      <p>Este patrón evita ciclos de actualización ocultos y facilita depurar errores, ya que existe una única fuente de verdad para cada fragmento de información. Asimismo, los sistemas actuales clasifican el estado según su alcance:</p>
+      <ul>
+        <li><strong>Estado local de interfaz:</strong> Pertenece exclusivamente a un componente (por ejemplo, si un menú desplegable está abierto o cerrado).</li>
+        <li><strong>Estado compartido entre componentes:</strong> Necesita sincronizarse entre ramas distantes del árbol, como el tema visual o el usuario autenticado.</li>
+        <li><strong>Estado asíncrono del servidor:</strong> Caché local de recursos obtenidos mediante APIs, sujeto a políticas de revalidación, paginación y manejo de errores de red.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Mecanismos de renderizado y reconciliación en el navegador</h2>
+      <p>Manipular directamente el Document Object Model (DOM) del navegador de forma imperativa ante cada pequeño cambio resulta propenso a inconsistencias y degradación de rendimiento si se provocan recálculos forzados de diseño (<em>reflow</em>) y repintado (<em>repaint</em>). Para resolverlo, las bibliotecas y frameworks frontend implementan capas de renderizado declarativo.</p>
+      <p>En el modelo declarativo, el desarrollador describe cómo debe lucir la interfaz para un estado determinado, y el motor del framework se encarga de calcular las operaciones mínimas necesarias para transformar el DOM actual en el estado deseado. Existen dos estrategias predominantes para lograrlo:</p>
+      <ul>
+        <li><strong>Reconciliación mediante DOM Virtual:</strong> Se mantiene en memoria una representación ligera de árboles de nodos. Ante un cambio de estado, se genera un nuevo árbol virtual, se compara con el anterior mediante algoritmos heurísticos de diferenciación (<em>diffing</em>) y se aplican en lote únicamente los parches necesarios al DOM real.</li>
+        <li><strong>Reactividad de grano fino y compilación:</strong> En lugar de reevaluar subárboles completos, sistemas basados en señales (<em>signals</em>), observables o compilación estática rastrean exactamente qué nodos textuales o atributos dependen de cada variable reactiva, actualizando directamente la referencia puntual en el DOM sin árboles intermedios.</li>
+      </ul>
+      <p>Adicionalmente, el lugar y momento en que se genera el HTML inicial define estrategias arquitectónicas clave: el renderizado en el cliente (CSR) descarga una base mínima y construye la interfaz mediante JavaScript en el navegador; el renderizado en el servidor (SSR) genera el documento HTML completo por petición y luego lo vuelve interactivo mediante hidratación; y la generación estática (SSG) precompila las vistas en tiempo de construcción.</p>
+    </section>
+
+    <section>
+      <h2>Ecosistema de frameworks y relación con otras disciplinas</h2>
+      <p>Sobre estos principios comunes, cada herramienta del ecosistema aporta convenciones y compromisos distintos que conviene conocer antes de elegir una pila tecnológica:</p>
+      <ul>
+        <li>En <a href="D012_react_introduccion_componentes_jsx.html">React, JSX y la composición declarativa de interfaces</a> se aborda una biblioteca centrada en funciones puras, <a href="D016_react_hooks_usestate_useeffect.html">hooks esenciales de estado y sincronización</a>, <a href="D017_react_hooks_avanzados_custom_hooks.html">hooks avanzados y lógica reutilizable</a> y <a href="D018_react_context_api_gestion_estado.html">estrategias de estado global mediante Context API</a>.</li>
+        <li>En <a href="D013_vue_introduccion_arquitectura_progresiva.html">Vue.js y su enfoque de framework progresivo</a> se explora la integración incremental mediante componentes de archivo único y reactividad basada en proxies.</li>
+        <li>En <a href="D014_angular_arquitectura_plataforma_cli.html">Angular como plataforma integral de desarrollo frontend</a> se analiza un entorno completo con inyección de dependencias, enrutamiento integrado y tipado estricto sustentado en <a href="../10_ecosistema/D069_typescript_tipado_estatico_ecosistema_web.html">TypeScript como base de seguridad de tipos</a>.</li>
+      </ul>
+      <p>Finalmente, construir una arquitectura frontend sólida requiere integrar <a href="D015_principios_fundamentales_ux_ui.html">principios fundamentales de UX y UI</a> para garantizar accesibilidad y usabilidad, coordinar <a href="../06_arquitectura/D045_arquitectura_fullstack_integracion_cliente_servidor.html">topologías de integración frontend y backend</a> y <a href="../06_arquitectura/D041_arquitectura_software_atributos_calidad.html">atributos de calidad arquitectónica</a>, y asegurar la fiabilidad mediante <a href="../07_ingenieria/D048_clean_code_principios_legibilidad_mantenibilidad.html">prácticas de Clean Code</a> y <a href="../07_ingenieria/D051_pruebas_frontend_e2e_panorama_estrategia.html">estrategias de pruebas frontend y End-to-End</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

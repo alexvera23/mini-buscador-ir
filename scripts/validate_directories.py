@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validator 3: Validate the 50 physical corpus directories against categories.json."""
+"""Validator: Validate physical directory structure under data/corpus against categories.json and documents.json."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(".")
 CORPUS_DIR = ROOT / "data" / "corpus"
-CATS_FILE = ROOT / "data" / "metadata" / "categories.json"
+META_DIR = ROOT / "data" / "metadata"
 
 
 def validate() -> int:
@@ -19,50 +19,44 @@ def validate() -> int:
         print(f"ERROR: Missing corpus directory: {CORPUS_DIR}")
         return 1
 
-    cats_data = json.loads(CATS_FILE.read_text(encoding="utf-8"))
-    expected_cat_dirs: set[str] = set()
-    expected_sub_dirs: set[Path] = set()
+    cats_data = json.loads((META_DIR / "categories.json").read_text(encoding="utf-8"))
+    docs_data = json.loads((META_DIR / "documents.json").read_text(encoding="utf-8"))
 
-    for cat in cats_data["categories"]:
-        cat_dir = CORPUS_DIR / cat["dir_name"]
-        expected_cat_dirs.add(cat["dir_name"])
-        if not cat_dir.is_dir():
-            errors.append(f"Missing category directory: {cat_dir}")
-            continue
-        for sub in cat["subcategories"]:
-            sub_dir = cat_dir / sub["dir_name"]
-            expected_sub_dirs.add(sub_dir)
-            if not sub_dir.is_dir():
-                errors.append(f"Missing subcategory directory: {sub_dir}")
-
-    # Check for unknown directories
+    expected_cat_dirs = {cat["dir_name"] for cat in cats_data["categories"]}
     actual_cat_dirs = {p.name for p in CORPUS_DIR.iterdir() if p.is_dir()}
-    unknown_cats = actual_cat_dirs - expected_cat_dirs
-    if unknown_cats:
-        errors.append(f"Unknown category directories: {sorted(unknown_cats)}")
 
-    actual_sub_dirs = {
-        sub for cat in CORPUS_DIR.iterdir() if cat.is_dir() for sub in cat.iterdir() if sub.is_dir()
-    }
-    unknown_subs = actual_sub_dirs - expected_sub_dirs
-    if unknown_subs:
-        errors.append(f"Unknown subcategory directories: {[str(p) for p in sorted(unknown_subs)]}")
+    missing_dirs = expected_cat_dirs - actual_cat_dirs
+    extra_dirs = actual_cat_dirs - expected_cat_dirs
+    if missing_dirs:
+        errors.append(f"Missing category directories: {sorted(missing_dirs)}")
+    if extra_dirs:
+        errors.append(f"Unexpected category directories: {sorted(extra_dirs)}")
 
-    # Ensure no 500 empty HTML files were prematurely created
-    html_files = list(CORPUS_DIR.rglob("*.html"))
-    if html_files:
-        errors.append(f"Found {len(html_files)} HTML files inside data/corpus/ (expected 0 in planning phase)")
+    # Verificar ausencia de subdirectorios dentro de cada categoría
+    for cat_dir_name in sorted(expected_cat_dirs & actual_cat_dirs):
+        cat_path = CORPUS_DIR / cat_dir_name
+        subdirs = [p.name for p in cat_path.iterdir() if p.is_dir()]
+        if subdirs:
+            errors.append(f"Subdirectories found in {cat_path}: {subdirs} (subcategories are not allowed)")
+
+    # Verificar que todos los archivos HTML físicos estén en documents.json
+    catalog_paths = {doc["path"] for doc in docs_data["documents"]}
+    html_files = sorted(CORPUS_DIR.rglob("*.html"))
+    for html_file in html_files:
+        rel_path = html_file.as_posix()
+        if rel_path not in catalog_paths:
+            errors.append(f"Uncatalogued HTML file: {rel_path}")
 
     if errors:
         print(f"DIRECTORY VALIDATION FAILED ({len(errors)} errors):")
-        for err in errors:
-            print(f"  - {err}")
+        for e in errors[:20]:
+            print(f"  - {e}")
         return 1
 
     print("DIRECTORY VALIDATION PASSED:")
     print(f"  - Category directories: {len(actual_cat_dirs)}/10")
-    print(f"  - Subcategory directories: {len(actual_sub_dirs)}/50")
-    print("  - No unknown directories, no premature HTML articles.")
+    print("  - Subcategory directories: 0")
+    print(f"  - Catalogued HTML files present: {len(html_files)}")
     return 0
 
 
