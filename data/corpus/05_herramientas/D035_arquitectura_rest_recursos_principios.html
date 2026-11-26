@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arquitectura REST: recursos, uniformidad de interfaz y diseño de endpoints</title>
+  <meta name="description" content="Explica las restricciones arquitectónicas de REST definidas por Roy Fielding, modelado de URIs orientadas a sustantivos, paginación, filtrado y estrategias de versionado. No implementa código de un framework específico. Requiere dominar métodos y estados HTTP. Enlaza con OpenAPI, GraphQL y seguridad de APIs.">
+  <meta name="keywords" content="rest, apis, recursos, endpoints, versionado">
+  <meta name="doc-id" content="D035">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="arquitectura_rest_recursos_principios">
+</head>
+<body>
+  <article data-doc-id="D035" data-category-id="C05" data-slug="arquitectura_rest_recursos_principios">
+    <header>
+      <h1>Arquitectura REST: recursos, uniformidad de interfaz y diseño de endpoints</h1>
+      <p>Restricciones arquitectónicas formuladas por Roy Fielding, modelado de recursos y subrecursos sobre HTTP, paginación, filtrado y estrategias de versionado.</p>
+    </header>
+
+    <section>
+      <h2>Restricciones arquitectónicas de REST</h2>
+      <p>Definido por Roy Fielding en su tesis doctoral del año 2000, <strong>REST</strong> (<em>Representational State Transfer</em>) no es un protocolo ni un estándar rígido, sino un estilo arquitectónico para sistemas hipermedia distribuidos construido sobre la semántica nativa del <a href="D034_protocolo_http_metodos_estados_cabeceras.html">protocolo HTTP</a> y alineado con los principios de <a href="../03_backend/D023_diseno_apis_web_principios_contratos.html">diseño de APIs web y contratos</a>.</p>
+      <p>Para que un sistema sea considerado auténticamente RESTful debe respetar seis restricciones arquitectónicas clave:</p>
+      <ul>
+        <li><strong>Separación cliente-servidor:</strong> Desacopla la interfaz de usuario del almacenamiento y la lógica de dominio, permitiendo que ambos evolucionen independientemente.</li>
+        <li><strong>Ausencia de estado (Stateless):</strong> El servidor no almacena contexto de sesión del cliente entre peticiones; cada solicitud incluye toda la información de autenticación y contexto necesaria.</li>
+        <li><strong>Capacidad de caché (Cacheable):</strong> Toda respuesta debe declarar explícitamente si puede ser almacenada en caché por intermediarios o clientes mediante cabeceras HTTP estándar.</li>
+        <li><strong>Interfaz uniforme:</strong> Estandariza la interacción mediante identificación de recursos por URI, manipulación a través de representaciones (como JSON), mensajes autodescriptivos y enlaces hipermedia (HATEOAS).</li>
+        <li><strong>Sistema en capas:</strong> Permite intercalar proxies inversos, balanceadores de carga y puertas de enlace de seguridad de forma transparente para el cliente.</li>
+        <li><strong>Código bajo demanda (opcional):</strong> Capacidad de extender la funcionalidad del cliente enviando código ejecutable cuando sea requerido.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Modelado de URIs y jerarquía de recursos</h2>
+      <p>En REST, el concepto central es el <strong>recurso</strong> (cualquier entidad conceptual con identidad propia: un usuario, una factura, un catálogo). Las URIs identifican recursos mediante sustantivos en plural y minúsculas separados por guiones, delegando la acción exclusivamente al método HTTP:</p>
+      <pre><code>GET    /api/v1/autores                 # Listar colección de autores
+POST   /api/v1/autores                 # Crear un nuevo autor
+GET    /api/v1/autores/42              # Obtener representación del autor 42
+PUT    /api/v1/autores/42              # Reemplazar completamente el autor 42
+PATCH  /api/v1/autores/42              # Actualizar parcialmente campos del autor 42
+DELETE /api/v1/autores/42              # Eliminar el autor 42
+GET    /api/v1/autores/42/libros       # Listar subrecurso: libros del autor 42</code></pre>
+      <p>Conviene evitar anidar subrecursos más allá de dos niveles (como <code>/autores/42/libros/9/capitulos/3/comentarios</code>), ya que genera acoplamientos rígidos en las rutas; en su lugar, los recursos independientes pueden exponerse en el nivel raíz filtrando por identificador.</p>
+    </section>
+
+    <section>
+      <h2>Paginación, filtrado y ordenamiento</h2>
+      <p>Las colecciones abiertas deben acotar el volumen de registros devueltos mediante parámetros de consulta (<em>query parameters</em>) predecibles:</p>
+      <ul>
+        <li><strong>Paginación por desplazamiento (Offset/Limit):</strong> Intuitiva mediante <code>?page=3&amp;limit=20</code>, adecuada para tablas administrativas con salto directo a páginas específicas, aunque pierde eficiencia en tablas con millones de filas.</li>
+        <li><strong>Paginación por cursor (Keyset/Cursor):</strong> Utiliza un puntero opaco hacia el último elemento visto (<code>?cursor=eyJpZCI6NTB9&amp;limit=20</code>), garantizando rendimiento constante y evitando duplicados u omisiones cuando se insertan registros nuevos en tiempo real.</li>
+        <li><strong>Filtrado y ordenamiento:</strong> Permiten acotar resultados (<code>?estado=publicado&amp;anio=2026</code>) y controlar el criterio de orden (<code>?sort=-fechaPublicacion,titulo</code>).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Estrategias de versionado y evolución de APIs</h2>
+      <p>Cuando una modificación en los contratos rompe la compatibilidad con consumidores existentes, se recurre a estrategias de versionado explícitas: el <strong>versionado en la ruta URI</strong> (<code>/api/v1/...</code>, <code>/api/v2/...</code>) destaca por su máxima visibilidad y facilidad de enrutamiento en gateways; el <strong>versionado por cabeceras personalizadas o negociación de medios</strong> (<code>Accept: application/vnd.empresa.v2+json</code>) mantiene URIs puras a costa de mayor complejidad en pruebas manuales. Para documentar y validar formalmente cada versión resulta fundamental integrar <a href="D040_openapi_swagger_documentacion_contratos.html">especificaciones OpenAPI y Swagger</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

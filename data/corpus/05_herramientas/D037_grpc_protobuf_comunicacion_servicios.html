@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gRPC y Protocol Buffers: comunicación binaria de alto rendimiento entre servicios</title>
+  <meta name="description" content="Explica el paradigma RPC moderno sobre HTTP/2, definición de contratos mediante archivos .proto, serialización binaria compacta y streaming bidireccional. No profundiza en despliegue de service mesh. Requiere nociones de APIs y serialización de datos. Enlaza con microservicios y arquitecturas distribuidas.">
+  <meta name="keywords" content="grpc, protobuf, http2, rpc, microservicios">
+  <meta name="doc-id" content="D037">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="grpc_protobuf_comunicacion_servicios">
+</head>
+<body>
+  <article data-doc-id="D037" data-category-id="C05" data-slug="grpc_protobuf_comunicacion_servicios">
+    <header>
+      <h1>gRPC y Protocol Buffers: comunicación binaria de alto rendimiento entre servicios</h1>
+      <p>Paradigma de llamada a procedimiento remoto sobre HTTP/2, contratos estrictos en Protocol Buffers, modos de streaming y casos de uso en comunicación interna entre servicios.</p>
+    </header>
+
+    <section>
+      <h2>El paradigma RPC moderno y el rol de gRPC</h2>
+      <p>Mientras que <a href="D035_arquitectura_rest_recursos_principios.html">REST</a> modela operaciones CRUD alrededor de recursos y <a href="D036_graphql_esquemas_consultas_mutaciones.html">GraphQL</a> prioriza consultas flexibles desde clientes visuales, <strong>gRPC</strong> (<em>gRPC Remote Procedure Calls</em>, creado por Google y hospedado en la Cloud Native Computing Foundation) retoma el paradigma de llamada a procedimiento remoto: permite que un servicio cliente invoque directamente métodos definidos en un servicio remoto como si fueran funciones locales.</p>
+      <p>gRPC está diseñado específicamente para minimizar la latencia, reducir el consumo de ancho de banda y garantizar contratos estrictos entre múltiples lenguajes de programación en arquitecturas internas distribuídas.</p>
+    </section>
+
+    <section>
+      <h2>Contratos estrictos con Protocol Buffers (Protobuf)</h2>
+      <p>Por defecto, gRPC utiliza <strong>Protocol Buffers (Protobuf)</strong> tanto como lenguaje de definición de interfaz (IDL) como formato de serialización binaria. El desarrollador define los mensajes y servicios en un archivo <code>.proto</code> neutro respecto al lenguaje, identificando cada campo con una etiqueta numérica única que permite evolucionar esquemas manteniendo compatibilidad hacia atrás y hacia adelante:</p>
+      <pre><code>syntax = "proto3";
+
+package inventario.v1;
+
+service ServicioInventario {
+  rpc ConsultarStock (SolicitudStock) returns (RespuestaStock);
+}
+
+message SolicitudStock {
+  string sku = 1;
+  int32 almacen_id = 2;
+}
+
+message RespuestaStock {
+  string sku = 1;
+  int32 unidades_disponibles = 2;
+  bool reabastecimiento_pendiente = 3;
+}</code></pre>
+      <p>A partir de este archivo, el compilador <code>protoc</code> genera automáticamente clases de datos tipadas, clientes (<em>stubs</em>) y esqueletos de servidor en Go, Java, Python, Node.js, C#, Rust o C++. Al serializar los mensajes en un formato binario compacto en lugar de texto JSON repetitivo, los paquetes ocupan una fracción del tamaño y se analizan órdenes de magnitud más rápido en CPU.</p>
+    </section>
+
+    <section>
+      <h2>Transporte sobre HTTP/2 y patrones de comunicación</h2>
+      <p>gRPC se apoya nativamente sobre <strong>HTTP/2</strong> (evolución descrita en <a href="D034_protocolo_http_metodos_estados_cabeceras.html">protocolo HTTP a fondo</a>), aprovechando la multiplexación de flujos binarios sobre una única conexión TCP persistente, propagación de tiempos límite (<em>deadlines</em>) y cancelación propagada entre llamadas encadenadas. Además, soporta cuatro patrones de comunicación:</p>
+      <ul>
+        <li><strong>RPC Unario (Unary):</strong> El cliente envía una única petición y recibe una única respuesta, equivalente a una llamada funcional tradicional.</li>
+        <li><strong>Streaming del servidor (Server Streaming):</strong> El cliente envía una petición y recibe un flujo continuo de mensajes desde el servidor hasta que este cierra el canal (ideal para cotizaciones o exportación progresiva).</li>
+        <li><strong>Streaming del cliente (Client Streaming):</strong> El cliente envía una secuencia de mensajes hacia el servidor y espera una única respuesta consolidada al finalizar (útil para carga fragmentada o ingestión de telemetría).</li>
+        <li><strong>Streaming bidireccional (Bidirectional Streaming):</strong> Ambos extremos transmiten flujos independientes de mensajes simultáneamente sobre la misma conexión HTTP/2.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>¿Cuándo preferir gRPC frente a REST?</h2>
+      <p>gRPC brilla en la comunicación interna entre microservicios políglotas (<em>tráfico este-oeste</em>), sistemas de IoT con ancho de banda restringido y tuberías de procesamiento de baja latencia. Sin embargo, para APIs públicas abiertas a terceros o consumo directo desde navegadores web —donde el soporte nativo de HTTP/2 sin proxies intermediarios como <code>gRPC-Web</code> es limitado y la legibilidad directa del texto JSON facilita la depuración—, REST y OpenAPI continúan siendo la opción más accesible.</p>
+    </section>
+  </article>
+</body>
+</html>

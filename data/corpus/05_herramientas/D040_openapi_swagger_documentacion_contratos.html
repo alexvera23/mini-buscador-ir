@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAPI y Swagger: especificación formal y documentación viva de APIs</title>
+  <meta name="description" content="Introduce el estándar OpenAPI para describir endpoints, esquemas de entrada/salida y autenticación en YAML o JSON, junto con estrategias API-First frente a Code-First. No cubre diseño gráfico de portales. Requiere conocer REST y JSON. Enlaza con generación de clientes SDK y pruebas de contrato.">
+  <meta name="keywords" content="openapi, swagger, contratos, documentacion, api-first">
+  <meta name="doc-id" content="D040">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="openapi_swagger_documentacion_contratos">
+</head>
+<body>
+  <article data-doc-id="D040" data-category-id="C05" data-slug="openapi_swagger_documentacion_contratos">
+    <header>
+      <h1>OpenAPI y Swagger: especificación formal y documentación viva de APIs</h1>
+      <p>Estándar OpenAPI Specification (OAS), anatomía de contratos en YAML/JSON, enfoques API-First frente a Code-First, y automatización de SDKs, mocks y pruebas de contrato.</p>
+    </header>
+
+    <section>
+      <h2>Del estándar Swagger a la Especificación OpenAPI</h2>
+      <p>Documentar manualmente endpoints en documentos estáticos o wikis aisladas conduce inevitablemente a documentación desactualizada respecto al comportamiento real del código en producción. Para resolver este problema dentro de la <a href="D035_arquitectura_rest_recursos_principios.html">arquitectura REST</a> y el <a href="../03_backend/D023_diseno_apis_web_principios_contratos.html">diseño de APIs web y contratos</a>, nació la <strong>Especificación OpenAPI (OAS)</strong> —evolución abierta de la especificación original Swagger— gestionada por la Linux Foundation.</p>
+      <p>OpenAPI define un formato estándar legible tanto por personas como por máquinas (escrito en <strong>YAML</strong> o <strong>JSON</strong>) que describe íntegramente la superficie de una API HTTP: rutas disponibles, métodos soportados, parámetros de ruta y consulta, esquemas de cuerpos de petición y respuesta basados en JSON Schema, códigos de error y esquemas de seguridad.</p>
+      <p>Conviene distinguir ambos términos: <strong>OpenAPI</strong> es el estándar de especificación del contrato, mientras que <strong>Swagger</strong> refiere actualmente al conjunto de herramientas alrededor del estándar (como <em>Swagger UI</em> para renderizar portales interactivos de prueba en el navegador o <em>Swagger Editor</em>).</p>
+    </section>
+
+    <section>
+      <h2>Anatomía de un documento OpenAPI 3.1</h2>
+      <p>Un archivo de contrato OpenAPI se organiza en secciones estructuradas que eliminan ambigüedades entre equipos productores y consumidores:</p>
+      <pre><code>openapi: 3.1.0
+info:
+  title: API de Gestión de Catálogo
+  version: 1.0.0
+paths:
+  /productos/{id}:
+    get:
+      summary: Obtiene el detalle de un producto por su identificador
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        '404':
+          description: Producto no encontrado
+components:
+  schemas:
+    Producto:
+      type: object
+      required: [id, nombre, precio]
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        precio:
+          type: number</code></pre>
+    </section>
+
+    <section>
+      <h2>Enfoques de desarrollo: API-First frente a Code-First</h2>
+      <p>Existen dos flujos principales para integrar OpenAPI dentro del ciclo de vida de desarrollo de software:</p>
+      <ul>
+        <li><strong>API-First (Diseño primero):</strong> El contrato OpenAPI se redacta y revisa conjuntamente entre frontend, backend y producto <em>antes</em> de implementar la lógica del servidor. A partir de ese archivo aprobado se levantan servidores simulados (<em>mock servers</em>) para que el frontend comience a integrar inmediatamente mientras el backend implementa los controladores reales.</li>
+        <li><strong>Code-First (Código primero):</strong> El desarrollador escribe primero los controladores y esquemas de validación en el backend —por ejemplo utilizando FastAPI en Python, Springdoc en Java o Fastify con JSON Schema en Node.js— y el framework genera automáticamente el documento OpenAPI actualizado en tiempo de ejecución o compilación.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Automatización derivada del contrato formal</h2>
+      <p>Contar con una especificación OpenAPI válida desbloquea un ecosistema amplio de automatización en integración continua: generación automática de clientes SDK tipados para TypeScript, Python o aplicaciones móviles (mediante herramientas como <code>OpenAPI Generator</code> o <code>openapi-typescript</code>), validación en tiempo de ejecución en puertas de enlace (<em>API Gateways</em>) para rechazar tráfico no conforme antes de llegar al servidor, y ejecución de <strong>pruebas de contrato</strong> automatizadas que verifican que cada despliegue respeta estrictamente los esquemas prometidos a sus consumidores.</p>
+    </section>
+  </article>
+</body>
+</html>

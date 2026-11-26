@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSockets y comunicación bidireccional en tiempo real</title>
+  <meta name="description" content="Detalla el funcionamiento del protocolo WebSocket tras el handshake HTTP Upgrade, diferencias frente a polling y Server-Sent Events (SSE), y retos de escalado con conexiones persistentes. No enseña una librería de chat completa. Requiere conocer HTTP y eventos asíncronos. Enlaza con Redis Pub/Sub y arquitectura tiempo real.">
+  <meta name="keywords" content="websockets, tiempo-real, sse, polling, full-duplex">
+  <meta name="doc-id" content="D038">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="websockets_comunicacion_tiempo_real">
+</head>
+<body>
+  <article data-doc-id="D038" data-category-id="C05" data-slug="websockets_comunicacion_tiempo_real">
+    <header>
+      <h1>WebSockets y comunicación bidireccional en tiempo real</h1>
+      <p>Negociación HTTP Upgrade, canal full-duplex persistente sobre TCP, comparación técnica con Polling y Server-Sent Events (SSE), y estrategias de escalado horizontal.</p>
+    </header>
+
+    <section>
+      <h2>Limitaciones del modelo clásico petición-respuesta</h2>
+      <p>En el modelo estándar del <a href="D034_protocolo_http_metodos_estados_cabeceras.html">protocolo HTTP</a>, la comunicación siempre la inicia el cliente: el servidor no puede enviar datos espontáneamente hacia el navegador sin que exista una solicitud previa pendiente. Cuando una aplicación requiere actualizaciones instantáneas —como chats colaborativos, tableros financieros en vivo, edición compartida o notificaciones críticas—, forzar HTTP clásico genera latencia o sobrecarga innecesaria.</p>
+    </section>
+
+    <section>
+      <h2>El protocolo WebSocket y el Handshake HTTP Upgrade</h2>
+      <p>Estandarizado en el RFC 6455, el <strong>protocolo WebSocket</strong> (esquemas <code>ws://</code> y <code>wss://</code> sobre TLS) establece un canal de comunicación <strong>bidireccional simultáneo (full-duplex)</strong> y persistente sobre una única conexión TCP.</p>
+      <p>Para atravesar sin fricciones firewalls y proxies web existentes, toda conexión WebSocket comienza como una petición HTTP/1.1 convencional que solicita cambiar de protocolo mediante las cabeceras <code>Upgrade</code> y <code>Connection</code>:</p>
+      <pre><code>GET /canal-eventos HTTP/1.1
+Host: api.ejemplo.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+Sec-WebSocket-Version: 13
+
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</code></pre>
+      <p>Una vez recibida la respuesta <code>101 Switching Protocols</code>, la conexión abandona el formato HTTP y ambos extremos intercambian tramas ligeras (<em>frames</em>) binarias o UTF-8 con apenas unos pocos bytes de sobrecarga, eliminando el envío repetitivo de cabeceras HTTP en cada mensaje.</p>
+    </section>
+
+    <section>
+      <h2>Alternativas de tiempo real: Polling, Long Polling y SSE</h2>
+      <p>Antes de adoptar WebSockets conviene evaluar si el flujo de datos realmente requiere bidireccionalidad constante o si basta con alternativas más simples sobre HTTP:</p>
+      <ul>
+        <li><strong>Short Polling:</strong> El cliente consulta periódicamente mediante <code>GET</code> cada ciertos segundos. Es trivial de implementar, pero desperdicia recursos cuando no hay novedades e introduce latencia proporcional al intervalo de sondeo.</li>
+        <li><strong>Long Polling:</strong> El servidor retiene la petición HTTP abierta hasta que ocurre un evento nuevo o expira un tiempo límite, momento en que responde y el cliente abre inmediatamente otra solicitud.</li>
+        <li><strong>Server-Sent Events (SSE):</strong> Estándar nativo de HTML5 (<code>EventSource</code>) sobre HTTP convencional que establece un flujo unidireccional continuo del servidor hacia el cliente (<code>Content-Type: text/event-stream</code>). Incluye reconexión automática nativa, soporta HTTP/2 y resulta ideal para paneles de monitoreo, feeds de noticias o transmisión progresiva de respuestas de modelos de lenguaje donde el cliente apenas envía mensajes.</li>
+        <li><strong>WebSockets:</strong> Indispensable cuando tanto el cliente como el servidor emiten mensajes frecuentes de baja latencia en ambas direcciones simultáneamente.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Gestión de conexiones persistentes y escalado horizontal</h2>
+      <p>A diferencia de las APIs REST sin estado, un servidor WebSocket mantiene conexiones activas en memoria durante minutos u horas. Esto exige implementar mecanismos periódicos de latido (<strong>Ping/Pong heartbeats</strong>) para detectar desconexiones silenciosas en redes móviles y liberar recursos.</p>
+      <p>Asimismo, al escalar horizontalmente detrás de un balanceador de carga con múltiples instancias de servidor, un usuario conectado a la instancia A no recibirá directamente un mensaje publicado en la instancia B. Para coordinar múltiples nodos se intercala un bus de mensajería distribuido mediante patrones <strong>Pub/Sub</strong> (como Redis Pub/Sub o NATS) que difunde cada evento hacia todas las instancias suscritas.</p>
+    </section>
+  </article>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhooks: notificaciones basadas en eventos entre sistemas</title>
+  <meta name="description" content="Explica el patrón push de integración entre servicios mediante callbacks HTTP, verificación de autenticidad con firmas HMAC, idempotencia y políticas de reintento. No cubre brokers como Kafka en detalle. Requiere bases de APIs HTTP y seguridad básica. Enlaza con arquitectura orientada a eventos y colas.">
+  <meta name="keywords" content="webhooks, eventos, hmac, idempotencia, integraciones">
+  <meta name="doc-id" content="D039">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="webhooks_arquitectura_eventos_asincronos">
+</head>
+<body>
+  <article data-doc-id="D039" data-category-id="C05" data-slug="webhooks_arquitectura_eventos_asincronos">
+    <header>
+      <h1>Webhooks: notificaciones basadas en eventos entre sistemas</h1>
+      <p>Patrón de inversión de control mediante callbacks HTTP, verificación criptográfica con firmas HMAC, diseño idempotente y estrategias de reintento exponencial.</p>
+    </header>
+
+    <section>
+      <h2>Inversión del flujo: de consultar (Pull) a ser notificado (Push)</h2>
+      <p>Cuando nuestro <a href="../03_backend/D019_arquitectura_servidores_logica_negocio.html">servidor backend</a> integra servicios externos —como pasarelas de pago, proveedores de envío, repositorios Git o plataformas de mensajería—, muchos eventos importantes ocurren de manera asíncrona fuera de nuestro control (por ejemplo, la confirmación bancaria de un cargo o un <code>push</code> en un repositorio). Consultar repetidamente la API del proveedor cada pocos segundos para detectar cambios resulta ineficiente y consume cuotas de peticiones.</p>
+      <p>Un <strong>Webhook</strong> invierte esta relación: nuestro sistema registra previamente una URL pública de recepción (<em>callback endpoint</em>) ante el proveedor externo y, cada vez que ocurre un evento suscrito, el proveedor dispara automáticamente una petición <code>POST</code> sobre el <a href="D034_protocolo_http_metodos_estados_cabeceras.html">protocolo HTTP</a> con una carga útil JSON describiendo lo sucedido.</p>
+    </section>
+
+    <section>
+      <h2>Seguridad y verificación criptográfica con firmas HMAC</h2>
+      <p>Dado que el endpoint receptor de un webhook debe estar expuesto públicamente en Internet para que el proveedor externo lo alcance, cualquier atacante que descubra esa URL podría intentar enviar peticiones falsificadas simulando que un pago fue aprobado. Nunca debe confiarse en el origen únicamente por dirección IP ni procesar el cuerpo sin autenticarlo.</p>
+      <p>El estándar de seguridad en webhooks consiste en verificar una <strong>firma criptográfica HMAC</strong> (generalmente HMAC-SHA256):</p>
+      <ol>
+        <li>Durante la configuración inicial, ambos sistemas comparten un <strong>secreto de firma</strong> almacenado de forma segura.</li>
+        <li>Al enviar el evento, el emisor calcula el resumen HMAC del cuerpo crudo de la petición (a menudo combinado con una marca de tiempo para prevenir ataques de repetición) y lo incluye en una cabecera HTTP (como <code>X-Hub-Signature-256</code>).</li>
+        <li>El servidor receptor recalcula localmente el HMAC sobre los bytes crudos recibidos y compara ambas firmas utilizando una función de comparación en tiempo constante (como <code>crypto.timingSafeEqual</code>) para evitar ataques de temporización.</li>
+      </ol>
+      <pre><code>import crypto from 'node:crypto';
+
+function verificarFirmaWebhook(cuerpoCrudo, cabeceraFirma, secreto) {
+  const esperado = 'sha256=' + crypto
+    .createHmac('sha256', secreto)
+    .update(cuerpoCrudo)
+    .digest('hex');
+
+  const bufRecibido = Buffer.from(cabeceraFirma || '', 'utf8');
+  const bufEsperado = Buffer.from(esperado, 'utf8');
+
+  return bufRecibido.length === bufEsperado.length &amp;&amp;
+    crypto.timingSafeEqual(bufRecibido, bufEsperado);
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Fiabilidad: respuesta rápida, reintentos e idempotencia</h2>
+      <p>Los proveedores de webhooks suelen imponer tiempos límite estrictos (entre 3 y 10 segundos) para recibir una confirmación HTTP <code>2xx</code>. Si el receptor tarda demasiado o devuelve un código <code>5xx</code>, el emisor asume que la entrega falló y programa reintentos automáticos con <strong>retroceso exponencial</strong> (<em>exponential backoff</em>) durante horas o días.</p>
+      <p>Para operar webhooks de forma resiliente en producción se aplican dos reglas arquitectónicas esenciales:</p>
+      <ul>
+        <li><strong>Desacoplar recepción y procesamiento:</strong> El controlador HTTP debe verificar la firma, persistir el evento crudo en una cola de trabajos o tabla de eventos pendientes y responder inmediatamente <code>200 OK</code> o <code>202 Accepted</code> en pocos milisegundos, delegando la lógica pesada a trabajadores en segundo plano.</li>
+        <li><strong>Garantizar idempotencia mediante identificador de evento:</strong> Debido a los reintentos de red, un mismo evento puede entregarse más de una vez. El receptor debe registrar el identificador único del evento (<code>event_id</code>) en su base de datos con una restricción de unicidad para ignorar de forma segura entregas duplicadas sin acreditar dos veces el mismo pago ni enviar correos repetidos.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>

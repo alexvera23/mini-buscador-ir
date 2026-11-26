@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphQL: esquemas tipados, consultas declarativas y mutaciones</title>
+  <meta name="description" content="Analiza cómo GraphQL permite al cliente solicitar exactamente los datos necesarios mediante un esquema SDL, mitigando over-fetching y under-fetching frente a REST. No cubre implementación de Apollo Server. Requiere conocer APIs REST y JSON. Enlaza con arquitectura backend y rendimiento de consultas.">
+  <meta name="keywords" content="graphql, esquema, queries, mutaciones, apis">
+  <meta name="doc-id" content="D036">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="graphql_esquemas_consultas_mutaciones">
+</head>
+<body>
+  <article data-doc-id="D036" data-category-id="C05" data-slug="graphql_esquemas_consultas_mutaciones">
+    <header>
+      <h1>GraphQL: esquemas tipados, consultas declarativas y mutaciones</h1>
+      <p>Lenguaje de consulta para APIs basado en esquemas fuertemente tipados, resolución de over-fetching y under-fetching, operaciones Query, Mutation y Subscription, y gestión de complejidad.</p>
+    </header>
+
+    <section>
+      <h2>¿Por qué surgió GraphQL frente a REST tradicional?</h2>
+      <p>Desarrollado internamente por Facebook en 2012 y liberado como especificación abierta en 2015, <strong>GraphQL</strong> es un lenguaje de consulta y un entorno de ejecución para APIs que replantea el intercambio de datos respecto a la <a href="D035_arquitectura_rest_recursos_principios.html">arquitectura REST</a> tradicional y el uso múltiple de endpoints sobre <a href="D034_protocolo_http_metodos_estados_cabeceras.html">HTTP</a>.</p>
+      <p>En aplicaciones móviles y clientes frontend complejos con múltiples vistas heterogéneas, consumir endpoints REST fijos suele provocar dos ineficiencias recurrentes:</p>
+      <ul>
+        <li><strong>Over-fetching (sobrecarga de datos):</strong> El endpoint devuelve un objeto JSON completo con treinta atributos cuando la vista móvil únicamente necesitaba el nombre y la miniatura del usuario, desperdiciando ancho de banda y tiempo de deserialización.</li>
+        <li><strong>Under-fetching (insuficiencia de datos):</strong> Un único endpoint no entrega toda la información relacionada necesaria, obligando al cliente a realizar múltiples peticiones secuenciales en cascada (por ejemplo, obtener el usuario, luego sus proyectos y después los colaboradores de cada proyecto).</li>
+      </ul>
+      <p>GraphQL resuelve ambos problemas exponiendo generalmente un <strong>único punto de entrada</strong> (<code>POST /graphql</code>) donde el cliente describe declarativamente la forma exacta de los datos que desea recibir en una sola petición de red.</p>
+    </section>
+
+    <section>
+      <h2>El Esquema (SDL) como contrato fuertemente tipado</h2>
+      <p>Todo servidor GraphQL se articula alrededor de un <strong>esquema</strong> escrito mediante el <em>Schema Definition Language</em> (SDL). Este esquema actúa como la única fuente de verdad entre cliente y servidor, definiendo tipos de objeto, escalares (<code>Int</code>, <code>Float</code>, <code>String</code>, <code>Boolean</code>, <code>ID</code>), relaciones entre entidades y nulabilidad explícita (indicada con <code>!</code>):</p>
+      <pre><code>type Autor {
+  id: ID!
+  nombre: String!
+  libros: [Libro!]!
+}
+
+type Libro {
+  id: ID!
+  titulo: String!
+  anioPublicacion: Int!
+  autor: Autor!
+}
+
+type Query {
+  libro(id: ID!): Libro
+  librosPorAnio(anio: Int!): [Libro!]!
+}
+
+type Mutation {
+  crearLibro(titulo: String!, anioPublicacion: Int!, autorId: ID!): Libro!
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Queries, Mutations, Subscriptions y Resolvers</h2>
+      <p>Las interacciones en GraphQL se clasifican en tres tipos raíz de operación:</p>
+      <ul>
+        <li><strong>Queries (Consultas):</strong> Operaciones de solo lectura donde el cliente selecciona los campos exactos a proyectar. La respuesta JSON replica fielmente la estructura jerárquica solicitada en la consulta.</li>
+        <li><strong>Mutations (Mutaciones):</strong> Operaciones que modifican estado en el servidor (creación, actualización o borrado) y permiten seleccionar inmediatamente en la misma petición los campos actualizados del recurso resultante.</li>
+        <li><strong>Subscriptions (Suscripciones):</strong> Flujos persistentes en tiempo real (habitualmente transportados sobre <a href="D038_websockets_comunicacion_tiempo_real.html">WebSockets</a>) que notifican automáticamente a los clientes suscritos cuando ocurre un evento específico en el servidor.</li>
+      </ul>
+      <p>En el backend, cada campo del esquema está respaldado por una función denominada <strong>Resolver</strong>, responsable de obtener el valor correspondiente desde una base de datos, un microservicio o una caché.</p>
+    </section>
+
+    <section>
+      <h2>Compromisos operativos: caché, errores y consultas profundas</h2>
+      <p>Adoptar GraphQL introduce desafíos arquitectónicos que deben gestionarse deliberadamente:</p>
+      <ul>
+        <li><strong>Caché HTTP estándar:</strong> Dado que casi todas las peticiones viajan como <code>POST</code> hacia una única URL con cuerpo variable, no es posible aprovechar directamente las cachés HTTP intermediarias basadas en URI, requiriendo cachés normalizadas en el cliente (como Apollo Client o Urql) o consultas persistidas vía <code>GET</code>.</li>
+        <li><strong>Problema N+1 en resolvers:</strong> Ejecutar consultas individuales a base de datos dentro de resolvers anidados puede saturar el motor de persistencia si no se agrupan y cachean por lote dentro de cada petición mediante el patrón <strong>DataLoader</strong>.</li>
+        <li><strong>Protección contra abuso:</strong> Un cliente malicioso podría enviar consultas profundamente anidadas (<code>autor -&gt; libros -&gt; autor -&gt; libros...</code>). En producción es indispensable configurar límites máximos de profundidad (<em>query depth limiting</em>), análisis de costo de complejidad y desactivar la introspección pública si la API es privada.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combinación de tablas con JOIN: INNER, LEFT, RIGHT y FULL OUTER</title>
+  <meta name="description" content="Explica cómo relacionar información distribuida en múltiples tablas mediante operaciones de conjunto y claves foráneas, identificando productos cartesianos accidentales. No cubre optimización física de hash joins. Requiere dominar SELECT y claves foráneas. Se relaciona con normalización y consultas eficientes.">
+  <meta name="keywords" content="sql, join, inner-join, left-join, relaciones">
+  <meta name="doc-id" content="D032">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="joins_relaciones_entre_tablas_sql">
+</head>
+<body>
+  <article data-doc-id="D032" data-category-id="C04" data-slug="joins_relaciones_entre_tablas_sql">
+    <header>
+      <h1>Combinación de tablas con JOIN: INNER, LEFT, RIGHT y FULL OUTER</h1>
+      <p>Reconstrucción de entidades normalizadas mediante cláusulas JOIN en SQL, diferencias entre uniones internas y externas, y prevención de productos cartesianos.</p>
+    </header>
+
+    <section>
+      <h2>Propósito de JOIN en esquemas normalizados</h2>
+      <p>Cuando aplicamos buenas prácticas en <a href="D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales</a>, la información del negocio se distribuye en múltiples tablas independientes vinculadas mediante claves primarias y foráneas para evitar redundancias. La cláusula <code>JOIN</code> del estándar SQL permite recombinar dinámicamente filas de dos o más tablas en una única vista de resultados evaluando una condición lógica explícita en la cláusula <code>ON</code>.</p>
+    </section>
+
+    <section>
+      <h2>Tipos principales de operaciones JOIN</h2>
+      <p>Comprender cómo cada variante trata las filas que no encuentran coincidencia en la tabla opuesta es esencial para evitar pérdida silenciosa de datos en reportes y endpoints:</p>
+      <ul>
+        <li><strong>INNER JOIN:</strong> Devuelve exclusivamente las filas donde existe una coincidencia válida en <em>ambas</em> tablas según la condición <code>ON</code>. Si un cliente aún no ha realizado ningún pedido, no aparecerá en el resultado de un <code>INNER JOIN</code> entre <code>clientes</code> y <code>pedidos</code>.</li>
+        <li><strong>LEFT JOIN (o LEFT OUTER JOIN):</strong> Conserva <em>todas</em> las filas de la tabla izquierda (la indicada en el <code>FROM</code>), acompañadas de los datos coincidentes de la tabla derecha. Cuando una fila izquierda no tiene correspondencia en la derecha, las columnas provenientes de la tabla derecha se rellenan con valores <code>NULL</code>. Es indispensable para listar catálogos completos con métricas opcionales o detectar registros sin actividad mediante <code>WHERE derecha.id IS NULL</code>.</li>
+        <li><strong>RIGHT JOIN (o RIGHT OUTER JOIN):</strong> Comportamiento simétrico al <code>LEFT JOIN</code>, conservando todas las filas de la tabla derecha y rellenando con <code>NULL</code> las columnas sin coincidencia de la izquierda. En la práctica se prefiere reescribir la consulta invirtiendo el orden de las tablas con <code>LEFT JOIN</code> para mantener una lectura uniforme de izquierda a derecha.</li>
+        <li><strong>FULL OUTER JOIN:</strong> Combina los resultados de <code>LEFT JOIN</code> y <code>RIGHT JOIN</code>, conservando todas las filas de ambas tablas y completando con <code>NULL</code> el lado ausente cuando no exista correspondencia. Resulta útil en conciliaciones de datos entre dos fuentes.</li>
+      </ul>
+      <pre><code>-- Listar todos los clientes incluso si no tienen pedidos registrados
+SELECT
+  c.id AS cliente_id,
+  c.nombre,
+  p.id AS pedido_id,
+  p.total
+FROM clientes c
+LEFT JOIN pedidos p ON p.cliente_id = c.id
+ORDER BY c.nombre ASC;</code></pre>
+    </section>
+
+    <section>
+      <h2>Uniones múltiples y auto-uniones (Self Join)</h2>
+      <p>Es posible encadenar múltiples cláusulas <code>JOIN</code> sucesivas para atravesar tablas intermedias en relaciones muchos a muchos. Asimismo, una tabla puede unirse consigo misma (<em>Self Join</em>) utilizando alias distintos cuando modela estructuras jerárquicas, como empleados y sus supervisores directos dentro de la misma tabla <code>empleados</code>.</p>
+      <pre><code>SELECT
+  e.nombre AS empleado,
+  j.nombre AS supervisor
+FROM empleados e
+LEFT JOIN empleados j ON e.supervisor_id = j.id;</code></pre>
+    </section>
+
+    <section>
+      <h2>Prevención de productos cartesianos y errores frecuentes</h2>
+      <p>Un <strong>producto cartesiano</strong> (<code>CROSS JOIN</code>) empareja cada fila de la primera tabla con todas las filas de la segunda: si una tabla tiene 10,000 registros y otra 5,000, se generan 50 millones de filas intermedias. Este problema ocurre accidentalmente cuando se omiten condiciones de enlace en consultas antiguas separadas por comas o cuando se escribe una condición <code>ON</code> siempre verdadera.</p>
+      <p>También debe prestarse atención al ubicar filtros en un <code>LEFT JOIN</code>: colocar una condición sobre la tabla derecha dentro de la cláusula <code>WHERE</code> (por ejemplo, <code>WHERE p.estado = 'PAGADO'</code>) elimina las filas donde <code>p</code> era <code>NULL</code>, convirtiendo de hecho el <code>LEFT JOIN</code> en un <code>INNER JOIN</code>. Si se desea filtrar qué registros de la tabla derecha se emparejan sin descartar las filas de la tabla izquierda, la condición debe incluirse directamente dentro de la cláusula <code>ON</code>.</p>
+      <p>Una vez combinadas las tablas necesarias, el paso habitual para construir indicadores resumidos consiste en aplicar <a href="D033_agregaciones_group_by_having_sql.html">funciones de agregación, GROUP BY y filtrado de grupos con HAVING</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

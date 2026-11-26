@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panorama de bases de datos NoSQL: documental, clave-valor, columnar y grafos</title>
+  <meta name="description" content="Introduce las familias NoSQL, las motivaciones de escalado horizontal y flexibilidad de esquema frente al modelo relacional, y el teorema CAP en sistemas distribuidos. No profundiza en sintaxis de todos los motores. Requiere nociones de bases relacionales. Enlaza con MongoDB, Redis y modelado de datos.">
+  <meta name="keywords" content="nosql, teorema-cap, documental, clave-valor, grafos">
+  <meta name="doc-id" content="D029">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="ecosistema_nosql_tipos_casos_uso">
+</head>
+<body>
+  <article data-doc-id="D029" data-category-id="C04" data-slug="ecosistema_nosql_tipos_casos_uso">
+    <header>
+      <h1>Panorama de bases de datos NoSQL: documental, clave-valor, columnar y grafos</h1>
+      <p>Motivaciones del movimiento NoSQL, compromisos del teorema CAP en sistemas distribuidos, clasificación de las cuatro familias principales y criterios frente al modelo relacional.</p>
+    </header>
+
+    <section>
+      <h2>Motivaciones frente al modelo relacional clásico</h2>
+      <p>El término <strong>NoSQL</strong> (<em>Not Only SQL</em>) agrupa un conjunto diverso de sistemas de gestión de datos diseñados para resolver escenarios donde las <a href="D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales</a> tradicionales enfrentan fricciones estructurales:</p>
+      <ul>
+        <li><strong>Escalado horizontal nativo (Sharding):</strong> Particionar tablas normalizadas con múltiples claves foráneas a través de decenas de servidores distribuidos penaliza las operaciones <code>JOIN</code> por red. Los sistemas NoSQL priorizan modelos de datos auto-contenidos fáciles de distribuir por clave de partición.</li>
+        <li><strong>Evolución ágil y esquemas flexibles:</strong> En dominios con atributos heterogéneos o cambiantes —como catálogos de comercio electrónico con especificaciones variables por categoría—, exigir migraciones rígidas de columnas puede ralentizar la entrega de producto.</li>
+        <li><strong>Latencia ultra baja y alto caudal de escritura:</strong> Cargas como telemetría de sensores, sesiones efímeras o contadores en tiempo real requieren estructuras optimizadas en memoria o escritura secuencial en disco.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>El Teorema CAP y la consistencia eventual</h2>
+      <p>Al distribuir datos entre múltiples nodos conectados por red, el <strong>Teorema CAP</strong> formulado por Eric Brewer establece que, ante una partición de red (<strong>P</strong>, pérdida o retraso de mensajes entre nodos), un sistema distribuido debe elegir entre garantizar:</p>
+      <ul>
+        <li><strong>Consistencia fuerte (C - Consistency):</strong> Toda lectura recibe la escritura más reciente o un error, rechazando operaciones si no es posible sincronizar los nodos.</li>
+        <li><strong>Disponibilidad (A - Availability):</strong> Cada petición recibe una respuesta no errónea, incluso si algunos nodos no han recibido aún las últimas réplicas de escritura.</li>
+      </ul>
+      <p>Dado que las particiones de red son inevitables en sistemas distribuidos reales, muchos motores NoSQL optan por modelos <strong>BASE</strong> (<em>Basically Available, Soft state, Eventual consistency</em>), garantizando alta disponibilidad y convergencia gradual de todas las réplicas cuando cesa la interrupción de red.</p>
+    </section>
+
+    <section>
+      <h2>Las cuatro familias principales de bases de datos NoSQL</h2>
+      <p>NoSQL no es una tecnología única, sino cuatro paradigmas especializados según la estructura de acceso predominante:</p>
+      <ul>
+        <li><strong>Bases de datos documentales (ej. MongoDB, Couchbase):</strong> Almacenan registros como documentos estructurados autocontenidos (generalmente BSON o JSON) agrupados en colecciones. Permiten anidar subdocumentos y arreglos directamente dentro de la entidad principal, evitando reconstruir objetos complejos mediante múltiples uniones.</li>
+        <li><strong>Almacenes clave-valor (ej. Redis, Amazon DynamoDB):</strong> Funcionan como diccionarios distribuidos de altísimo rendimiento donde cada valor opaco o estructura en memoria se recupera en tiempo constante $O(1)$ mediante su clave única. Son el estándar de facto para cachés distribuidas, gestión de sesiones, colas ligeras y limitadores de tasa (<em>rate limiting</em>).</li>
+        <li><strong>Bases de datos orientadas a familias de columnas (ej. Apache Cassandra, ScyllaDB):</strong> Organizan datos por filas identificadas con claves de partición y agrupamiento, optimizadas para ingestión masiva de escrituras distribuida en múltiples centros de datos, series temporales y analítica a gran escala.</li>
+        <li><strong>Bases de datos de grafos (ej. Neo4j):</strong> Representan entidades como nodos y sus vínculos como aristas con propiedades explícitas. Sobresalen en consultas de recorrido profundo —como redes sociales, motores de recomendación, rutas logísticas y detección de fraude— donde los <code>JOIN</code> recursivos en SQL se vuelven prohibitivos.</li>
+      </ul>
+      <pre><code>// Ejemplo de documento autocontenido en una base documental
+{
+  "_id": "ord_9042",
+  "cliente": { "id": 14, "nombre": "Laura Méndez" },
+  "lineas": [
+    { "sku": "TEC-01", "cantidad": 1, "precioUnitario": 1450 },
+    { "sku": "MOU-04", "cantidad": 2, "precioUnitario": 420 }
+  ],
+  "estado": "ENVIADO"
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Persistencia políglota en aplicaciones modernas</h2>
+      <p>Lejos de ser excluyentes, las bases relacionales y NoSQL suelen coexistir bajo el enfoque de <strong>persistencia políglota</strong>: utilizar PostgreSQL o MySQL como fuente principal de verdad transaccional para pedidos, facturación y usuarios, complementándolo con Redis para caché de baja latencia y sesiones, o un motor documental para registros de eventos semiestructurados.</p>
+    </section>
+  </article>
+</body>
+</html>

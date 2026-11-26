@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocolo HTTP a fondo: métodos, códigos de estado y cabeceras</title>
+  <meta name="description" content="Sirve como entrada a la categoría APIs y protocolos, detallando la anatomía de peticiones y respuestas HTTP, idempotencia de métodos, familias de códigos de estado y cabeceras de negociación y caché. No cubre configuración de TLS en Nginx. Requiere nociones básicas de cliente-servidor. Enlaza con REST, GraphQL, CORS y seguridad.">
+  <meta name="keywords" content="http, metodos, codigos-estado, cabeceras, protocolos">
+  <meta name="doc-id" content="D034">
+  <meta name="doc-category-id" content="C05">
+  <meta name="doc-category" content="APIs y protocolos">
+  <meta name="doc-slug" content="protocolo_http_metodos_estados_cabeceras">
+</head>
+<body>
+  <article data-doc-id="D034" data-category-id="C05" data-slug="protocolo_http_metodos_estados_cabeceras">
+    <header>
+      <h1>Protocolo HTTP a fondo: métodos, códigos de estado y cabeceras</h1>
+      <p>Anatomía de los mensajes HTTP, propiedades de seguridad e idempotencia en métodos, familias de códigos de estado, cabeceras de control y evolución hacia HTTP/2 y HTTP/3.</p>
+    </header>
+
+    <section>
+      <h2>Anatomía de peticiones y respuestas HTTP</h2>
+      <p>El protocolo <strong>HTTP</strong> (<em>Hypertext Transfer Protocol</em>) constituye la base de intercambio de información sobre la <a href="../01_fundamentos/D001_introduccion_evolucion_web.html">arquitectura de la World Wide Web</a>. Opera bajo un modelo textual o binario de petición-respuesta sin estado (<em>stateless</em>) entre un agente cliente y un <a href="../03_backend/D019_arquitectura_servidores_logica_negocio.html">servidor backend</a>: cada solicitud contiene toda la información necesaria para ser interpretada de manera independiente.</p>
+      <p>Todo intercambio HTTP se estructura en tres bloques bien diferenciados:</p>
+      <ul>
+        <li><strong>Línea inicial:</strong> En la petición especifica el método, la ruta objetivo y la versión del protocolo (por ejemplo, <code>GET /api/productos?categoria=teclados HTTP/1.1</code>). En la respuesta indica la versión, el código numérico de estado y su frase descriptiva (<code>HTTP/1.1 200 OK</code>).</li>
+        <li><strong>Cabeceras (Headers):</strong> Pares clave-valor insensibles a mayúsculas que transportan metadatos operativos sobre formato, idioma, autenticación, política de caché y origen.</li>
+        <li><strong>Cuerpo (Body - opcional):</strong> Carga útil binaria o textual (JSON, formularios, archivos multimedia) separada de las cabeceras por una línea en blanco.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Métodos HTTP: seguridad e idempotencia</h2>
+      <p>Cada método HTTP expresa una intención semántica precisa sobre el recurso identificado por la URI. Dos propiedades formales determinan cómo pueden reintentar peticiones los navegadores, proxies y clientes de red ante fallos temporales:</p>
+      <ul>
+        <li><strong>Método seguro (Safe):</strong> No modifica el estado del recurso en el servidor (<code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>). Puede ser precargado o almacenado en caché sin efectos secundarios.</li>
+        <li><strong>Método idempotente (Idempotent):</strong> Ejecutar la misma petición una vez o múltiples veces seguidas produce exactamente el mismo estado final en el servidor (<code>GET</code>, <code>HEAD</code>, <code>PUT</code>, <code>DELETE</code>, <code>OPTIONS</code>). Por el contrario, <code>POST</code> no es idempotente por defecto, ya que repetir un envío puede crear múltiples órdenes duplicadas si no se incorporan claves de idempotencia explícitas.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Familias de códigos de estado HTTP</h2>
+      <p>El código de estado de tres dígitos comunica al cliente el desenlace técnico de su solicitud:</p>
+      <ul>
+        <li><strong>1xx (Informativos):</strong> Indican recepción provisional o cambio de protocolo en curso, como <code>101 Switching Protocols</code> utilizado durante la negociación inicial de <a href="D038_websockets_comunicacion_tiempo_real.html">WebSockets</a>.</li>
+        <li><strong>2xx (Éxito):</strong> La solicitud fue aceptada y procesada: <code>200 OK</code> (respuesta estándar), <code>201 Created</code> (nuevo recurso generado), <code>202 Accepted</code> (procesamiento asíncrono en cola) y <code>204 No Content</code> (éxito sin cuerpo de respuesta, habitual tras <code>DELETE</code>).</li>
+        <li><strong>3xx (Redirección):</strong> El cliente debe realizar una acción adicional para completar la petición, como <code>301 Moved Permanently</code>, <code>302 Found</code>, <code>307 Temporary Redirect</code> o <code>304 Not Modified</code> cuando la copia en caché sigue vigente.</li>
+        <li><strong>4xx (Errores del cliente):</strong> La petición contiene sintaxis inválida, credenciales ausentes o viola reglas de negocio: <code>400 Bad Request</code>, <code>401 Unauthorized</code> (falta autenticación), <code>403 Forbidden</code> (autenticado pero sin permisos), <code>404 Not Found</code>, <code>409 Conflict</code>, <code>422 Unprocessable Entity</code> y <code>429 Too Many Requests</code>.</li>
+        <li><strong>5xx (Errores del servidor):</strong> El servidor falló al cumplir una petición aparentemente válida: <code>500 Internal Server Error</code>, <code>502 Bad Gateway</code>, <code>503 Service Unavailable</code> y <code>504 Gateway Timeout</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Cabeceras esenciales y evolución del transporte</h2>
+      <p>Las cabeceras gobiernan aspectos críticos de interoperabilidad, rendimiento y seguridad en la web:</p>
+      <ul>
+        <li><strong>Negociación de contenido:</strong> <code>Content-Type</code> declara el formato MIME del cuerpo enviado (ej. <code>application/json; charset=utf-8</code>), mientras que <code>Accept</code> y <code>Accept-Language</code> expresan las preferencias del cliente.</li>
+        <li><strong>Control de caché:</strong> <code>Cache-Control</code> (<code>max-age=3600, no-cache, private</code>), junto con validadores condicionales como <code>ETag</code> / <code>If-None-Match</code>, evita retransmitir recursos sin cambios.</li>
+        <li><strong>Seguridad y origen cruzado:</strong> <code>Authorization</code> transporta credenciales (como <code>Bearer &lt;token&gt;</code>), mientras que cabeceras CORS (<code>Access-Control-Allow-Origin</code>) y políticas estudiadas en <a href="../08_seguridad/D055_seguridad_web_principios_owasp_top_10.html">fundamentos de seguridad web y OWASP Top 10</a> protegen los intercambios en el navegador.</li>
+      </ul>
+      <p>A nivel de transporte, <strong>HTTP/2</strong> superó el bloqueo de cabecera de línea (<em>head-of-line blocking</em>) de HTTP/1.1 introduciendo multiplexación binaria de múltiples flujos sobre una única conexión TCP y compresión de cabeceras HPACK; posteriormente, <strong>HTTP/3</strong> trasladó el protocolo sobre <strong>QUIC (UDP)</strong> para eliminar incluso los retrasos de retransmisión TCP en redes móviles inestables.</p>
+      <p>Sobre los cimientos de HTTP se construyen paradigmas especializados como la <a href="D035_arquitectura_rest_recursos_principios.html">arquitectura REST</a>, <a href="D036_graphql_esquemas_consultas_mutaciones.html">GraphQL</a>, <a href="D037_grpc_protobuf_comunicacion_servicios.html">gRPC</a>, <a href="D038_websockets_comunicacion_tiempo_real.html">WebSockets</a>, <a href="D039_webhooks_arquitectura_eventos_asincronos.html">Webhooks</a> y contratos formales mediante <a href="D040_openapi_swagger_documentacion_contratos.html">OpenAPI y Swagger</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelado de datos para aplicaciones web: del modelo conceptual al esquema físico</title>
+  <meta name="description" content="Presenta el proceso completo de identificar entidades, atributos, cardinalidades (1:1, 1:N, N:M) y restricciones para diseñar bases de datos mantenibles. No cubre implementación de APIs REST. Requiere nociones de bases relacionales. Enlaza con normalización, índices y optimización.">
+  <meta name="keywords" content="modelado, entidad-relacion, cardinalidad, esquemas, bases-de-datos">
+  <meta name="doc-id" content="D031">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="modelado_datos_entidad_relacion_web">
+</head>
+<body>
+  <article data-doc-id="D031" data-category-id="C04" data-slug="modelado_datos_entidad_relacion_web">
+    <header>
+      <h1>Modelado de datos para aplicaciones web: del modelo conceptual al esquema físico</h1>
+      <p>Fases del diseño de bases de datos, identificación de entidades y cardinalidades, formas normales y traducción a tablas, restricciones e índices.</p>
+    </header>
+
+    <section>
+      <h2>Las tres etapas del modelado de datos</h2>
+      <p>Diseñar una base de datos robusta para una aplicación web sobre los principios de las <a href="D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales</a> exige planificar la estructura antes de escribir código de servidor. Un esquema mal diseñado provoca duplicación de información, anomalías al actualizar registros y consultas cada vez más lentas. El proceso metodológico se divide en tres niveles progresivos:</p>
+      <ol>
+        <li><strong>Modelo conceptual (Entidad-Relación):</strong> Identifica los sustantivos clave del dominio de negocio (<em>Usuario</em>, <em>Curso</em>, <em>Inscripción</em>), sus propiedades esenciales y cómo se vinculan entre sí, sin preocuparse aún por tipos de datos o detalles técnicos de un motor específico.</li>
+        <li><strong>Modelo lógico:</strong> Traduce las entidades en relaciones normalizadas, define claves primarias y foráneas, resuelve relaciones muchos a muchos y establece reglas de nulabilidad y unicidad.</li>
+        <li><strong>Modelo físico:</strong> Adapta el diseño lógico al motor concreto seleccionado (PostgreSQL, MySQL), eligiendo tipos de datos precisos (<code>VARCHAR</code>, <code>NUMERIC(10,2)</code> para moneda, <code>TIMESTAMPTZ</code>), índices sobre claves foráneas y columnas frecuentes de búsqueda, y políticas de borrado referencial.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Cardinalidades y su traducción a tablas relacionales</h2>
+      <p>La cardinalidad expresa cuántas instancias de una entidad pueden asociarse con instancias de otra:</p>
+      <ul>
+        <li><strong>Uno a uno (1:1):</strong> Cada registro de la tabla A corresponde como máximo a un registro de la tabla B (por ejemplo, <code>usuarios</code> y <code>perfiles_extendidos</code>). Se implementa colocando una clave foránea con restricción <code>UNIQUE</code> en la tabla dependiente.</li>
+        <li><strong>Uno a muchos (1:N):</strong> Es la relación más habitual en aplicaciones web (un <em>cliente</em> realiza múltiples <em>pedidos</em>, pero cada pedido pertenece a un único cliente). Se traduce colocando la clave foránea (<code>cliente_id</code>) en el lado "muchos" (tabla <code>pedidos</code>).</li>
+        <li><strong>Muchos a muchos (N:M):</strong> Ocurre cuando múltiples instancias de A se relacionan con múltiples instancias de B (un <em>estudiante</em> se matricula en varios <em>cursos</em> y cada curso tiene muchos estudiantes). El modelo relacional requiere descomponer esta relación mediante una <strong>tabla intermedia o asociativa</strong> (<code>matriculas</code>) que contiene claves foráneas hacia ambas tablas y puede almacenar atributos propios de la relación, como <code>fecha_inscripcion</code> o <code>calificacion</code>.</li>
+      </ul>
+      <pre><code>CREATE TABLE estudiantes (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL
+);
+
+CREATE TABLE cursos (
+  id SERIAL PRIMARY KEY,
+  titulo VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE matriculas (
+  estudiante_id INTEGER NOT NULL REFERENCES estudiantes(id) ON DELETE RESTRICT,
+  curso_id INTEGER NOT NULL REFERENCES cursos(id) ON DELETE RESTRICT,
+  fecha_inscripcion DATE NOT NULL DEFAULT CURRENT_DATE,
+  PRIMARY KEY (estudiante_id, curso_id)
+);</code></pre>
+    </section>
+
+    <section>
+      <h2>Normalización y equilibrio práctico</h2>
+      <p>La <strong>normalización</strong> es el proceso de organizar columnas y tablas para eliminar redundancias y dependencias anómalas. En el desarrollo web, alcanzar la <strong>Tercera Forma Normal (3FN)</strong> constituye el estándar saludable:</p>
+      <ul>
+        <li><strong>1FN:</strong> Cada celda contiene un único valor atómico (evitando listas separadas por comas dentro de una misma columna de texto).</li>
+        <li><strong>2FN:</strong> Todos los atributos no clave dependen de la totalidad de la clave primaria (relevante en claves compuestas).</li>
+        <li><strong>3FN:</strong> Ningún atributo no clave depende transitivamente de otro atributo no clave (por ejemplo, no guardar <code>ciudad_cliente</code> repetida en cada fila de <code>pedidos</code>, sino consultarla desde <code>clientes</code>).</li>
+      </ul>
+      <p>En casos puntuales de lectura intensiva —como guardar el <code>precio_unitario_historico</code> dentro de una línea de factura—, se aplica una <strong>desnormalización intencional y controlada</strong> para preservar fotografías históricas inmutables ante futuros cambios de precios en el catálogo.</p>
+    </section>
+
+    <section>
+      <h2>Integridad referencial e indexación estratégica</h2>
+      <p>Al definir claves foráneas conviene especificar explícitamente el comportamiento ante eliminaciones (<code>ON DELETE RESTRICT</code> para impedir borrar registros con historial asociado, o <code>ON DELETE CASCADE</code> solo para subentidades estrictamente dependientes) y crear índices explícitos sobre las columnas de clave foránea y filtros habituales (<code>WHERE</code>, <code>ORDER BY</code>) para evitar escaneos secuenciales completos conforme crece el volumen de datos.</p>
+    </section>
+  </article>
+</body>
+</html>

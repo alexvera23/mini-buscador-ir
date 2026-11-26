@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funciones de agregación, GROUP BY y filtrado de grupos con HAVING</title>
+  <meta name="description" content="Detalla el cálculo de métricas resumidas con COUNT, SUM, AVG, MIN y MAX, el orden lógico de evaluación en SQL y la diferencia entre WHERE y HAVING. No cubre funciones de ventana avanzadas. Requiere conocer SELECT y JOIN básicos. Conecta con reportes backend y análisis de datos.">
+  <meta name="keywords" content="sql, group-by, having, agregacion, consultas">
+  <meta name="doc-id" content="D033">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="agregaciones_group_by_having_sql">
+</head>
+<body>
+  <article data-doc-id="D033" data-category-id="C04" data-slug="agregaciones_group_by_having_sql">
+    <header>
+      <h1>Funciones de agregación, GROUP BY y filtrado de grupos con HAVING</h1>
+      <p>Cálculo de métricas resumidas en SQL, agrupación de filas con GROUP BY, orden lógico de ejecución de consultas y distinción precisa entre WHERE y HAVING.</p>
+    </header>
+
+    <section>
+      <h2>Funciones de agregación estándar en SQL</h2>
+      <p>En <a href="D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales</a>, los paneles administrativos y endpoints analíticos rara vez requieren descargar miles de filas individuales hacia el servidor de aplicación para sumarlas en memoria; delegar el cálculo al motor SQL mediante <strong>funciones de agregación</strong> reduce drásticamente la transferencia de red y aprovecha los índices del gestor.</p>
+      <p>Las cinco funciones de agregación fundamentales toman un conjunto de filas y producen un único valor escalar resumido:</p>
+      <ul>
+        <li><strong><code>COUNT(*)</code> y <code>COUNT(columna)</code>:</strong> Contabiliza el total de filas del grupo (<code>COUNT(*)</code> incluye filas con valores nulos, mientras que <code>COUNT(columna)</code> ignora los valores <code>NULL</code> en esa columna; <code>COUNT(DISTINCT columna)</code> cuenta valores únicos).</li>
+        <li><strong><code>SUM(columna)</code>:</strong> Suma todos los valores numéricos no nulos de la expresión indicada.</li>
+        <li><strong><code>AVG(columna)</code>:</strong> Calcula el promedio aritmético ignorando los valores <code>NULL</code> (conviene usar <code>COALESCE(columna, 0)</code> si los nulos deben computar como cero).</li>
+        <li><strong><code>MIN(columna)</code> y <code>MAX(columna)</code>:</strong> Obtienen el valor mínimo y máximo respectivamente, aplicables tanto a números como a fechas y cadenas de texto.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Agrupación de registros con GROUP BY</h2>
+      <p>Cuando se desea calcular métricas segmentadas por categoría —por ejemplo, el total facturado por cada cliente o la cantidad de pedidos por estado—, se combina la función de agregación con la cláusula <code>GROUP BY</code>. Esta cláusula particiona las filas resultantes de <code>FROM</code> y <a href="D032_joins_relaciones_entre_tablas_sql.html">las operaciones JOIN</a> en cubetas lógicas donde todos los registros comparten los mismos valores en las columnas de agrupación.</p>
+      <p>Una regla sintáctica estricta del estándar SQL establece que toda columna incluida en la lista <code>SELECT</code> que no esté envuelta dentro de una función de agregación debe aparecer obligatoriamente en la cláusula <code>GROUP BY</code>.</p>
+      <pre><code>SELECT
+  c.id AS cliente_id,
+  c.nombre,
+  COUNT(p.id) AS total_pedidos,
+  COALESCE(SUM(p.total), 0) AS monto_acumulado
+FROM clientes c
+LEFT JOIN pedidos p ON p.cliente_id = c.id
+GROUP BY c.id, c.nombre
+HAVING COUNT(p.id) &gt;= 3
+ORDER BY monto_acumulado DESC;</code></pre>
+    </section>
+
+    <section>
+      <h2>Diferencia entre WHERE y HAVING según el orden lógico de SQL</h2>
+      <p>Una confusión frecuente al redactar consultas agregadas consiste en intentar filtrar el resultado de una función de agregación dentro de <code>WHERE</code> (por ejemplo, <code>WHERE SUM(total) &gt; 1000</code>), lo cual produce un error de sintaxis. Esto responde al <strong>orden lógico de evaluación</strong> con el que el motor SQL procesa una consulta, distinto al orden en que se escribe:</p>
+      <ol>
+        <li><strong><code>FROM</code> y <code>JOIN</code>:</strong> Se determinan y combinan las tablas fuente.</li>
+        <li><strong><code>WHERE</code>:</strong> Filtra filas <em>individuales</em> antes de formar cualquier grupo.</li>
+        <li><strong><code>GROUP BY</code>:</strong> Agrupa las filas supervivientes según las columnas especificadas.</li>
+        <li><strong><code>HAVING</code>:</strong> Filtra <em>grupos completos</em> evaluando condiciones sobre funciones de agregación (como <code>HAVING COUNT(p.id) &gt;= 3</code>).</li>
+        <li><strong><code>SELECT</code>:</strong> Proyecta las columnas y calcula las expresiones finales.</li>
+        <li><strong><code>ORDER BY</code> y <code>LIMIT</code>:</strong> Ordena el conjunto resultante y acota el número de filas devueltas.</li>
+      </ol>
+      <p>Por rendimiento, cualquier condición que dependa únicamente de columnas individuales de fila (como filtrar pedidos del año en curso) debe ubicarse siempre en <code>WHERE</code> para reducir el volumen de registros antes de ejecutar la agrupación, reservando <code>HAVING</code> exclusivamente para condiciones sobre resultados agregados.</p>
+    </section>
+  </article>
+</body>
+</html>

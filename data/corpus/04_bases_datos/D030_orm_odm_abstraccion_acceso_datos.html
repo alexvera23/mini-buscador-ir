@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORMs, ODMs y niveles de abstracción en el acceso a datos</title>
+  <meta name="description" content="Define qué es un Object-Relational Mapping y qué problemas resuelve frente al uso directo de drivers SQL o Query Builders, analizando productividad frente a control fino. No enseña una herramienta única en detalle. Requiere bases de SQL y programación orientada a objetos. Enlaza con Prisma, SQLAlchemy y JPA.">
+  <meta name="keywords" content="orm, odm, query-builder, abstraccion, persistencia">
+  <meta name="doc-id" content="D030">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="orm_odm_abstraccion_acceso_datos">
+</head>
+<body>
+  <article data-doc-id="D030" data-category-id="C04" data-slug="orm_odm_abstraccion_acceso_datos">
+    <header>
+      <h1>ORMs, ODMs y niveles de abstracción en el acceso a datos</h1>
+      <p>Espectro de acceso a bases de datos desde drivers nativos hasta ORMs y ODMs, prevención del problema N+1 y criterios de equilibrio entre productividad y control.</p>
+    </header>
+
+    <section>
+      <h2>El desajuste de impedancia objeto-relacional</h2>
+      <p>Al conectar un servidor backend con <a href="D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales</a>, los desarrolladores enfrentan un problema clásico conocido como <em>desajuste de impedancia objeto-relacional</em>: en memoria, las aplicaciones manipulan grafos de objetos anidados, colecciones y tipos del lenguaje; en almacenamiento, los datos residen normalizados en tablas planas relacionadas mediante claves foráneas.</p>
+      <p>Para tender un puente entre ambos mundos existen distintos niveles de abstracción, cada uno con compromisos claros en ergonomía, seguridad de tipos y control sobre el SQL ejecutado.</p>
+    </section>
+
+    <section>
+      <h2>Espectro de herramientas de acceso a datos</h2>
+      <ul>
+        <li><strong>Drivers nativos (ej. <code>pg</code>, <code>mysql2</code>, <code>psycopg</code>):</strong> Proporcionan comunicación directa con el protocolo del motor. El desarrollador escribe consultas SQL parametrizadas manualmente y recibe arreglos de filas sin procesar. Ofrecen máximo rendimiento y control total, pero exigen código repetitivo para mapear filas a objetos y mantener tipos sincronizados.</li>
+        <li><strong>Query Builders (ej. Knex.js, Kysely):</strong> Ofrecen una API fluida en el lenguaje huésped para construir sentencias SQL programáticamente, evitando errores de sintaxis por concatenación de cadenas y manteniendo una correspondencia 1 a 1 con la consulta SQL resultante.</li>
+        <li><strong>ORMs — Object-Relational Mappers (ej. Prisma, TypeORM, SQLAlchemy, Hibernate/JPA):</strong> Mapean clases o esquemas declarativos directamente a tablas relacionales, gestionando hidratación de entidades, relaciones, migraciones de esquema y unidades de trabajo.</li>
+        <li><strong>ODMs — Object-Document Mappers (ej. Mongoose para MongoDB):</strong> Cumplen un papel equivalente sobre bases documentales NoSQL, imponiendo validación de esquemas, valores por defecto y conversiones de tipos en la capa de aplicación antes de persistir documentos.</li>
+      </ul>
+      <pre><code>// Comparación conceptual: consulta declarativa en un ORM moderno (Prisma)
+const pedidosActivos = await prisma.pedido.findMany({
+  where: { estado: 'PAGADO' },
+  include: { cliente: { select: { nombre: true, correo: true } } },
+  orderBy: { creadoEn: 'desc' }
+});</code></pre>
+    </section>
+
+    <section>
+      <h2>Riesgos comunes de los ORMs y el problema de consultas N+1</h2>
+      <p>Abstraer el lenguaje SQL no exime al desarrollador de comprender cómo funciona el motor subyacente. El antipatrón más célebre asociado al uso descuidado de ORMs es el <strong>problema de consultas N+1</strong>: ocurre cuando se ejecuta una primera consulta para recuperar $N$ registros principales (por ejemplo, 50 artículos) y luego, al iterar sobre ellos para acceder a una relación cargada de forma perezosa (<em>lazy loading</em>), el ORM dispara $N$ consultas individuales adicionales para obtener el autor de cada artículo.</p>
+      <p>Para prevenir degradaciones de rendimiento al emplear ORMs conviene aplicar buenas prácticas:</p>
+      <ul>
+        <li><strong>Carga ansiosa explícita (Eager Loading):</strong> Solicitar de antemano las relaciones necesarias mediante cláusulas <code>include</code> o <code>joinedload</code> para resolver los datos en una o dos consultas eficientes.</li>
+        <li><strong>Proyección selectiva de columnas:</strong> Recuperar únicamente los campos requeridos por la vista en lugar de cargar entidades completas con columnas pesadas innecesarias.</li>
+        <li><strong>Vía de escape a SQL nativo:</strong> Utilizar los métodos de consulta directa parametrizada que todo ORM moderno incluye cuando se necesiten reportes analíticos complejos, expresiones de tabla comunes (CTE) o funciones específicas del motor.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Criterios para elegir el nivel de abstracción</h2>
+      <p>En aplicaciones CRUD tradicionales con decenas de entidades interrelacionadas, un ORM moderno acelera significativamente el desarrollo, garantiza contratos tipados entre el esquema y el código y ordena las migraciones de base de datos. En cambio, en servicios altamente intensivos en consultas analíticas o sistemas con requisitos extremos de latencia, combinar un <em>Query Builder</em> tipado con consultas SQL optimizadas ofrece mayor transparencia y previsibilidad.</p>
+    </section>
+  </article>
+</body>
+</html>

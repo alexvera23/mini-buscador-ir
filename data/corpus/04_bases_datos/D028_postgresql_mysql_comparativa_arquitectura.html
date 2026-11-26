@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostgreSQL y MySQL: arquitectura, diferencias clave y criterios de elección</title>
+  <meta name="description" content="Compara ambos motores relacionales de código abierto en cumplimiento de estándares, extensibilidad, manejo de concurrencia, tipos de datos y casos de uso web habituales. No enseña SQL desde cero. Requiere fundamentos de bases de datos relacionales. Enlaza con características avanzadas de PostgreSQL y MySQL.">
+  <meta name="keywords" content="postgresql, mysql, motores-bd, comparativa, sql">
+  <meta name="doc-id" content="D028">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="postgresql_mysql_comparativa_arquitectura">
+</head>
+<body>
+  <article data-doc-id="D028" data-category-id="C04" data-slug="postgresql_mysql_comparativa_arquitectura">
+    <header>
+      <h1>PostgreSQL y MySQL: arquitectura, diferencias clave y criterios de elección</h1>
+      <p>Análisis técnico de los dos sistemas gestores relacionales de código abierto dominantes en la web: arquitectura de almacenamiento, control de concurrencia, tipos de datos y extensibilidad.</p>
+    </header>
+
+    <section>
+      <h2>Dos pilares del almacenamiento relacional abierto</h2>
+      <p>Dentro del ecosistema de <a href="D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales y lenguaje SQL</a>, <strong>PostgreSQL</strong> y <strong>MySQL</strong> (junto con su bifurcación comunitaria MariaDB) concentran la gran mayoría de despliegues web en producción. Aunque ambos implementan SQL, transacciones ACID y replicación, sus filosofías de diseño y arquitecturas internas presentan diferencias significativas.</p>
+      <p><strong>PostgreSQL</strong> se define como un sistema objeto-relacional orientado al cumplimiento estricto del estándar ANSI/ISO SQL, la integridad de datos por defecto y una extensibilidad profunda. <strong>MySQL</strong> nació priorizando la velocidad de lectura en aplicaciones web tempranas y evolucionó hacia un motor transaccional robusto gracias a su motor de almacenamiento predeterminado <strong>InnoDB</strong>.</p>
+    </section>
+
+    <section>
+      <h2>Arquitectura interna y control de concurrencia (MVCC)</h2>
+      <p>Una diferencia fundamental radica en cómo gestionan los procesos y las versiones concurrentes de filas mediante <em>Multi-Version Concurrency Control</em> (MVCC):</p>
+      <ul>
+        <li><strong>Modelo de procesos frente a hilos:</strong> PostgreSQL utiliza una arquitectura multiproceso donde cada conexión de cliente genera un proceso separado del sistema operativo (lo que suele motivar el uso de agrupadores de conexiones como PgBouncer bajo miles de conexiones concurrentes). MySQL emplea una arquitectura multihilo dentro de un único proceso servidor, lo que reduce el costo por conexión nueva.</li>
+        <li><strong>Implementación de MVCC:</strong> PostgreSQL almacena las versiones antiguas y nuevas de una fila directamente en las páginas de datos principales marcando rangos de visibilidad por transacción, lo que requiere procesos periódicos de mantenimiento (<code>VACUUM</code>) para reclamar espacio muerto. En contraste, InnoDB (MySQL) actualiza los datos en su lugar (organizados alrededor de un índice agrupado por clave primaria) y guarda las versiones anteriores en un espacio separado denominado <em>undo log</em>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Tipos de datos avanzados y extensibilidad</h2>
+      <p>PostgreSQL destaca por ofrecer un catálogo rico de tipos nativos y mecanismos de extensión sin modificar el núcleo del servidor:</p>
+      <ul>
+        <li><strong>Soporte documental híbrido con JSONB:</strong> Mientras ambos soportan columnas JSON, el tipo <code>JSONB</code> de PostgreSQL almacena documentos en formato binario descompuesto, permitiendo crear índices GIN especializados sobre claves internas y ejecutar consultas híbridas relacionales-documentales con altísimo rendimiento.</li>
+        <li><strong>Tipos nativos especializados:</strong> PostgreSQL incluye arreglos multidimensionales (<code>TEXT[]</code>, <code>INTEGER[]</code>), direcciones de red (<code>INET</code>, <code>CIDR</code>), rangos temporales (<code>TSRANGE</code>) y soporte completo para operaciones DDL transaccionales (permitiendo revertir un <code>ALTER TABLE</code> dentro de un bloque <code>ROLLBACK</code>, algo que MySQL confirma implícitamente).</li>
+        <li><strong>Ecosistema de extensiones:</strong> Mediante <code>CREATE EXTENSION</code>, PostgreSQL incorpora motores geoespaciales líderes (<strong>PostGIS</strong>), búsqueda vectorial para inteligencia artificial (<strong>pgvector</strong>) o series temporales (<strong>TimescaleDB</strong>) dentro de la misma base transaccional.</li>
+      </ul>
+      <pre><code>-- Ejemplo en PostgreSQL combinando columnas relacionales con JSONB indexable
+CREATE TABLE eventos_auditoria (
+  id BIGSERIAL PRIMARY KEY,
+  usuario_id INTEGER NOT NULL,
+  metadatos JSONB NOT NULL,
+  registrado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_eventos_metadatos ON eventos_auditoria USING GIN (metadatos);</code></pre>
+    </section>
+
+    <section>
+      <h2>Criterios prácticos de selección</h2>
+      <p>Ambos motores son capaces de escalar a cargas de trabajo exigentes cuando se indexan y configuran adecuadamente. La elección suele guiarse por los requisitos concretos del proyecto:</p>
+      <ul>
+        <li><strong>Opta por PostgreSQL</strong> cuando el proyecto requiera consultas analíticas complejas, integridad estricta, tipos de datos avanzados (JSONB, arreglos, geoespaciales, vectores), operaciones DDL transaccionales o extensibilidad funcional.</li>
+        <li><strong>Opta por MySQL</strong> cuando el equipo ya posea sólida experiencia operativa administrando InnoDB, se integre con plataformas heredadas diseñadas alrededor de MySQL o se prioricen patrones de lectura transaccional directa con alta concurrencia de conexiones cortas.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>

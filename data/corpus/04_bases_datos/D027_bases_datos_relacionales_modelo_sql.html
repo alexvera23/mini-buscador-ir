@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundamentos de bases de datos relacionales y lenguaje SQL</title>
+  <meta name="description" content="Sirve como puerta de entrada a la categoría de Bases de datos, explicando el modelo relacional de tablas, tuplas, claves primarias y foráneas, y el rol de SQL como lenguaje declarativo. No enseña administración de servidores PostgreSQL específicos. Requiere nociones básicas de programación. Enlaza con SQL avanzado, NoSQL, ORMs y modelado.">
+  <meta name="keywords" content="sql, relacional, tablas, bases-de-datos, modelo">
+  <meta name="doc-id" content="D027">
+  <meta name="doc-category-id" content="C04">
+  <meta name="doc-category" content="Bases de datos">
+  <meta name="doc-slug" content="bases_datos_relacionales_modelo_sql">
+</head>
+<body>
+  <article data-doc-id="D027" data-category-id="C04" data-slug="bases_datos_relacionales_modelo_sql">
+    <header>
+      <h1>Fundamentos de bases de datos relacionales y lenguaje SQL</h1>
+      <p>Guía central sobre el modelo relacional propuesto por Edgar F. Codd, integridad referencial, transacciones ACID, lenguaje declarativo SQL y panorama de motores de persistencia.</p>
+    </header>
+
+    <section>
+      <h2>Persistencia estructurada y el modelo relacional</h2>
+      <p>Toda aplicación web con estado necesita almacenar información de forma duradera más allá del ciclo de vida en memoria de los <a href="../03_backend/D019_arquitectura_servidores_logica_negocio.html">servidores backend</a>. Formulado matemáticamente por Edgar F. Codd en 1970, el <strong>modelo relacional</strong> organiza los datos en relaciones bidimensionales denominadas <em>tablas</em>, donde cada fila (o <em>tupla</em>) representa una instancia única de una entidad y cada columna (o <em>atributo</em>) define una propiedad con un dominio de tipo estricto.</p>
+      <p>La fortaleza principal de las bases de datos relacionales radica en delegar la integridad estructural y transaccional al propio motor gestor (SGBD), evitando que errores en el código de aplicación corrompan el estado del negocio:</p>
+      <ul>
+        <li><strong>Clave primaria (Primary Key - PK):</strong> Columna o conjunto de columnas que identifica de manera unívoca y no nula cada registro dentro de una tabla (por ejemplo, <code>usuario_id</code>).</li>
+        <li><strong>Clave foránea (Foreign Key - FK):</strong> Columna que referencia la clave primaria de otra tabla, estableciendo un vínculo verificado por el motor para impedir registros huérfanos.</li>
+        <li><strong>Restricciones declarativas (Constraints):</strong> Reglas como <code>NOT NULL</code>, <code>UNIQUE</code> y <code>CHECK</code> que rechazan automáticamente cualquier escritura que viole las invariantes definidas en el esquema.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Propiedades ACID y garantías transaccionales</h2>
+      <p>Cuando múltiples usuarios interactúan simultáneamente con una aplicación web, las operaciones de escritura deben agruparse en <strong>transacciones</strong> lógicas que cumplan cuatro garantías fundamentales conocidas como <strong>ACID</strong>:</p>
+      <ul>
+        <li><strong>Atomicidad (Atomicity):</strong> Todas las operaciones dentro de la transacción se ejecutan por completo (<code>COMMIT</code>) o ninguna tiene efecto (<code>ROLLBACK</code>), evitando estados intermedios inconsistentes como descontar saldo sin acreditar el destino.</li>
+        <li><strong>Consistencia (Consistency):</strong> Cada transacción lleva la base de datos de un estado válido a otro estado válido respetando todas las restricciones e integridad referencial.</li>
+        <li><strong>Aislamiento (Isolation):</strong> Las transacciones concurrentes se ejecutan sin interferir entre sí, evitando lecturas sucias o actualizaciones perdidas según el nivel de aislamiento configurado.</li>
+        <li><strong>Durabilidad (Durability):</strong> Una vez confirmada una transacción, sus cambios persisten en almacenamiento no volátil (mediante registros de escritura anticipada como WAL) incluso ante fallos eléctricos o reinicios del sistema.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>SQL como lenguaje declarativo de consulta y definición</h2>
+      <p>Para interactuar con motores relacionales se utiliza <strong>SQL</strong> (<em>Structured Query Language</em>). A diferencia de los lenguajes imperativos donde se especifica paso a paso cómo recorrer estructuras de datos, SQL es un lenguaje <strong>declarativo</strong>: el desarrollador describe <em>qué</em> conjunto de resultados desea obtener y el optimizador de consultas del motor determina el plan de ejecución más eficiente.</p>
+      <pre><code>CREATE TABLE clientes (
+  id SERIAL PRIMARY KEY,
+  correo VARCHAR(150) NOT NULL UNIQUE,
+  activo BOOLEAN NOT NULL DEFAULT TRUE,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+SELECT id, correo
+FROM clientes
+WHERE activo = TRUE
+ORDER BY creado_en DESC;</code></pre>
+      <p>El estándar SQL se divide habitualmente en subconjuntos funcionales: <strong>DDL</strong> (<em>Data Definition Language</em>: <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>) para definir estructuras; <strong>DML</strong> (<em>Data Manipulation Language</em>: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) para consultar y modificar datos; y <strong>TCL</strong> (<em>Transaction Control Language</em>: <code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>) para delimitar transacciones.</p>
+    </section>
+
+    <section>
+      <h2>Ecosistema de bases de datos y decisiones arquitectónicas</h2>
+      <p>Elegir y diseñar la capa de persistencia es una de las decisiones con mayor impacto dentro de la <a href="../06_arquitectura/D041_arquitectura_software_atributos_calidad.html">arquitectura de software y atributos de calidad</a>, ya que migrar esquemas y volúmenes masivos de datos en producción conlleva costos elevados. A partir de estos fundamentos, el estudio de las bases de datos se ramifica en áreas especializadas:</p>
+      <ul>
+        <li>Para dominar consultas relacionales complejas entre múltiples entidades, revisa <a href="D032_joins_relaciones_entre_tablas_sql.html">combinación de tablas con JOIN</a> y <a href="D033_agregaciones_group_by_having_sql.html">funciones de agregación, GROUP BY y filtrado con HAVING</a>.</li>
+        <li>Para evaluar los motores relacionales de código abierto más utilizados en la web, consulta <a href="D028_postgresql_mysql_comparativa_arquitectura.html">PostgreSQL y MySQL: arquitectura, diferencias clave y criterios de elección</a>.</li>
+        <li>Para estructurar esquemas limpios desde los requisitos del dominio, explora <a href="D031_modelado_datos_entidad_relacion_web.html">modelado de datos para aplicaciones web: del modelo conceptual al esquema físico</a>.</li>
+        <li>Para conectar el código orientado a objetos o funcional con el motor de almacenamiento, analiza <a href="D030_orm_odm_abstraccion_acceso_datos.html">ORMs, ODMs y niveles de abstracción en el acceso a datos</a>.</li>
+        <li>Para comprender alternativas orientadas a documentos, clave-valor o grafos, revisa el <a href="D029_ecosistema_nosql_tipos_casos_uso.html">panorama de bases de datos NoSQL</a>.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>
