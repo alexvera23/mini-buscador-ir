@@ -8,7 +8,7 @@
     <meta name="keywords" content="Web 1.0, sitios estáticos, CGI, HTML inicial, servidores HTTP, historia web">
     <meta name="document-id" content="D003">
     <meta name="category-id" content="C01">
-    <meta name="subcategory-id" content="C01.1">
+    <meta name="slug" content="web_1_0_sitios_estaticos">
 </head>
 <body>
 <article id="D003">
@@ -32,7 +32,7 @@
             En un sitio estático clásico, cada URL correspondía directamente a un archivo físico alojado en el disco del servidor, como <code>index.html</code> o <code>contacto.html</code>. Cuando el navegador enviaba una petición HTTP GET, el servidor web (como NCSA HTTPd o las primeras versiones de Apache) leía el archivo del sistema de ficheros y lo devolvía sin modificarlo.
         </p>
         <p>
-            Este enfoque ofrecía ventajas notables de simplicidad, velocidad y seguridad básica: no había bases de datos que consultar ni código ejecutándose por cada visita. Sin embargo, mantener sitios grandes resultaba costoso, pues cambiar un menú de navegación obligaba a editar manualmente decenas de archivos HTML o recurrir a herramientas de generación local antes de subirlos por FTP. Además, la organización de los textos dependía de una correcta <a href="../03_html/D023_jerarquia_encabezados_texto_enlaces.html">jerarquía de encabezados, texto estructurado e hipervínculos</a> para facilitar la lectura.
+            Este enfoque ofrecía ventajas notables de simplicidad, velocidad y seguridad básica: no había bases de datos que consultar ni código ejecutándose por cada visita. Sin embargo, mantener sitios grandes resultaba costoso, pues cambiar un menú de navegación obligaba a editar manualmente decenas de archivos HTML o recurrir a herramientas de generación local antes de subirlos por FTP. Además, la organización de los textos dependía de una correcta jerarquía de encabezados, texto estructurado e hipervínculos para facilitar la lectura.
         </p>
     </section>
 
@@ -42,7 +42,7 @@
             Durante los primeros años de la Web 1.0, CSS aún no existía o contaba con soporte muy desigual. Para lograr diseños con barras laterales, cabeceras y columnas, los desarrolladores recurrieron masivamente a elementos <code>&lt;table&gt;</code> anidados, imágenes transparentes de un píxel como espaciadores y etiquetas presentacionales como <code>&lt;font&gt;</code> o <code>&lt;center&gt;</code>.
         </p>
         <p>
-            Esa práctica mezclaba contenido y apariencia visual dentro del mismo archivo, dificultando la accesibilidad para lectores de pantalla y el mantenimiento del código. Con el tiempo, la maduración de <a href="../03_html/D021_html_semantico_estructura_documentos.html">HTML semántico y la separación estructural</a> corrigió esta tendencia, devolviendo a las tablas su propósito exclusivo para datos tabulares.
+            Esa práctica mezclaba contenido y apariencia visual dentro del mismo archivo, dificultando la accesibilidad para lectores de pantalla y el mantenimiento del código. Con el tiempo, la maduración de HTML semántico y la separación estructural corrigió esta tendencia, devolviendo a las tablas su propósito exclusivo para datos tabulares.
         </p>
     </section>
 
@@ -55,7 +55,7 @@
 print "Content-type: text/html\n\n";
 print "&lt;html&gt;&lt;body&gt;&lt;h1&gt;Respuesta generada por CGI&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;";</code></pre>
         <p>
-            El principal cuello de botella de CGI residía en que cada solicitud lanzaba un nuevo proceso del sistema operativo, consumiendo memoria y tiempo de CPU bajo tráfico elevado. Para recoger los datos enviados por el usuario antes de procesarlos en CGI, los sitios dependían de los primeros <a href="../03_html/D024_formularios_html_validacion_nativa.html">formularios HTML y controles de entrada</a>. Esa limitación de rendimiento motivó el nacimiento de módulos integrados en servidor como <code>mod_perl</code>, PHP y posteriormente arquitecturas persistentes en memoria.
+            El principal cuello de botella de CGI residía en que cada solicitud lanzaba un nuevo proceso del sistema operativo, consumiendo memoria y tiempo de CPU bajo tráfico elevado. Para recoger los datos enviados por el usuario antes de procesarlos en CGI, los sitios dependían de los primeros formularios HTML y controles de entrada. Esa limitación de rendimiento motivó el nacimiento de módulos integrados en servidor como <code>mod_perl</code>, PHP y posteriormente arquitecturas persistentes en memoria.
         </p>
         <h3>Patrones característicos de la Web 1.0</h3>
         <ul>

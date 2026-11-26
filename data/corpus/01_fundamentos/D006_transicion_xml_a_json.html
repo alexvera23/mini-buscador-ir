@@ -8,7 +8,7 @@
     <meta name="keywords" content="XML, JSON, SOAP, intercambio de datos, serialización, APIs web">
     <meta name="document-id" content="D006">
     <meta name="category-id" content="C01">
-    <meta name="subcategory-id" content="C01.1">
+    <meta name="slug" content="transicion_xml_a_json">
 </head>
 <body>
 <article id="D006">
@@ -53,14 +53,14 @@
   "etiquetas": ["datos", "web"]
 }</code></pre>
         <p>
-            En el navegador, la llegada de <code>JSON.parse()</code> y <code>JSON.stringify()</code> —y posteriormente el método <code>response.json()</code> en la <a href="../05_javascript/D045_fetch_api_consumo_servicios_web.html">Fetch API para consumo de servicios web</a>— convirtió la deserialización en una operación nativa, rápida y segura frente a prácticas inseguras antiguas como <code>eval()</code>.
+            En el navegador, la llegada de <code>JSON.parse()</code> y <code>JSON.stringify()</code> —y posteriormente el método <code>response.json()</code> en la Fetch API para consumo de servicios web— convirtió la deserialización en una operación nativa, rápida y segura frente a prácticas inseguras antiguas como <code>eval()</code>.
         </p>
     </section>
 
     <section>
         <h2>Impacto en APIs REST y persistencia moderna</h2>
         <p>
-            La ligereza de JSON encajó de forma natural con los <a href="../03_backend/D019_arquitectura_servidores_logica_negocio.html">principios de REST basados en recursos y verbos HTTP</a>, donde las respuestas suelen ser representaciones directas de entidades de negocio. Del mismo modo, en el servidor, la adopción generalizada de JSON influyó en herramientas modernas de persistencia y en la <a href="../../03_backend/01_nodejs/D109_nodejs_acceso_datos_prisma_pg.html">integración de Node.js con bases de datos mediante drivers y ORMs</a>, que serializan registros relacionales directamente hacia respuestas JSON.
+            La ligereza de JSON encajó de forma natural con los <a href="../03_backend/D019_arquitectura_servidores_logica_negocio.html">principios de REST basados en recursos y verbos HTTP</a>, donde las respuestas suelen ser representaciones directas de entidades de negocio. Del mismo modo, en el servidor, la adopción generalizada de JSON influyó en herramientas modernas de persistencia y en la integración de Node.js con bases de datos mediante drivers y ORMs, que serializan registros relacionales directamente hacia respuestas JSON.
         </p>
         <p>
             Mientras tanto, el crecimiento de dispositivos conectados con pantallas pequeñas y redes celulares impulsó otro cambio paralelo en la presentación visual: <a href="D007_web_movil_diseno_adaptativo.html">el impacto de la web móvil y la transición al diseño adaptativo</a>.

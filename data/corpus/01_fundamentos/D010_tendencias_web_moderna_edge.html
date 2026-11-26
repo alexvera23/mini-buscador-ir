@@ -8,7 +8,7 @@
     <meta name="keywords" content="web moderna, edge computing, arquitectura de islas, WebAssembly, PWA, streaming HTML">
     <meta name="document-id" content="D010">
     <meta name="category-id" content="C01">
-    <meta name="subcategory-id" content="C01.1">
+    <meta name="slug" content="tendencias_web_moderna_edge">
 </head>
 <body>
 <article id="D010">
@@ -29,24 +29,24 @@
             Tradicionalmente, un servidor de origen único procesaba las peticiones desde una región geográfica fija, añadiendo latencia de red para usuarios lejanos. La <strong>computación en el borde</strong> despliega lógica ligera en nodos distribuidos globalmente cerca del usuario final, reduciendo el tiempo de respuesta inicial.
         </p>
         <p>
-            Combinado con <em>streaming HTML</em>, el servidor puede enviar inmediatamente la cabecera y estructura principal de la página mientras resuelve consultas lentas en paralelo y transmite los fragmentos restantes conforme quedan listos, mejorando la percepción de velocidad y la experiencia de usuario regida por las <a href="../../02_frontend/05_ux_ui/D092_heuristicas_usabilidad_nielsen_web.html">heurísticas de usabilidad y leyes cognitivas</a>.
+            Combinado con <em>streaming HTML</em>, el servidor puede enviar inmediatamente la cabecera y estructura principal de la página mientras resuelve consultas lentas en paralelo y transmite los fragmentos restantes conforme quedan listos, mejorando la percepción de velocidad y la experiencia de usuario regida por las heurísticas de usabilidad y leyes cognitivas.
         </p>
     </section>
 
     <section>
         <h2>Arquitectura de islas e hidratación selectiva</h2>
         <p>
-            Para evitar enviar cientos de kilobytes de JavaScript en páginas mayoritariamente informativas, la <a href="../../02_frontend/04_componentes/D086_hidratacion_parcial_arquitectura_islas.html">arquitectura de islas e hidratación selectiva</a> propone tratar el documento como HTML estático por defecto, hidratando únicamente componentes interactivos aislados —como un buscador, un carrusel o un carrito— bajo demanda o cuando entran en el área visible.
+            Para evitar enviar cientos de kilobytes de JavaScript en páginas mayoritariamente informativas, la arquitectura de islas e hidratación selectiva propone tratar el documento como HTML estático por defecto, hidratando únicamente componentes interactivos aislados —como un buscador, un carrusel o un carrito— bajo demanda o cuando entran en el área visible.
         </p>
     </section>
 
     <section>
         <h2>WebAssembly y aplicaciones instalables</h2>
         <p>
-            En el plano computacional, <a href="../../10_ecosistema/02_webassembly/D461_webassembly_wasm_capacidades_navegador.html">WebAssembly (Wasm) expande las capacidades nativas en el navegador</a> al permitir que código compilado desde Rust, C++ o Go se ejecute a velocidad casi nativa dentro del mismo entorno seguro que JavaScript, habilitando editores multimedia, motores 3D y procesamiento científico en la web.
+            En el plano computacional, <a href="../10_ecosistema/D070_webassembly_wasm_capacidades_navegador.html">WebAssembly (Wasm) expande las capacidades nativas en el navegador</a> al permitir que código compilado desde Rust, C++ o Go se ejecute a velocidad casi nativa dentro del mismo entorno seguro que JavaScript, habilitando editores multimedia, motores 3D y procesamiento científico en la web.
         </p>
         <p>
-            Paralelamente, las <a href="../../10_ecosistema/03_pwa/D471_pwa_progressive_web_apps_arquitectura.html">Progressive Web Apps (PWA)</a> dotan a los sitios web de funcionamiento sin conexión, caché programable mediante Service Workers e instalación directa en dispositivos móviles y de escritorio, consolidando a la web como la plataforma de distribución de software más universal existente.
+            Paralelamente, las <a href="../10_ecosistema/D071_pwa_progressive_web_apps_arquitectura.html">Progressive Web Apps (PWA)</a> dotan a los sitios web de funcionamiento sin conexión, caché programable mediante Service Workers e instalación directa en dispositivos móviles y de escritorio, consolidando a la web como la plataforma de distribución de software más universal existente.
         </p>
         <h3>Equilibrio entre innovación y simplicidad</h3>
         <p>
