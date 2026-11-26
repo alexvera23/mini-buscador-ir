@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desarrollo de servidores web con Express: rutas y cadena de middlewares</title>
+  <meta name="description" content="Detalla la construcción de APIs en Express mediante enrutadores modulares, middlewares de procesamiento, manejo centralizado de errores y validación de entradas. No cubre arquitectura de microservicios distribuidos. Requiere conocer HTTP y Node.js básico. Enlaza con APIs REST y seguridad en Express.">
+  <meta name="keywords" content="nodejs, express, middleware, enrutamiento, api">
+  <meta name="doc-id" content="D025">
+  <meta name="doc-category-id" content="C03">
+  <meta name="doc-category" content="Backend">
+  <meta name="doc-slug" content="nodejs_express_enrutamiento_middlewares">
+</head>
+<body>
+  <article data-doc-id="D025" data-category-id="C03" data-slug="nodejs_express_enrutamiento_middlewares">
+    <header>
+      <h1>Desarrollo de servidores web con Express: rutas y cadena de middlewares</h1>
+      <p>Arquitectura minimalista de Express, composición secuencial de middlewares, modularización con express.Router y manejo centralizado de errores.</p>
+    </header>
+
+    <section>
+      <h2>Filosofía minimalista de Express sobre Node.js</h2>
+      <p>Express es el framework web más adoptado dentro del ecosistema <a href="D020_nodejs_arquitectura_event_loop_servidor.html">Node.js</a> para construir aplicaciones web y APIs dentro de los principios de los <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend</a>. Apoyándose en los <a href="D024_nodejs_modulos_commonjs_esm_nativos.html">módulos estándar de Node.js</a> como <code>node:http</code>, Express proporciona una capa delgada y flexible sin imponer un ORM, un motor de plantillas ni una estructura de carpetas rígida.</p>
+      <p>Todo el modelo mental de Express gira en torno a un único concepto fundamental: una aplicación es esencialmente una secuencia encadenada de llamadas a funciones <em>middleware</em> que procesan un objeto de petición (<code>req</code>) y construyen un objeto de respuesta (<code>res</code>).</p>
+    </section>
+
+    <section>
+      <h2>Anatomía y cadena de ejecución de Middlewares</h2>
+      <p>Un <em>middleware</em> es una función con la firma <code>(req, res, next)</code> que tiene acceso completo a la solicitud entrante, a la respuesta saliente y a la función <code>next</code>, la cual cede el control al siguiente eslabón de la cadena. Un middleware puede ejecutar cualquiera de estas tareas:</p>
+      <ul>
+        <li>Ejecutar código transversal (como registrar tiempos de respuesta o añadir cabeceras de seguridad).</li>
+        <li>Modificar los objetos <code>req</code> o <code>res</code> (por ejemplo, adjuntar <code>req.usuario</code> tras verificar un token JWT o deserializar el cuerpo JSON con <code>express.json()</code>).</li>
+        <li>Finalizar el ciclo petición-respuesta enviando una respuesta inmediata (por ejemplo, devolver <code>401 Unauthorized</code> si falla la autenticación).</li>
+        <li>Invocar <code>next()</code> para delegar el flujo al siguiente middleware coincidente. Si no se envía respuesta ni se llama a <code>next()</code>, la petición quedará colgada indefinidamente.</li>
+      </ul>
+      <pre><code>import express from 'express';
+
+const app = express();
+app.use(express.json());
+
+// Middleware de trazabilidad aplicado a todas las rutas
+app.use((req, res, next) =&gt; {
+  const inicio = Date.now();
+  res.on('finish', () =&gt; {
+    console.log(`${req.method} ${req.originalUrl} -&gt; ${res.statusCode} (${Date.now() - inicio}ms)`);
+  });
+  next();
+});</code></pre>
+    </section>
+
+    <section>
+      <h2>Enrutamiento modular con express.Router</h2>
+      <p>Definir decenas de rutas directamente sobre la instancia principal <code>app</code> vuelve inmanejable el archivo de entrada. Express resuelve esto mediante <code>express.Router()</code>, que actúa como una miniaplicación aislada capaz de agrupar rutas y middlewares específicos de un dominio funcional (como <code>/usuarios</code> o <code>/productos</code>) para luego montarse bajo un prefijo común:</p>
+      <pre><code>// rutas/productos.router.js
+import { Router } from 'express';
+
+const router = Router();
+
+router.get('/', (req, res) =&gt; {
+  res.json([{ id: 1, nombre: 'Teclado mecánico' }]);
+});
+
+router.get('/:id', (req, res) =&gt; {
+  const { id } = req.params;
+  res.json({ id: Number(id), nombre: 'Teclado mecánico' });
+});
+
+export default router;</code></pre>
+    </section>
+
+    <section>
+      <h2>Manejo centralizado de errores y validación</h2>
+      <p>Para evitar bloques <code>try/catch</code> repetitivos con respuestas inconsistentes en cada controlador, Express define una firma especial de cuatro parámetros <code>(err, req, res, next)</code> para middlewares dedicados exclusivamente al manejo centralizado de errores. Este middleware debe registrarse al final de todas las rutas.</p>
+      <pre><code>// Middleware final de captura centralizada de errores
+app.use((err, req, res, next) =&gt; {
+  const estado = err.statusCode || 500;
+  res.status(estado).json({
+    error: true,
+    mensaje: estado === 500 ? 'Error interno del servidor' : err.message
+  });
+});</code></pre>
+      <p>Combinar enrutadores modulares, middlewares de validación de esquemas (como Zod o Joi) y un manejador centralizado de errores permite mantener controladores limpios y predecibles. Cuando las exigencias de latencia, validación nativa por esquemas JSON y rendimiento bruto superan el diseño clásico de Express, conviene evaluar <a href="D026_nodejs_fastify_alternativas_rendimiento.html">Fastify y frameworks modernos orientados a alto rendimiento en Node.js</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

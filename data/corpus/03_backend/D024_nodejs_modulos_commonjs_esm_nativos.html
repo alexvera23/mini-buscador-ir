@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulos en Node.js: CommonJS frente a ES Modules y APIs estándar</title>
+  <meta name="description" content="Compara require y module.exports frente a import/export en Node.js, explicando resolución de paquetes y módulos nativos como fs, path, crypto y http. No cubre gestores de paquetes en detalle. Requiere bases de JavaScript. Se relaciona con npm, pnpm y configuración de proyectos Node.">
+  <meta name="keywords" content="nodejs, commonjs, esm, modulos, fs">
+  <meta name="doc-id" content="D024">
+  <meta name="doc-category-id" content="C03">
+  <meta name="doc-category" content="Backend">
+  <meta name="doc-slug" content="nodejs_modulos_commonjs_esm_nativos">
+</head>
+<body>
+  <article data-doc-id="D024" data-category-id="C03" data-slug="nodejs_modulos_commonjs_esm_nativos">
+    <header>
+      <h1>Módulos en Node.js: CommonJS frente a ES Modules y APIs estándar</h1>
+      <p>Evolución del sistema de modularización en Node.js, diferencias técnicas entre CommonJS y ECMAScript Modules, resolución de rutas y biblioteca estándar integrada.</p>
+    </header>
+
+    <section>
+      <h2>Necesidad de modularización en el servidor</h2>
+      <p>Cuando Node.js nació en 2009, el estándar JavaScript carecía de un mecanismo oficial para dividir programas en múltiples archivos con ámbitos aislados. Para construir <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend</a> mantenibles sobre la <a href="D020_nodejs_arquitectura_event_loop_servidor.html">arquitectura de Node.js</a>, resultó imprescindible evitar la contaminación del espacio de nombres global mediante sistemas de módulos explícitos.</p>
+    </section>
+
+    <section>
+      <h2>CommonJS (CJS): el sistema histórico de Node.js</h2>
+      <p>Node.js adoptó originalmente la especificación <strong>CommonJS</strong>, caracterizada por las funciones <code>require()</code> para importar dependencias y el objeto <code>module.exports</code> (o su alias <code>exports</code>) para exponer funcionalidad pública.</p>
+      <pre><code>// calculadora.cjs
+function sumar(a, b) {
+  return a + b;
+}
+
+module.exports = { sumar };
+
+// app.cjs
+const { sumar } = require('./calculadora.cjs');
+console.log(sumar(4, 6));</code></pre>
+      <p>En CommonJS, la carga de módulos es <strong>síncrona y dinámica</strong>: <code>require()</code> lee el archivo desde el disco, lo envuelve en una función aislada con variables locales (<code>__dirname</code>, <code>__filename</code>, <code>module</code>, <code>exports</code>), lo evalúa en tiempo de ejecución y almacena el objeto exportado en una caché interna para futuras llamadas. Al ser una función ordinaria de JavaScript, permite invocarse condicionalmente dentro de bloques <code>if</code>.</p>
+    </section>
+
+    <section>
+      <h2>ES Modules (ESM): el estándar oficial de JavaScript</h2>
+      <p>Con la llegada de ECMAScript 2015 (ES6), JavaScript incorporó un sistema de módulos nativo basado en las palabras clave <code>import</code> y <code>export</code>. Node.js soporta plenamente <strong>ES Modules</strong>, activándose cuando el archivo posee extensión <code>.mjs</code> o cuando el archivo <code>package.json</code> más cercano declara el campo <code>"type": "module"</code> (permitiendo usar <code>.js</code> estándar).</p>
+      <pre><code>// calculadora.js (con "type": "module" en package.json)
+export function sumar(a, b) {
+  return a + b;
+}
+
+// app.js
+import { sumar } from './calculadora.js';
+console.log(sumar(4, 6));</code></pre>
+      <p>Las diferencias arquitectónicas clave de ESM respecto a CommonJS incluyen:</p>
+      <ul>
+        <li><strong>Análisis estático:</strong> Las sentencias <code>import</code> y <code>export</code> se resuelven antes de ejecutar el código, habilitando optimizaciones como eliminación de código muerto (<em>tree-shaking</em>) y detección temprana de exportaciones inexistentes.</li>
+        <li><strong>Carga asíncrona y Top-Level Await:</strong> ESM permite utilizar <code>await</code> directamente en el nivel superior de un módulo sin necesidad de envolverlo en una función <code>async</code>.</li>
+        <li><strong>Extensiones explícitas en rutas relativas:</strong> En Node.js ESM, las importaciones relativas requieren especificar la extensión completa del archivo (<code>./utilidades.js</code>) y sustituyen <code>__dirname</code> por <code>import.meta.url</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Módulos estándar integrados y prefijo node:</h2>
+      <p>Node.js incluye una extensa biblioteca estándar que cubre operaciones habituales de servidor sin instalar dependencias externas. La buena práctica moderna consiste en importar estos módulos utilizando el prefijo explícito <code>node:</code> (por ejemplo, <code>import fs from 'node:fs/promises'</code>), lo que acelera la resolución y evita colisiones con paquetes de terceros del mismo nombre:</p>
+      <ul>
+        <li><strong><code>node:fs</code> y <code>node:fs/promises</code>:</strong> Lectura, escritura, transmisión mediante flujos (<em>streams</em>) y manipulación de archivos y directorios.</li>
+        <li><strong><code>node:path</code>:</strong> Construcción y normalización segura de rutas de archivos independientes del separador del sistema operativo (<code>path.join</code>, <code>path.resolve</code>).</li>
+        <li><strong><code>node:crypto</code>:</strong> Generación de identificadores aleatorios seguros (<code>randomUUID</code>), funciones resumen criptográficas (SHA-256), firmas HMAC y derivación de claves.</li>
+        <li><strong><code>node:http</code> y <code>node:https</code>:</strong> Creación directa de servidores y clientes HTTP de bajo nivel, sobre los cuales se construyen frameworks como <a href="D025_nodejs_express_enrutamiento_middlewares.html">Express</a> y Fastify.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>

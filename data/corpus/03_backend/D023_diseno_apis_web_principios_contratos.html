@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diseño de APIs web: contratos, recursos y comunicación cliente-servidor</title>
+  <meta name="description" content="Introduce los principios del diseño de interfaces de programación web, modelado de recursos, contratos claros entre equipos y criterios para elegir entre estilos como REST, GraphQL o RPC. No implementa un framework particular. Requiere dominar HTTP. Enlaza con Node.js, Python, Java y arquitectura web.">
+  <meta name="keywords" content="apis, contratos, http, arquitectura, backend">
+  <meta name="doc-id" content="D023">
+  <meta name="doc-category-id" content="C03">
+  <meta name="doc-category" content="Backend">
+  <meta name="doc-slug" content="diseno_apis_web_principios_contratos">
+</head>
+<body>
+  <article data-doc-id="D023" data-category-id="C03" data-slug="diseno_apis_web_principios_contratos">
+    <header>
+      <h1>Diseño de APIs web: contratos, recursos y comunicación cliente-servidor</h1>
+      <p>Modelado de recursos sobre HTTP, diseño de contratos explícitos y evolutivos, semántica de métodos y criterios para elegir entre REST, GraphQL y RPC.</p>
+    </header>
+
+    <section>
+      <h2>La API como contrato entre productores y consumidores</h2>
+      <p>En la ingeniería de <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend</a>, una API (<em>Application Programming Interface</em>) web define la frontera formal mediante la cual clientes —aplicaciones web, móviles o servicios de terceros— invocan capacidades del sistema sin conocer su implementación interna.</p>
+      <p>Diseñar una buena API consiste ante todo en diseñar un <strong>contrato explícito, predecible y estable</strong>. Cuando los equipos acuerdan de antemano las rutas, estructuras de datos, reglas de validación y formatos de error antes de escribir código, el desarrollo frontend y backend puede avanzar en paralelo sin bloqueos ni malentendidos.</p>
+    </section>
+
+    <section>
+      <h2>Principios de diseño orientado a recursos (REST sobre HTTP)</h2>
+      <p>El estilo arquitectónico predominante en la web pública y empresarial es REST (<em>Representational State Transfer</em>), que aprovecha directamente la semántica nativa del protocolo HTTP en lugar de reinventar mecanismos de transporte propios:</p>
+      <ul>
+        <li><strong>Identificación mediante sustantivos en plural:</strong> Las URIs representan colecciones e instancias de recursos (<code>/api/v1/ordenes</code>, <code>/api/v1/ordenes/482</code>), evitando verbos de acción en la ruta como <code>/obtenerOrdenes</code> o <code>/borrarOrden</code>.</li>
+        <li><strong>Semántica estándar de métodos HTTP:</strong> <code>GET</code> consulta representaciones sin alterar el estado del servidor (operación segura e idempotente); <code>POST</code> crea nuevos recursos dentro de una colección; <code>PUT</code> reemplaza íntegramente un recurso existente; <code>PATCH</code> aplica modificaciones parciales; y <code>DELETE</code> elimina el recurso indicado.</li>
+        <li><strong>Códigos de estado significativos:</strong> El servidor comunica el resultado mediante códigos estándar: <code>200 OK</code>, <code>201 Created</code> (acompañado de la cabecera <code>Location</code>), <code>204 No Content</code>, <code>400 Bad Request</code> o <code>422 Unprocessable Entity</code> para errores de validación, <code>401 Unauthorized</code>, <code>403 Forbidden</code>, <code>404 Not Found</code> y <code>500 Internal Server Error</code>.</li>
+        <li><strong>Respuestas de error uniformes:</strong> Estandarizar una estructura JSON consistente para fallos (por ejemplo, siguiendo el estándar RFC 9457 <em>Problem Details</em>) permite que los clientes manejen errores de forma centralizada.</li>
+      </ul>
+      <pre><code>// Ejemplo de respuesta de error estructurada y predecible (HTTP 422)
+{
+  "type": "https://api.ejemplo.com/errores/validacion",
+  "title": "Datos de entrada inválidos",
+  "status": 422,
+  "detail": "Uno o más campos no cumplen las reglas de negocio.",
+  "errores": [
+    { "campo": "cantidad", "mensaje": "Debe ser un entero mayor a cero" }
+  ]
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Paginación, filtrado y evolución sin rupturas</h2>
+      <p>Exponer colecciones sin límites degrada el rendimiento de la base de datos y satura la red del cliente. Toda colección potencialmente extensa debe soportar paginación explícita —ya sea basada en desplazamiento (<code>?page=2&amp;limit=25</code>) o basada en cursores opacos (<code>?cursor=eyJpZCI6MTAwfQ==</code>) para conjuntos dinámicos de alto volumen— junto con parámetros estandarizados de filtrado y ordenamiento (<code>?estado=activo&amp;sort=-fechaCreacion</code>).</p>
+      <p>Asimismo, las APIs evolucionan con el negocio. Para evitar romper clientes existentes en producción, conviene aplicar cambios aditivos compatibles hacia atrás (añadir campos opcionales sin eliminar ni renombrar los existentes) y reservar el versionado explícito (como el prefijo <code>/v1/</code> a <code>/v2/</code>) únicamente para cambios estructurales incompatibles.</p>
+    </section>
+
+    <section>
+      <h2>Comparación de paradigmas: REST, GraphQL y RPC</h2>
+      <p>Aunque REST cubre eficazmente la mayoría de escenarios web, existen casos donde otros estilos de comunicación ofrecen ventajas concretas:</p>
+      <ul>
+        <li><strong>REST:</strong> Ideal para APIs públicas, recursos bien definidos, aprovechamiento nativo del almacenamiento en caché HTTP (<em>ETags</em>, <code>Cache-Control</code>) y herramientas universales de depuración.</li>
+        <li><strong>GraphQL:</strong> Expone un único punto de entrada donde el cliente declara exactamente qué campos y relaciones necesita mediante un esquema fuertemente tipado. Resuelve los problemas de <em>over-fetching</em> (recibir datos sobrantes) y <em>under-fetching</em> (necesitar múltiples peticiones encadenadas) en interfaces complejas con múltiples clientes, a cambio de mayor complejidad en caché y protección contra consultas profundamente anidadas.</li>
+        <li><strong>RPC (como gRPC o tRPC):</strong> Orientado a invocar procedimientos remotos directamente. <strong>gRPC</strong> utiliza Protocol Buffers binarios sobre HTTP/2, ofreciendo latencia mínima y contratos estrictos ideales para comunicación interna entre microservicios; <strong>tRPC</strong> permite compartir tipos de extremo a extremo en proyectos monorepo construidos íntegramente con TypeScript.</li>
+      </ul>
+      <p>Documentar el contrato mediante especificaciones legibles por máquinas como <strong>OpenAPI</strong> (para REST) o esquemas SDL (para GraphQL) permite generar automáticamente clientes tipados, pruebas de contrato y portales de documentación interactiva.</p>
+    </section>
+  </article>
+</body>
+</html>

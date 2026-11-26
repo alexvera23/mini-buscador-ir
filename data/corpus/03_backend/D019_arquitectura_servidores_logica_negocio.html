@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundamentos de servidores backend y estructuración de la lógica de negocio</title>
+  <meta name="description" content="Actúa como punto de entrada a la categoría Backend, explicando el ciclo completo de una petición en el servidor, separación entre capa de transporte, reglas de negocio y persistencia. No profundiza en sintaxis de un lenguaje único. Requiere entender HTTP. Enlaza con Node.js, Python, Java, APIs, bases de datos y seguridad.">
+  <meta name="keywords" content="backend, servidores, logica-negocio, arquitectura, apis">
+  <meta name="doc-id" content="D019">
+  <meta name="doc-category-id" content="C03">
+  <meta name="doc-category" content="Backend">
+  <meta name="doc-slug" content="arquitectura_servidores_logica_negocio">
+</head>
+<body>
+  <article data-doc-id="D019" data-category-id="C03" data-slug="arquitectura_servidores_logica_negocio">
+    <header>
+      <h1>Fundamentos de servidores backend y estructuración de la lógica de negocio</h1>
+      <p>Guía central sobre el procesamiento de peticiones en el servidor, desacoplamiento por responsabilidades, persistencia transaccional y seguridad en sistemas backend.</p>
+    </header>
+
+    <section>
+      <h2>Rol del servidor en el modelo cliente-servidor</h2>
+      <p>Dentro de la arquitectura distribuida nacida con <a href="../01_fundamentos/D001_introduccion_evolucion_web.html">la evolución de la World Wide Web</a>, el backend representa la infraestructura y el software que se ejecutan en entornos controlados lejos del navegador del usuario. Mientras la interfaz de usuario se encarga de la presentación e interacción inmediata, el servidor asume responsabilidades críticas que nunca deben delegarse al cliente por razones de seguridad, integridad y consistencia:</p>
+      <ul>
+        <li><strong>Autoridad sobre reglas de negocio:</strong> Validar precios, calcular impuestos, verificar disponibilidad de inventario o ejecutar transferencias financieras bajo reglas deterministas auditables.</li>
+        <li><strong>Autenticación y control de acceso:</strong> Verificar identidades y comprobar permisos antes de exponer o modificar cualquier recurso protegido.</li>
+        <li><strong>Persistencia duradera:</strong> Coordinar transacciones seguras contra motores de almacenamiento persistente y servicios externos.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ciclo de vida de una petición HTTP en el servidor</h2>
+      <p>Cuando un cliente envía una solicitud HTTP hacia un servidor backend, el procesamiento atraviesa una secuencia ordenada de etapas antes de emitir una respuesta:</p>
+      <ol>
+        <li><strong>Recepción y terminación de red:</strong> Un proxy inverso o el servidor HTTP de la aplicación acepta la conexión TCP/TLS, analiza la línea de solicitud (método, ruta, versión) y decodifica cabeceras y cuerpo.</li>
+        <li><strong>Cadena de middlewares transversales:</strong> La petición pasa por filtros secuenciales que registran telemetría, verifican tokens de sesión, limitan tasas de tráfico (<em>rate limiting</em>) y parsean formatos como JSON.</li>
+        <li><strong>Enrutamiento y controladores:</strong> El enrutador empareja el método y la URI con un controlador específico encargado de extraer parámetros y validar la estructura de entrada.</li>
+        <li><strong>Ejecución de casos de uso (dominio):</strong> Se invoca la lógica de negocio pura, libre de detalles del protocolo HTTP.</li>
+        <li><strong>Acceso a datos y serialización:</strong> Se consultan o actualizan registros en almacenamiento persistente y el controlador transforma el resultado en una respuesta HTTP con el código de estado adecuado.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Separación entre transporte, lógica de negocio y persistencia</h2>
+      <p>Uno de los errores más frecuentes al construir servicios web consiste en mezclar consultas SQL, reglas de validación de dominio y manipulación directa de objetos <code>request</code> y <code>response</code> dentro de una misma función. Este acoplamiento impide reutilizar la lógica desde otros canales (como tareas programadas o colas de mensajes) y vuelve frágiles las pruebas automatizadas.</p>
+      <pre><code>// Ejemplo conceptual de separación de responsabilidades
+class ServicioPedidos {
+  constructor(repositorioPedidos, pasarelaPagos) {
+    this.repositorioPedidos = repositorioPedidos;
+    this.pasarelaPagos = pasarelaPagos;
+  }
+
+  async confirmarPedido(datosPedido) {
+    if (datosPedido.items.length === 0) {
+      throw new Error('El pedido debe contener al menos un artículo');
+    }
+    const total = datosPedido.items.reduce((acc, item) =&gt; acc + item.precio * item.cantidad, 0);
+    await this.pasarelaPagos.cobrar(datosPedido.clienteId, total);
+    return this.repositorioPedidos.guardar({ ...datosPedido, total, estado: 'CONFIRMADO' });
+  }
+}</code></pre>
+      <p>Siguiendo los principios de <a href="../06_arquitectura/D041_arquitectura_software_atributos_calidad.html">arquitectura de software y atributos de calidad</a>, dividir el backend en capa de transporte (controladores/APIs), capa de aplicación o dominio (servicios) y capa de infraestructura (repositorios y adaptadores externos) garantiza cohesión interna y bajo acoplamiento.</p>
+    </section>
+
+    <section>
+      <h2>Ecosistemas tecnológicos y pilares complementarios del backend</h2>
+      <p>Los fundamentos de arquitectura backend son transversales, pero cada ecosistema ofrece modelos de concurrencia y herramientas particulares:</p>
+      <ul>
+        <li><strong>Ecosistema JavaScript/TypeScript en servidor:</strong> En <a href="D020_nodejs_arquitectura_event_loop_servidor.html">Node.js, motor V8 y entrada/salida no bloqueante</a> se estudia la concurrencia orientada a eventos, profundizando en <a href="D024_nodejs_modulos_commonjs_esm_nativos.html">sistemas de módulos CommonJS, ES Modules y APIs nativas</a>, <a href="D025_nodejs_express_enrutamiento_middlewares.html">desarrollo con Express y middlewares</a>, <a href="D026_nodejs_fastify_alternativas_rendimiento.html">Fastify y frameworks de alto rendimiento</a>, además de la adopción de <a href="../10_ecosistema/D069_typescript_tipado_estatico_ecosistema_web.html">TypeScript para seguridad de tipos</a>.</li>
+        <li><strong>Ecosistema Python:</strong> En <a href="D021_python_backend_entornos_ecosistema.html">Python en el desarrollo backend</a> se analizan entornos virtuales, tipado estático moderno y servidores WSGI/ASGI.</li>
+        <li><strong>Ecosistema Empresarial JVM:</strong> En <a href="D022_java_spring_boot_ecosistema_backend.html">Java y Spring Boot</a> se examina la inversión de control y el desarrollo estructurado sobre la máquina virtual de Java.</li>
+      </ul>
+      <p>Asimismo, todo servidor robusto requiere dominar el <a href="D023_diseno_apis_web_principios_contratos.html">diseño de APIs web y contratos cliente-servidor</a>, integrar <a href="../04_bases_datos/D027_bases_datos_relacionales_modelo_sql.html">bases de datos relacionales y lenguaje SQL</a> para persistencia confiable, aplicar <a href="../08_seguridad/D055_seguridad_web_principios_owasp_top_10.html">fundamentos de seguridad web y OWASP Top 10</a> desde el diseño, y empaquetar servicios de forma reproducible mediante <a href="../09_devops/D062_docker_contenedores_virtualizacion_ligera.html">Docker y contenedores</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

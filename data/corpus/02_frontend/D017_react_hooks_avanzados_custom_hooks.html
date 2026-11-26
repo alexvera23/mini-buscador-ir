@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hooks avanzados y creación de Custom Hooks reutilizables</title>
+  <meta name="description" content="Aborda useReducer, useRef, useMemo, useCallback y la extracción de lógica compartida en hooks personalizados bien tipados y testeables. No trata librerías externas de estado global. Requiere dominar useState y useEffect. Enlaza con optimización de renderizado y patrones de reutilización en React.">
+  <meta name="keywords" content="react, custom-hooks, usereducer, usememo, reutilizacion">
+  <meta name="doc-id" content="D017">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="react_hooks_avanzados_custom_hooks">
+</head>
+<body>
+  <article data-doc-id="D017" data-category-id="C02" data-slug="react_hooks_avanzados_custom_hooks">
+    <header>
+      <h1>Hooks avanzados y creación de Custom Hooks reutilizables</h1>
+      <p>Transiciones de estado estructuradas con useReducer, referencias mutables con useRef, memoización con useMemo y useCallback, y extracción de Custom Hooks.</p>
+    </header>
+
+    <section>
+      <h2>Más allá del estado básico en React</h2>
+      <p>A medida que los <a href="D012_react_introduccion_componentes_jsx.html">componentes funcionales de React</a> evolucionan dentro de la <a href="D011_arquitectura_componentes_frontend.html">arquitectura frontend</a>, el uso exclusivo de <a href="D016_react_hooks_usestate_useeffect.html">useState y useEffect</a> puede volverse verboso cuando múltiples variables de estado cambian de forma coordinada, cuando se requiere acceder imperativamente a nodos del DOM o cuando la misma lógica de suscripción se repite en distintas vistas.</p>
+    </section>
+
+    <section>
+      <h2>Estado estructurado con useReducer</h2>
+      <p>El hook <code>useReducer</code> constituye una alternativa a <code>useState</code> diseñada para gestionar estados complejos con múltiples subvalores o transiciones donde el siguiente estado depende de reglas de negocio bien definidas. Este patrón concentra toda la lógica de actualización en una función pura llamada <em>reducer</em> que recibe el estado actual y un objeto <code>action</code> descriptivo, devolviendo el nuevo estado inmutable.</p>
+      <pre><code>import { useReducer } from 'react';
+
+const estadoInicial = { cargando: false, datos: null, error: null };
+
+function peticionReducer(estado, accion) {
+  switch (accion.tipo) {
+    case 'INICIAR':
+      return { cargando: true, datos: null, error: null };
+    case 'EXITO':
+      return { cargando: false, datos: accion.carga, error: null };
+    case 'FALLO':
+      return { cargando: false, datos: null, error: accion.mensaje };
+    default:
+      return estado;
+  }
+}
+
+function VistaReporte() {
+  const [estado, despachar] = useReducer(peticionReducer, estadoInicial);
+  // despachar({ tipo: 'INICIAR' }) dispara una transición predecible y aislada
+}</code></pre>
+      <p>Separar las transiciones de estado en un <em>reducer</em> facilita las pruebas unitarias, ya que la función puede probarse con entradas y salidas simples sin necesidad de montar ningún componente en un navegador simulado.</p>
+    </section>
+
+    <section>
+      <h2>Referencias persistentes sin re-renderizado con useRef</h2>
+      <p>El hook <code>useRef</code> devuelve un objeto mutable con una única propiedad <code>current</code> que persiste durante todo el ciclo de vida del componente. A diferencia de <code>useState</code>, modificar <code>ref.current</code> no provoca un nuevo renderizado del componente.</p>
+      <p>Sus dos casos de uso principales son:</p>
+      <ul>
+        <li><strong>Acceso imperativo a elementos del DOM:</strong> Vincular <code>ref={miRef}</code> a una etiqueta JSX permite enfocar un campo de texto (<code>inputRef.current.focus()</code>), medir dimensiones o controlar la reproducción de elementos multimedia.</li>
+        <li><strong>Almacenamiento de valores internos auxiliares:</strong> Guardar identificadores de temporizadores (<code>setTimeout</code>), contadores de renderizados o el valor previo de una propiedad sin afectar la visualización.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Memoización selectiva con useMemo y useCallback</h2>
+      <p>En JavaScript, cada vez que un componente se vuelve a renderizar, las funciones y objetos declarados en su interior se crean nuevamente con nuevas referencias en memoria. React proporciona dos hooks para preservar valores entre renderizados mientras sus dependencias no cambien:</p>
+      <ul>
+        <li><strong><code>useMemo(() =&gt; calculoCostoso(a, b), [a, b])</code>:</strong> Almacena en caché el resultado de una operación computacionalmente exigente (como filtrar u ordenar miles de registros en el cliente) para evitar recalcularlo cuando cambien otras partes no relacionadas del componente.</li>
+        <li><strong><code>useCallback((id) =&gt; manejarSeleccion(id), [dependencia])</code>:</strong> Preserva la misma referencia de función entre renderizados. Resulta útil cuando dicha función se pasa como propiedad a un componente hijo envuelto en <code>React.memo</code> o cuando actúa como dependencia dentro de un <code>useEffect</code>.</li>
+      </ul>
+      <p>Conviene aplicar ambos hooks de manera medida: memoizar cálculos triviales añade sobrecarga de memoria y comparación de dependencias sin aportar mejoras reales de rendimiento.</p>
+    </section>
+
+    <section>
+      <h2>Diseño de Custom Hooks reutilizables</h2>
+      <p>La verdadera potencia compositiva de React reside en la creación de <strong>Custom Hooks</strong> (hooks personalizados). Un Custom Hook es una función convencional de JavaScript cuyo nombre comienza obligatoriamente con el prefijo <code>use</code> y que invoca en su interior otros hooks de React para encapsular lógica con estado reutilizable.</p>
+      <p>Cada componente que invoca un Custom Hook obtiene su propia instancia aislada de estado y efectos; lo que se comparte es la lógica de comportamiento, no los datos en sí. Por ejemplo, al consumir servicios web que intercambian <a href="../01_fundamentos/D006_transicion_xml_a_json.html">datos estructurados en formato JSON</a> sobre la infraestructura de <a href="../01_fundamentos/D002_arpanet_origenes_internet.html">la World Wide Web</a>, es habitual extraer un hook genérico de consulta:</p>
+      <pre><code>import { useState, useEffect } from 'react';
+
+export function useConsultaJson(url) {
+  const [datos, setDatos] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    const controlador = new AbortController();
+    setCargando(true);
+
+    fetch(url, { signal: controlador.signal })
+      .then((res) =&gt; {
+        if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) =&gt; {
+        setDatos(json);
+        setError(null);
+      })
+      .catch((err) =&gt; {
+        if (err.name !== 'AbortError') setError(err.message);
+      })
+      .finally(() =&gt; setCargando(false));
+
+    return () =&gt; controlador.abort();
+  }, [url]);
+
+  return { datos, cargando, error };
+}</code></pre>
+      <p>Al extraer detalles de red, temporizadores o suscripciones en Custom Hooks bien delimitados, los componentes visuales recuperan su claridad declarativa. Cuando el estado encapsulado necesita compartirse globalmente entre múltiples ramas del árbol, el siguiente paso consiste en analizar <a href="D018_react_context_api_gestion_estado.html">React Context API y su comparación con librerías de estado global</a>.</p>
+    </section>
+  </article>
+</body>
+</html>

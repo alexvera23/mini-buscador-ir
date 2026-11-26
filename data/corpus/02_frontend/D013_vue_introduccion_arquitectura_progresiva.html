@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducción a Vue.js y su enfoque de framework progresivo</title>
+  <meta name="description" content="Introduce la filosofía de Vue para integrarse gradualmente desde mejoras puntuales hasta aplicaciones SPA completas mediante Single File Components. No profundiza en comparación exhaustiva con Angular. Requiere dominar HTML, CSS y JavaScript ES6+. Enlaza con sistema de reactividad de Vue y arquitectura de componentes.">
+  <meta name="keywords" content="vue, sfc, framework, progresivo, frontend">
+  <meta name="doc-id" content="D013">
+  <meta name="doc-category-id" content="C02">
+  <meta name="doc-category" content="Frontend">
+  <meta name="doc-slug" content="vue_introduccion_arquitectura_progresiva">
+</head>
+<body>
+  <article data-doc-id="D013" data-category-id="C02" data-slug="vue_introduccion_arquitectura_progresiva">
+    <header>
+      <h1>Introducción a Vue.js y su enfoque de framework progresivo</h1>
+      <p>Adopción incremental en aplicaciones web, componentes de archivo único (SFC), plantillas declarativas y sistema de reactividad basado en proxies.</p>
+    </header>
+
+    <section>
+      <h2>El concepto de framework progresivo</h2>
+      <p>Vue.js es un framework de JavaScript diseñado para construir interfaces de usuario bajo los principios de la <a href="D011_arquitectura_componentes_frontend.html">arquitectura de componentes en el frontend</a>. Su característica distintiva radica en su diseño progresivo: el núcleo de la biblioteca se enfoca exclusivamente en la capa de vista declarativa y la reactividad, permitiendo que el equipo adopte herramientas adicionales solo cuando la complejidad del proyecto lo justifica.</p>
+      <p>En la práctica, esta flexibilidad permite emplear Vue en escenarios muy diversos sin reescribir sistemas existentes:</p>
+      <ul>
+        <li><strong>Mejora progresiva sobre HTML estático:</strong> Puede cargarse directamente mediante una etiqueta <code>&lt;script&gt;</code> para dotar de interactividad a formularios, calculadoras o filtros dentro de páginas generadas por servidores tradicionales.</li>
+        <li><strong>Componentes incrustables (Web Components o islas):</strong> Permite montar aplicaciones independientes en regiones concretas de un portal existente.</li>
+        <li><strong>Aplicaciones de página única (SPA) y renderizado híbrido:</strong> Integrado con Vite, Vue Router y Pinia, proporciona una infraestructura completa para aplicaciones empresariales complejas con enrutamiento del lado del cliente, gestión de estado centralizada y renderizado en servidor.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Single File Components (SFC) y anatomía de un archivo .vue</h2>
+      <p>En proyectos estructurados con herramientas de construcción modernas, Vue organiza cada unidad de interfaz en un <em>Single File Component</em> (SFC) con extensión <code>.vue</code>. Este formato agrupa en un mismo archivo las tres dimensiones de un componente: su estructura HTML, su lógica JavaScript y sus estilos CSS, manteniendo una clara separación visual entre bloques.</p>
+      <pre><code>&lt;script setup&gt;
+import { ref, computed } from 'vue';
+
+const contador = ref(0);
+const mensajeEstado = computed(() =&gt;
+  contador.value === 0 ? 'Sin clics registrados' : `Total de clics: ${contador.value}`
+);
+
+function incrementar() {
+  contador.value++;
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div class="tarjeta-contador"&gt;
+    &lt;p&gt;{{ mensajeEstado }}&lt;/p&gt;
+    &lt;button type="button" @click="incrementar"&gt;Incrementar&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.tarjeta-contador {
+  border: 1px solid #cbd5e1;
+  padding: 1rem;
+  border-radius: 6px;
+}
+&lt;/style&gt;</code></pre>
+      <p>El atributo <code>scoped</code> en la etiqueta <code>&lt;style&gt;</code> instruye al compilador de Vue para generar atributos de datos únicos en los elementos del componente y reescribir los selectores CSS. De este modo, las reglas de estilo aplican exclusivamente al componente actual sin contaminar el resto de la aplicación.</p>
+    </section>
+
+    <section>
+      <h2>Sintaxis de plantillas y directivas declarativas</h2>
+      <p>A diferencia de los entornos que dependen exclusivamente de expresiones JSX, Vue utiliza una sintaxis de plantillas basada en HTML válido enriquecida con directivas especiales prefijadas con <code>v-</code>. Estas directivas vinculan de forma declarativa el DOM renderizado con los datos reactivos de la instancia del componente:</p>
+      <ul>
+        <li><strong>Interpolación textual:</strong> La sintaxis de doble llave <code>{{ expresion }}</code> evalúa expresiones de JavaScript e inserta el resultado como texto plano escapado automáticamente contra inyecciones XSS.</li>
+        <li><strong>Vinculación de atributos (<code>v-bind</code> o <code>:</code>):</strong> Permite enlazar dinámicamente atributos HTML o propiedades de componentes hijos, como <code>:disabled="estaCargando"</code> o <code>:src="urlImagen"</code>.</li>
+        <li><strong>Escucha de eventos (<code>v-on</code> o <code>@</code>):</strong> Asocia eventos del DOM con métodos manejadores, ofreciendo modificadores declarativos útiles como <code>@submit.prevent</code> para evitar el envío tradicional de formularios.</li>
+        <li><strong>Renderizado condicional y de listas:</strong> Las directivas <code>v-if</code>, <code>v-else</code> y <code>v-show</code> controlan la visibilidad de bloques, mientras que <code>v-for</code> itera sobre arreglos u objetos exigiendo el atributo <code>:key</code> para preservar la identidad de cada nodo.</li>
+        <li><strong>Vinculación bidireccional en formularios (<code>v-model</code>):</strong> Simplifica la sincronización entre entradas de usuario (<code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code>) y variables reactivas del componente.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Reactividad basada en Proxies y Composition API</h2>
+      <p>El sistema de reactividad de Vue 3 se sustenta en objetos <code>Proxy</code> nativos de ES6. Cuando se declara un estado reactivo mediante primitivas como <code>ref()</code> o <code>reactive()</code>, Vue intercepta las operaciones de lectura y escritura sobre dichas referencias. Durante el renderizado, el motor registra automáticamente qué propiedades reactivas fueron consultadas por cada efecto o plantilla; cuando una propiedad cambia de valor, se notifica exclusivamente a los suscriptores dependientes.</p>
+      <p>Para organizar la lógica dentro de los componentes, Vue ofrece la <strong>Composition API</strong> (utilizada de manera ergonómica mediante <code>&lt;script setup&gt;</code>), que permite agrupar código por característica funcional y extraer lógica reutilizable en funciones denominadas <em>composables</em>:</p>
+      <pre><code>// Composable reutilizable para rastrear el ancho de ventana
+import { ref, onMounted, onUnmounted } from 'vue';
+
+export function useAnchoVentana() {
+  const ancho = ref(window.innerWidth);
+  const actualizar = () =&gt; { ancho.value = window.innerWidth; };
+
+  onMounted(() =&gt; window.addEventListener('resize', actualizar));
+  onUnmounted(() =&gt; window.removeEventListener('resize', actualizar));
+
+  return { ancho };
+}</code></pre>
+      <p>Asimismo, la comunicación entre componentes mantiene un flujo predecible: los padres transmiten datos hacia los hijos mediante <code>defineProps()</code> y los hijos notifican acciones hacia arriba emitiendo eventos personalizados declarados con <code>defineEmits()</code>.</p>
+    </section>
+
+    <section>
+      <h2>Consideraciones de adopción en proyectos web</h2>
+      <p>Vue resulta especialmente adecuado para equipos que valoran una curva de aprendizaje gradual, plantillas cercanas al estándar HTML y una separación clara entre estructura, lógica y estilos. Su compilador realiza optimizaciones estáticas en tiempo de construcción —como marcar nodos estáticos que nunca cambian para omitirlos en futuras actualizaciones— combinando la ergonomía de plantillas declarativas con un rendimiento predecible en tiempo de ejecución.</p>
+    </section>
+  </article>
+</body>
+</html>

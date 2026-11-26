@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fastify y frameworks modernos orientados a alto rendimiento en Node.js</title>
+  <meta name="description" content="Analiza el diseño de Fastify basado en esquemas JSON para serialización rápida, sistema de plugins encapsulados y comparación práctica frente a Express. No cubre despliegue en contenedores. Requiere experiencia básica creando endpoints en Node.js. Se vincula con validación de esquemas y rendimiento backend.">
+  <meta name="keywords" content="nodejs, fastify, rendimiento, json-schema, frameworks">
+  <meta name="doc-id" content="D026">
+  <meta name="doc-category-id" content="C03">
+  <meta name="doc-category" content="Backend">
+  <meta name="doc-slug" content="nodejs_fastify_alternativas_rendimiento">
+</head>
+<body>
+  <article data-doc-id="D026" data-category-id="C03" data-slug="nodejs_fastify_alternativas_rendimiento">
+    <header>
+      <h1>Fastify y frameworks modernos orientados a alto rendimiento en Node.js</h1>
+      <p>Optimización mediante JSON Schema, enrutamiento radix-tree, encapsulación estricta de plugins y comparación arquitectónica frente a Express.</p>
+    </header>
+
+    <section>
+      <h2>Motivación de los frameworks de nueva generación en Node.js</h2>
+      <p>Aunque <a href="D025_nodejs_express_enrutamiento_middlewares.html">Express</a> estableció las bases del desarrollo web en <a href="D020_nodejs_arquitectura_event_loop_servidor.html">Node.js</a>, su diseño original precede a las promesas nativas de JavaScript, a <code>async/await</code> y a las exigencias modernas de alto rendimiento y tipado estricto en <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend</a>.</p>
+      <p><strong>Fastify</strong> surgió con el objetivo de ofrecer la mejor experiencia de desarrollo posible con la menor sobrecarga por petición HTTP, incorporando soporte nativo para funciones asíncronas, registro estructurado de logs con Pino y optimizaciones basadas en esquemas desde su núcleo.</p>
+    </section>
+
+    <section>
+      <h2>Validación y serialización acelerada con JSON Schema</h2>
+      <p>En la mayoría de APIs web, dos operaciones consumen una fracción considerable del tiempo de CPU por petición: validar los datos entrantes y convertir objetos JavaScript a texto mediante <code>JSON.stringify()</code>. Fastify aprovecha el estándar abierto <strong>JSON Schema</strong> en cada ruta para optimizar ambas fases en tiempo de arranque:</p>
+      <ul>
+        <li><strong>Validación compilada con Ajv:</strong> Antes de invocar el controlador, Fastify compila el esquema de entrada (<code>body</code>, <code>querystring</code>, <code>params</code>) en funciones altamente optimizadas de JavaScript que rechazan peticiones malformadas de inmediato con respuestas <code>400 Bad Request</code> detalladas.</li>
+        <li><strong>Serialización determinista con fast-json-stringify:</strong> Cuando se define un esquema para la respuesta (<code>response</code>), Fastify genera una función especializada que conoce de antemano los tipos y claves exactas del objeto saliente, multiplicando la velocidad de serialización frente al <code>JSON.stringify</code> genérico y filtrando automáticamente propiedades sensibles no declaradas en el esquema.</li>
+      </ul>
+      <pre><code>import Fastify from 'fastify';
+
+const fastify = Fastify({ logger: true });
+
+const esquemaProducto = {
+  body: {
+    type: 'object',
+    required: ['nombre', 'precio'],
+    properties: {
+      nombre: { type: 'string', minLength: 3 },
+      precio: { type: 'number', minimum: 0 }
+    }
+  },
+  response: {
+    201: {
+      type: 'object',
+      properties: {
+        id: { type: 'integer' },
+        nombre: { type: 'string' },
+        precio: { type: 'number' }
+      }
+    }
+  }
+};
+
+fastify.post('/productos', { schema: esquemaProducto }, async (request, reply) =&gt; {
+  const nuevoProducto = { id: 101, ...request.body };
+  return reply.code(201).send(nuevoProducto);
+});</code></pre>
+    </section>
+
+    <section>
+      <h2>Enrutamiento Radix-Tree y sistema de plugins encapsulados</h2>
+      <p>Para resolver rutas rápidamente, Fastify utiliza un árbol de prefijos comprimido (<em>radix tree</em>) mediante la biblioteca <code>find-my-way</code>, logrando búsquedas en tiempo proporcional a la longitud de la URL independientemente de cuántos cientos de rutas tenga registrada la aplicación.</p>
+      <p>En lugar de depender de middlewares globales que mutan el estado compartido de toda la aplicación, Fastify organiza el código mediante un <strong>árbol de plugins encapsulados</strong> (<code>fastify.register()</code>). Cada plugin crea un contexto aislado: los decoradores, hooks de ciclo de vida y dependencias registradas dentro de un plugin están disponibles únicamente para ese plugin y sus hijos, evitando colisiones accidentales entre módulos de negocio distintos.</p>
+    </section>
+
+    <section>
+      <h2>Comparación práctica: Express frente a Fastify</h2>
+      <p>Seleccionar entre Express y Fastify depende de las prioridades técnicas y organizativas del equipo:</p>
+      <ul>
+        <li><strong>Madurez y ecosistema de terceros:</strong> Express cuenta con una base instalada inmensa y miles de middlewares comunitarios listos para integrar, aunque muchos proyectos antiguos requieren adaptadores adicionales para manejar errores en promesas o validación de esquemas.</li>
+        <li><strong>Rendimiento, contratos y ciclo de vida:</strong> Fastify ofrece mayor capacidad de peticiones por segundo, manejo nativo de promesas retornadas desde los controladores, generación directa de especificaciones OpenAPI/Swagger a partir de los mismos esquemas de validación y un ciclo de vida granular basado en <em>hooks</em> (<code>onRequest</code>, <code>preHandler</code>, <code>onSend</code>).</li>
+      </ul>
+      <p>Adicionalmente, frameworks arquitectónicos completos como <strong>NestJS</strong> permiten elegir tanto Express como Fastify como motor HTTP subyacente, combinando la estructura modular inspirada en Angular con el rendimiento de Fastify cuando el proyecto exige máxima eficiencia.</p>
+    </section>
+  </article>
+</body>
+</html>

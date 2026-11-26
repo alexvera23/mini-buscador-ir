@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java y Spring Boot: fundamentos del ecosistema empresarial backend</title>
+  <meta name="description" content="Introduce la máquina virtual JVM, el contenedor de inversión de control de Spring y cómo Spring Boot simplifica la configuración de servicios web en producción. No enseña sintaxis elemental de Java. Requiere bases de programación orientada a objetos en Java. Enlaza con Spring Web, JPA y arquitectura por capas.">
+  <meta name="keywords" content="java, spring-boot, jvm, backend, ioc">
+  <meta name="doc-id" content="D022">
+  <meta name="doc-category-id" content="C03">
+  <meta name="doc-category" content="Backend">
+  <meta name="doc-slug" content="java_spring_boot_ecosistema_backend">
+</head>
+<body>
+  <article data-doc-id="D022" data-category-id="C03" data-slug="java_spring_boot_ecosistema_backend">
+    <header>
+      <h1>Java y Spring Boot: fundamentos del ecosistema empresarial backend</h1>
+      <p>Ejecución optimizada sobre la JVM, contenedor de Inversión de Control de Spring, autoconfiguración en Spring Boot y estructura de servicios empresariales.</p>
+    </header>
+
+    <section>
+      <h2>La Máquina Virtual de Java (JVM) en entornos de servidor</h2>
+      <p>Java mantiene una presencia predominante en sistemas financieros, plataformas de comercio electrónico y arquitecturas empresariales de misión crítica dentro del panorama de <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend</a>. Esta permanencia se sustenta en la madurez de la Máquina Virtual de Java (JVM), que ejecuta bytecode compilado aplicando optimizaciones dinámicas en tiempo de ejecución mediante su compilador <em>Just-In-Time</em> (HotSpot).</p>
+      <p>Para servicios de larga duración, la JVM ofrece recolectores de basura de baja latencia (como G1GC o ZGC), gestión robusta de concurrencia multihilo (potenciada por hilos virtuales en versiones modernas de Java) y herramientas exhaustivas de diagnóstico y perfilado en producción.</p>
+    </section>
+
+    <section>
+      <h2>Inversión de Control (IoC) e Inyección de Dependencias en Spring</h2>
+      <p>El núcleo del ecosistema Spring es su contenedor de <strong>Inversión de Control (IoC)</strong>. En lugar de que las clases de negocio instancien manualmente sus colaboradores mediante el operador <code>new</code> —creando acoplamientos rígidos difíciles de probar—, el contenedor de Spring gestiona el ciclo de vida de los objetos de la aplicación, denominados <em>Beans</em>.</p>
+      <p>A través de anotaciones estereotipo como <code>@Service</code>, <code>@Repository</code> o <code>@RestController</code>, Spring detecta las clases relevantes e inyecta automáticamente sus dependencias preferentemente a través de sus constructores:</p>
+      <pre><code>@RestController
+@RequestMapping("/api/clientes")
+public class ClienteController {
+
+    private final ClienteService clienteService;
+
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity&lt;ClienteDTO&gt; obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(clienteService.buscarCliente(id));
+    }
+}</code></pre>
+      <p>Este diseño promueve de forma natural la separación en capas (controladores web, servicios transaccionales y repositorios de datos) y facilita sustitución de dependencias durante pruebas unitarias y de integración.</p>
+    </section>
+
+    <section>
+      <h2>Spring Boot: convención sobre configuración</h2>
+      <p>Históricamente, configurar una aplicación empresarial con Spring exigía redactar extensos archivos XML y desplegar archivos WAR sobre servidores de aplicaciones externos como Tomcat o WildFly. <strong>Spring Boot</strong> eliminó esa fricción adoptando el principio de <em>opinión inteligente y convención sobre configuración</em>:</p>
+      <ul>
+        <li><strong>Dependencias Starter:</strong> Agrupadores curados como <code>spring-boot-starter-web</code> o <code>spring-boot-starter-data-jpa</code> incorporan versiones compatibles probadas entre sí, evitando conflictos de bibliotecas transitivas en Maven o Gradle.</li>
+        <li><strong>Autoconfiguración condicional:</strong> Spring Boot inspecciona las clases presentes en el <em>classpath</em> y configura automáticamente beans predeterminados (como serializadores JSON Jackson o pools de conexiones HikariCP), permitiendo sobrescribir cualquier parámetro mediante archivos <code>application.properties</code> o <code>application.yml</code>.</li>
+        <li><strong>Servidor embebido y artefacto autocontenido:</strong> Empaqueta la aplicación junto con un servidor web embebido (Tomcat, Jetty o Undertow) en un único archivo JAR ejecutable (<code>java -jar servicio.jar</code>), simplificando radicalmente el despliegue en contenedores.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Piezas esenciales del ecosistema Spring en producción</h2>
+      <p>Más allá del enrutamiento HTTP con Spring Web MVC o Spring WebFlux, una aplicación Spring Boot típica integra módulos especializados para cubrir requisitos transversales:</p>
+      <ul>
+        <li><strong>Spring Data JPA:</strong> Abstrae el acceso a bases de datos relacionales sobre Hibernate, permitiendo definir repositorios mediante interfaces declarativas y gestionar transacciones atómicas con la anotación <code>@Transactional</code>.</li>
+        <li><strong>Spring Security:</strong> Proporciona una cadena configurable de filtros de seguridad para autenticación basada en sesiones, tokens JWT, OAuth2 y control granular de autorización por roles o expresiones.</li>
+        <li><strong>Spring Boot Actuator:</strong> Expone endpoints operativos listos para producción (<code>/actuator/health</code>, <code>/actuator/metrics</code>) que facilitan la supervisión continua y las sondas de disponibilidad en orquestadores.</li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>
