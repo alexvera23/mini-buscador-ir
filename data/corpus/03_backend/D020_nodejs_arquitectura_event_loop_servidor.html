@@ -3,71 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Python en el desarrollo backend: entornos virtuales, tipado y ecosistema web</title>
-  <meta name="description" content="Presenta las capacidades de Python para servicios web, gestión de entornos aislados con venv/pip, anotaciones de tipo modernas y estándares WSGI y ASGI. No enseña sintaxis básica de Python desde cero. Requiere fundamentos de programación en Python. Enlaza con FastAPI, Django y ASGI.">
-  <meta name="keywords" content="python, backend, venv, asgi, wsgi">
-  <meta name="doc-id" content="D021">
+  <title>Arquitectura de Node.js, motor V8 y modelo de entrada/salida no bloqueante</title>
+  <meta name="description" content="Explica cómo Node.js ejecuta JavaScript fuera del navegador usando V8 y libuv, gestionando concurrencia mediante un bucle de eventos orientado a E/S asíncrona. No enseña sintaxis básica de JavaScript. Requiere conocer promesas y async/await. Enlaza con Express, sistemas de archivos y servidores HTTP.">
+  <meta name="keywords" content="nodejs, v8, libuv, asincronia, backend">
+  <meta name="doc-id" content="D020">
   <meta name="doc-category-id" content="C03">
   <meta name="doc-category" content="Backend">
-  <meta name="doc-slug" content="python_backend_entornos_ecosistema">
+  <meta name="doc-slug" content="nodejs_arquitectura_event_loop_servidor">
 </head>
 <body>
-  <article data-doc-id="D021" data-category-id="C03" data-slug="python_backend_entornos_ecosistema">
+  <article data-doc-id="D020" data-category-id="C03" data-slug="nodejs_arquitectura_event_loop_servidor">
     <header>
-      <h1>Python en el desarrollo backend: entornos virtuales, tipado y ecosistema web</h1>
-      <p>Aislamiento de dependencias, seguridad con anotaciones de tipo, interfaces estándar WSGI/ASGI y panorama de frameworks web en Python.</p>
+      <h1>Arquitectura de Node.js, motor V8 y modelo de entrada/salida no bloqueante</h1>
+      <p>Funcionamiento interno del entorno de ejecución Node.js, integración entre V8 y libuv, fases del Event Loop y manejo eficiente de concurrencia orientada a E/S.</p>
     </header>
 
     <section>
-      <h2>Fortalezas de Python en la ingeniería de servidores</h2>
-      <p>Python se ha consolidado como uno de los lenguajes más versátiles para construir <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend y servicios web</a> gracias a la claridad sintáctica de su código, la madurez de su biblioteca estándar y su integración directa con ecosistemas de ciencia de datos, procesamiento documental e inteligencia artificial.</p>
-      <p>Un proyecto profesional en Python requiere disciplina en tres frentes técnicos: el aislamiento estricto de dependencias por proyecto, el uso sistemático de anotaciones de tipo estáticas y la selección adecuada entre interfaces de servidor síncronas o asíncronas.</p>
-    </section>
-
-    <section>
-      <h2>Aislamiento de entornos virtuales y gestión de dependencias</h2>
-      <p>Instalar bibliotecas directamente en el intérprete global del sistema operativo provoca conflictos de versiones entre proyectos distintos e incluso puede comprometer utilidades administrativas del propio sistema Linux. Para evitarlo, todo servicio backend en Python se desarrolla dentro de un entorno virtual aislado.</p>
-      <pre><code># Creación y activación de un entorno virtual estándar con venv
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Instalación de dependencias y fijación reproducible de versiones
-pip install fastapi uvicorn
-pip freeze &gt; requirements.txt</code></pre>
-      <p>En flujos modernos, además de <code>venv</code> y <code>pip</code>, herramientas como <code>uv</code> o <code>Poetry</code> centralizan la configuración del proyecto en un archivo estándar <code>pyproject.toml</code> junto con archivos de bloqueo (<em>lockfiles</em>) deterministas que garantizan que producción ejecute exactamente las mismas versiones validadas en desarrollo.</p>
-    </section>
-
-    <section>
-      <h2>Anotaciones de tipo (Type Hints) y validación en tiempo de ejecución</h2>
-      <p>Aunque Python es un lenguaje de tipado dinámico, la incorporación de anotaciones de tipo (PEP 484 y posteriores) transformó el desarrollo backend. Declarar explícitamente los tipos de parámetros y valores de retorno permite que analizadores estáticos como <code>mypy</code> o <code>Pyright</code> detecten inconsistencias antes de desplegar el código.</p>
-      <p>Además, bibliotecas como <strong>Pydantic</strong> aprovechan estas anotaciones de tipo en tiempo de ejecución para analizar, convertir y validar automáticamente cargas útiles JSON provenientes de peticiones HTTP:</p>
-      <pre><code>from pydantic import BaseModel, Field
-
-class SolicitudRegistroUsuario(BaseModel):
-    nombre: str = Field(min_length=2, max_length=80)
-    correo: str
-    edad: int = Field(ge=18)
-
-def crear_usuario(datos: SolicitudRegistroUsuario) -&gt; dict[str, str]:
-    return {"mensaje": f"Usuario {datos.nombre} validado correctamente"}</code></pre>
-    </section>
-
-    <section>
-      <h2>Estándares de interfaz de servidor: WSGI frente a ASGI</h2>
-      <p>A diferencia de lenguajes que incluyen un servidor HTTP listo para producción en su núcleo, Python desacopla la aplicación web del servidor de red mediante especificaciones de interfaz estandarizadas:</p>
+      <h2>¿Qué es Node.js y cómo trasciende al navegador?</h2>
+      <p>Node.js no es un lenguaje de programación ni un framework web, sino un entorno de ejecución multiplataforma de código abierto que permite ejecutar código JavaScript fuera del navegador web, habilitando la construcción de <a href="D019_arquitectura_servidores_logica_negocio.html">servidores backend y servicios de red</a> con un mismo lenguaje en cliente y servidor.</p>
+      <p>Su arquitectura interna combina dos componentes principales escritos mayoritariamente en C y C++:</p>
       <ul>
-        <li><strong>WSGI (Web Server Gateway Interface):</strong> Especificación clásica basada en un modelo síncrono de petición-respuesta. El servidor (como <strong>Gunicorn</strong> o uWSGI) recibe la petición HTTP y la entrega a una función invocable de Python que bloquea su hilo trabajador hasta devolver la respuesta. Resulta idóneo para aplicaciones web tradicionales donde cada petición realiza operaciones rápidas y acotadas.</li>
-        <li><strong>ASGI (Asynchronous Server Gateway Interface):</strong> Evolución moderna construida sobre <code>asyncio</code> que soporta programación asíncrona nativa mediante <code>async def</code> y <code>await</code>. Servidores ASGI como <strong>Uvicorn</strong> o Hypercorn permiten manejar miles de conexiones concurrentes de E/S (consultas asíncronas a bases de datos, llamadas a APIs externas, WebSockets y <em>Server-Sent Events</em>) sin bloquear trabajadores.</li>
+        <li><strong>Motor V8:</strong> Desarrollado por Google para Chromium, compila código JavaScript directamente a código máquina nativo mediante compilación <em>Just-In-Time</em> (JIT) y administra la asignación y recolección de basura en memoria (<em>heap</em> y <em>call stack</em>).</li>
+        <li><strong>Biblioteca libuv:</strong> Proporciona la capa de abstracción multiplataforma para operaciones asíncronas de entrada/salida (red, sistema de archivos, resolución DNS, temporizadores), además de gestionar el bucle de eventos (<em>Event Loop</em>) y un grupo de hilos de trabajo (<em>Worker Pool</em>).</li>
       </ul>
     </section>
 
     <section>
-      <h2>Panorama de frameworks backend en Python</h2>
-      <p>Sobre estas interfaces se sitúan tres familias principales de frameworks según el alcance y estilo arquitectónico requerido:</p>
+      <h2>Entrada/salida no bloqueante frente al modelo tradicional por hilos</h2>
+      <p>En modelos tradicionales de servidores síncronos, cada conexión entrante asigna un hilo del sistema operativo dedicado que permanece bloqueado mientras espera la respuesta de una consulta a base de datos o la lectura de un archivo en disco. Bajo alta concurrencia, mantener miles de hilos inactivos consume memoria significativa y genera sobrecarga por cambios de contexto del procesador.</p>
+      <p>Node.js adopta un enfoque dirigido por eventos y E/S no bloqueante sobre un único hilo principal de ejecución de JavaScript. Cuando el código inicia una operación de red o almacenamiento, delega la espera al sistema operativo (mediante mecanismos como <code>epoll</code> en Linux o <code>kqueue</code> en macOS) o al <em>Worker Pool</em> de <code>libuv</code>, quedando libre de inmediato para atender otras peticiones entrantes.</p>
+      <pre><code>import { readFile } from 'node:fs/promises';
+
+async function procesarConfiguracion(ruta) {
+  // La lectura de disco no bloquea el hilo principal mientras espera al sistema operativo
+  const contenido = await readFile(ruta, 'utf-8');
+  return JSON.parse(contenido);
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Fases del Event Loop y colas de microtareas</h2>
+      <p>Cuando las operaciones asíncronas completan su trabajo en segundo plano, sus funciones de retorno (<em>callbacks</em>) o continuaciones de promesas se encolan para ser ejecutadas ordenadamente por el <em>Event Loop</em>. Cada iteración del bucle atraviesa fases bien definidas:</p>
+      <ol>
+        <li><strong>Timers:</strong> Ejecuta callbacks programados mediante <code>setTimeout()</code> y <code>setInterval()</code> cuyo umbral de tiempo ya expiró.</li>
+        <li><strong>Pending Callbacks:</strong> Procesa callbacks de errores del sistema operativo diferidos de iteraciones previas.</li>
+        <li><strong>Poll:</strong> Recupera nuevos eventos de E/S (peticiones entrantes, paquetes recibidos, lecturas completadas) y ejecuta sus callbacks asociados.</li>
+        <li><strong>Check:</strong> Ejecuta callbacks registrados específicamente mediante <code>setImmediate()</code>.</li>
+        <li><strong>Close Callbacks:</strong> Gestiona eventos de cierre de recursos, como <code>socket.on('close')</code>.</li>
+      </ol>
+      <p>Entre cada transición de fase, Node.js vacía por completo las <strong>colas de microtareas</strong>, dando prioridad máxima a <code>process.nextTick()</code> y a las resoluciones de <code>Promise</code> (<code>.then</code> / <code>await</code>). Por ello, encadenar promesas recursivas infinitas puede impedir que el bucle avance hacia la fase <em>Poll</em>.</p>
+    </section>
+
+    <section>
+      <h2>Límites de cargas intensivas de CPU y estrategias de escalado</h2>
+      <p>Dado que el código JavaScript de la aplicación se ejecuta en un único hilo, cualquier operación síncrona computacionalmente pesada —como cifrar grandes volúmenes de datos sin APIs asíncronas, comprimir imágenes en memoria o ejecutar bucles sobre millones de elementos— bloqueará el <em>Event Loop</em>, impidiendo responder a cualquier otro usuario conectado.</p>
+      <p>Para cargas intensivas de CPU, Node.js ofrece el módulo nativo <code>worker_threads</code>, que permite ejecutar código JavaScript en hilos aislados con canales de paso de mensajes, así como el módulo <code>cluster</code> o la replicación de procesos mediante gestores de procesos y contenedores para aprovechar todos los núcleos físicos disponibles en el servidor.</p>
+    </section>
+
+    <section>
+      <h2>Ruta de profundización en el ecosistema Node.js</h2>
+      <p>Una vez comprendida la mecánica interna del bucle de eventos, el desarrollo práctico en Node.js se articula a través de sus sistemas de empaquetado y frameworks web:</p>
       <ul>
-        <li><strong>Django:</strong> Framework completo con filosofía <em>"baterías incluidas"</em>. Incorpora su propio ORM maduro, sistema de migraciones, panel de administración autogenerado, autenticación y protección contra vulnerabilidades web habituales, sobresaliendo en aplicaciones de gestión empresarial y portales complejos.</li>
-        <li><strong>FastAPI:</strong> Framework moderno nativo sobre ASGI enfocado en la construcción de APIs REST de alto rendimiento. Utiliza anotaciones de tipo de Python y Pydantic para generar automáticamente validación de datos, serialización y documentación interactiva bajo el estándar OpenAPI.</li>
-        <li><strong>Flask:</strong> Microframework ligero basado en WSGI que ofrece un núcleo minimalista de enrutamiento y plantillas, dejando en manos del equipo la selección de extensiones para persistencia y autenticación.</li>
+        <li>Revisa <a href="D024_nodejs_modulos_commonjs_esm_nativos.html">módulos en Node.js: CommonJS frente a ES Modules y APIs estándar</a> para estructurar código modular y utilizar las bibliotecas incluidas en el núcleo.</li>
+        <li>Consulta <a href="D025_nodejs_express_enrutamiento_middlewares.html">desarrollo de servidores web con Express: rutas y cadena de middlewares</a> para conocer el framework minimalista más extendido del ecosistema.</li>
+        <li>Explora <a href="D026_nodejs_fastify_alternativas_rendimiento.html">Fastify y frameworks modernos orientados a alto rendimiento en Node.js</a> cuando se busca validación automática por esquemas y máxima capacidad de procesamiento HTTP.</li>
       </ul>
     </section>
   </article>
