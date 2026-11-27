@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from collections import defaultdict
+import math
 from pathlib import Path
 
 from app.models.schemas import GraphEdge, GraphValidationReport
@@ -33,8 +33,16 @@ class GraphEngine:
         self.convergence_history: list[float] = []
         self.iterations: int = 0
 
+        self.authority: dict[str, float] = {}
+        self.hub: dict[str, float] = {}
+        self.authority_norm: dict[str, float] = {}
+        self.hub_norm: dict[str, float] = {}
+        self.hits_convergence_history: list[float] = []
+        self.hits_iterations: int = 0
+
         self._build_graph(documents)
         self._compute_pagerank()
+        self._compute_hits()
 
     def _build_graph(self, documents: list[ParsedDocument]) -> None:
         seen_edges: set[tuple[str, str]] = set()
@@ -91,6 +99,71 @@ class GraphEngine:
             self.pagerank_norm = {node: val / max_pr for node, val in pr.items()}
         else:
             self.pagerank_norm = {node: 0.0 for node in self.nodes}
+
+    def _compute_hits(self) -> None:
+        """Calcula iterativamente los puntajes Authority y Hub (algoritmo HITS)."""
+        n = len(self.nodes)
+        if n == 0:
+            return
+
+        auth: dict[str, float] = {node: 1.0 for node in self.nodes}
+        hub: dict[str, float] = {node: 1.0 for node in self.nodes}
+
+        self.hits_convergence_history = []
+        self.hits_iterations = 0
+
+        for iteration in range(1, self.max_iter + 1):
+            # 1. Actualizar Authority: a^(t)(p) = sum_{q in In(p)} h^(t-1)(q)
+            raw_auth: dict[str, float] = {
+                node: sum(hub[src] for src in self.in_links[node])
+                for node in self.nodes
+            }
+            auth_norm_l2 = math.sqrt(sum(v * v for v in raw_auth.values()))
+            if auth_norm_l2 > 0.0:
+                new_auth = {node: val / auth_norm_l2 for node, val in raw_auth.items()}
+            else:
+                new_auth = {node: 0.0 for node in self.nodes}
+
+            # 2. Actualizar Hub: h^(t)(p) = sum_{q in Out(p)} a^(t)(q)
+            raw_hub: dict[str, float] = {
+                node: sum(new_auth[tgt] for tgt in self.out_links[node])
+                for node in self.nodes
+            }
+            hub_norm_l2 = math.sqrt(sum(v * v for v in raw_hub.values()))
+            if hub_norm_l2 > 0.0:
+                new_hub = {node: val / hub_norm_l2 for node, val in raw_hub.items()}
+            else:
+                new_hub = {node: 0.0 for node in self.nodes}
+
+            # 3. Criterio de convergencia: max(||a^(t) - a^(t-1)||_1, ||h^(t) - h^(t-1)||_1) < epsilon
+            l1_auth = sum(abs(new_auth[node] - auth[node]) for node in self.nodes)
+            l1_hub = sum(abs(new_hub[node] - hub[node]) for node in self.nodes)
+            diff = max(l1_auth, l1_hub)
+
+            auth = new_auth
+            hub = new_hub
+            self.hits_convergence_history.append(diff)
+            self.hits_iterations = iteration
+
+            if diff < self.epsilon:
+                break
+
+        self.authority = auth
+        self.hub = hub
+
+        max_auth = max(auth.values()) if auth else 0.0
+        self.authority_norm = (
+            {node: val / max_auth for node, val in auth.items()}
+            if max_auth > 0.0
+            else {node: 0.0 for node in self.nodes}
+        )
+
+        max_hub = max(hub.values()) if hub else 0.0
+        self.hub_norm = (
+            {node: val / max_hub for node, val in hub.items()}
+            if max_hub > 0.0
+            else {node: 0.0 for node in self.nodes}
+        )
 
     def in_degree(self, doc_id: str) -> int:
         return len(self.in_links.get(doc_id, []))

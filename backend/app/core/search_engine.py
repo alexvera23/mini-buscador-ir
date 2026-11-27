@@ -5,12 +5,14 @@ import re
 from pathlib import Path
 from typing import Literal
 
+from app.core.evaluator import Evaluator
 from app.core.graph_engine import GraphEngine
 from app.core.inverted_index import InvertedIndex
 from app.models.schemas import (
     DocumentDetailResponse,
     DocumentLinkRef,
     DocumentTermWeight,
+    EvaluationComparisonResponse,
     GraphEdge,
     GraphNode,
     GraphResponse,
@@ -18,6 +20,7 @@ from app.models.schemas import (
     SearchResultItem,
     StatsResponse,
     TermFrequencyItem,
+    TopHITSItem,
     TopPageRankItem,
 )
 from app.utils.parser import ParsedDocument, normalize_text, parse_corpus
@@ -51,6 +54,7 @@ class SearchEngine:
         }
         self.index: InvertedIndex = InvertedIndex(self.documents)
         self.graph: GraphEngine = GraphEngine(self.documents)
+        self.evaluator: Evaluator = Evaluator(self.data_dir / "relevance_judgments.json")
 
     def _build_snippet(self, text: str, matched_terms: list[str], max_len: int = 240) -> str:
         if not text:
@@ -106,7 +110,7 @@ class SearchEngine:
     def search(
         self,
         query: str,
-        mode: Literal["tfidf", "pagerank", "hybrid"] = "hybrid",
+        mode: Literal["tfidf", "pagerank", "hits", "hybrid"] = "hybrid",
         alpha: float = 0.7,
         limit: int = 10,
     ) -> SearchResponse:
@@ -122,6 +126,10 @@ class SearchEngine:
                 candidate_ids = list(tfidf_scores.keys())
             else:
                 candidate_ids = list(self.doc_map.keys())
+        elif mode == "hits":
+            candidate_ids = (
+                list(tfidf_scores.keys()) if query.strip() else list(self.doc_map.keys())
+            )
         else:
             # hybrid: combinar TF-IDF y PageRank sobre documentos con relevancia textual (o todos si q vacío)
             candidate_ids = (
@@ -134,11 +142,14 @@ class SearchEngine:
             tfidf_val = tfidf_scores.get(doc_id, 0.0)
             pr_raw = self.graph.pagerank.get(doc_id, 0.0)
             pr_norm = self.graph.pagerank_norm.get(doc_id, 0.0)
+            auth_norm = self.graph.authority_norm.get(doc_id, 0.0)
 
             if mode == "tfidf":
                 combined = tfidf_val
             elif mode == "pagerank":
                 combined = pr_raw
+            elif mode == "hits":
+                combined = alpha * tfidf_val + (1.0 - alpha) * auth_norm
             else:
                 combined = alpha * tfidf_val + (1.0 - alpha) * pr_norm
 
@@ -193,6 +204,38 @@ class SearchEngine:
 
         pr_sum = sum(self.graph.pagerank.values())
 
+        sorted_auth = sorted(
+            self.graph.authority.items(), key=lambda kv: kv[1], reverse=True
+        )[:10]
+        top_authorities = [
+            TopHITSItem(
+                doc_id=doc_id,
+                title=self.doc_map[doc_id].title,
+                category=self.doc_map[doc_id].category,
+                authority_score=round(self.graph.authority.get(doc_id, 0.0), 6),
+                hub_score=round(self.graph.hub.get(doc_id, 0.0), 6),
+                in_degree=self.graph.in_degree(doc_id),
+                out_degree=self.graph.out_degree(doc_id),
+            )
+            for doc_id, _ in sorted_auth
+        ]
+
+        sorted_hubs = sorted(
+            self.graph.hub.items(), key=lambda kv: kv[1], reverse=True
+        )[:10]
+        top_hubs = [
+            TopHITSItem(
+                doc_id=doc_id,
+                title=self.doc_map[doc_id].title,
+                category=self.doc_map[doc_id].category,
+                authority_score=round(self.graph.authority.get(doc_id, 0.0), 6),
+                hub_score=round(self.graph.hub.get(doc_id, 0.0), 6),
+                in_degree=self.graph.in_degree(doc_id),
+                out_degree=self.graph.out_degree(doc_id),
+            )
+            for doc_id, _ in sorted_hubs
+        ]
+
         return StatsResponse(
             total_documents=self.index.total_documents,
             vocabulary_size=self.index.vocabulary_size,
@@ -202,8 +245,12 @@ class SearchEngine:
             pagerank_epsilon=self.graph.epsilon,
             pagerank_sum=round(pr_sum, 6),
             convergence_history=self.graph.convergence_history,
+            hits_iterations=self.graph.hits_iterations,
+            hits_convergence_history=self.graph.hits_convergence_history,
             top_terms=top_terms,
             top_pagerank=top_pagerank,
+            top_authorities=top_authorities,
+            top_hubs=top_hubs,
         )
 
     def get_graph(self) -> GraphResponse:
@@ -213,6 +260,8 @@ class SearchEngine:
                 title=doc.title,
                 category=doc.category,
                 pagerank=round(self.graph.pagerank.get(doc.doc_id, 0.0), 6),
+                authority_score=round(self.graph.authority.get(doc.doc_id, 0.0), 6),
+                hub_score=round(self.graph.hub.get(doc.doc_id, 0.0), 6),
                 in_degree=self.graph.in_degree(doc.doc_id),
                 out_degree=self.graph.out_degree(doc.doc_id),
             )
@@ -221,6 +270,11 @@ class SearchEngine:
         edges = [GraphEdge(source=s, target=t) for s, t in self.graph.edges]
         validation = self.graph.compare_with_planned_links(self.links_file)
         return GraphResponse(nodes=nodes, edges=edges, validation=validation)
+
+    def evaluate(
+        self, k: int = 5, alpha: float = 0.7, beta: float = 1.0
+    ) -> EvaluationComparisonResponse:
+        return self.evaluator.evaluate(engine=self, k=k, alpha=alpha, beta=beta)
 
     def get_document(self, doc_id: str) -> DocumentDetailResponse | None:
         doc = self.doc_map.get(doc_id)

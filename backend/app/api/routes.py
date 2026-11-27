@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from app.core.search_engine import SearchEngine
 from app.models.schemas import (
     DocumentDetailResponse,
+    EvaluationComparisonResponse,
     GraphResponse,
     SearchResponse,
     StatsResponse,
@@ -25,8 +26,8 @@ def _get_engine(request: Request) -> SearchEngine:
 def search_documents(
     request: Request,
     q: str = Query(default="", description="Consulta textual del usuario"),
-    mode: Literal["tfidf", "pagerank", "hybrid"] = Query(
-        default="hybrid", description="Modo de ranking: tfidf, pagerank o hybrid"
+    mode: Literal["tfidf", "pagerank", "hits", "hybrid"] = Query(
+        default="hybrid", description="Modo de ranking: tfidf, pagerank, hits o hybrid"
     ),
     alpha: float = Query(
         default=0.7, ge=0.0, le=1.0, description="Peso de TF-IDF en modo hybrid"
@@ -56,3 +57,18 @@ def get_document_detail(request: Request, doc_id: str) -> DocumentDetailResponse
     if detail is None:
         raise HTTPException(status_code=404, detail=f"Document '{doc_id}' not found")
     return detail
+
+
+@router.get("/evaluate", response_model=EvaluationComparisonResponse)
+def evaluate_engine(
+    request: Request,
+    k: int = Query(default=5, ge=1, le=50, description="Corte Top-K para evaluación"),
+    alpha: float = Query(
+        default=0.7, ge=0.0, le=1.0, description="Peso de TF-IDF en modo hybrid"
+    ),
+    beta: float = Query(
+        default=1.0, gt=0.0, le=5.0, description="Parámetro beta para F-beta"
+    ),
+) -> EvaluationComparisonResponse:
+    engine = _get_engine(request)
+    return engine.evaluate(k=k, alpha=alpha, beta=beta)
